@@ -12,6 +12,10 @@ class VisitorsController extends Controller
     {
         return view('visitors/addvisitors', ['property_code' => $property_code] );
     }
+    public function show()
+    {
+        return view('visitors/index' );   
+    }
     public function registerVisitorPass(Request $request)
     {
         // Obtener el valor de property_code del formulario

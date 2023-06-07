@@ -2,7 +2,7 @@
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
-                Dashboards 
+                Dashboards
             </h2>
             <div class="hidden h-full py-1 sm:flex">
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
@@ -10,7 +10,7 @@
             <ul class="hidden flex-wrap items-center space-x-2 sm:flex">
                 <li class="flex items-center space-x-2">
                     <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#">properties</a>
+                        href="#">Settings</a>
                     <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -23,7 +23,16 @@
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
                     <div class="inline-flex space-x-4">
-                        <button class="btn custom-btn-lg">
+                        <button class="btn custom-btn-lg" onclick="copyTableToClipboard()">
+                            <svg width="30" height="30" viewBox="0 0 16 16" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 0V3H9L6 0Z" fill="#0ea5e9" fill-opacity="1" />
+                                <path d="M9 4H5V0H0V12H9V4Z" fill="#0EA5E9" fill-opacity="1" />
+                                <path d="M13 4V7H16L13 4Z" fill="#0EA5E9" fill-opacity="1" />
+                                <path d="M12 4H10V13H7V16H16V8H12V4Z" fill="#0EA5E9" fill-opacity="1" />
+                            </svg>
+                        </button>
+                        <button class="btn custom-btn-lg" onclick="printTable()">
                             <svg width="35" height="35" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path d="M4 14V18H6V20H18V18H20V14H4ZM17 19H7V16H17V19Z" fill="#0EA5E9"
@@ -32,9 +41,10 @@
                                     d="M16 10V6L13.3 4H8V10H4V13H20V10H16ZM13 5L14.3 6H13V5ZM15 11H9V5H12V7H15V11ZM19 12H18V11H19V12Z"
                                     fill="#0EA5E9" fill-opacity="1" />
                             </svg>
+
                         </button>
 
-                        <a href="#" class="btn custom-btn-lg">
+                        <button class="btn custom-btn-lg" onclick="exportTableToPdf()">
                             <svg width="30" height="30" viewBox="0 0 130 167" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -76,8 +86,8 @@
                                     fill="#E5E5E5" />
                             </svg>
 
-                        </a>
-                        <a href="{{ route('utiles_excel') }}" class="btn custom-btn-lg">
+                        </button>
+                        <button class="btn custom-btn-lg">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -99,25 +109,8 @@
                                     d="M5 21.7715L7.80957 16.542L5.25977 11.75H7.20117L8.84863 14.9697L10.4619 11.75H12.3828L9.83301 16.6172L12.6426 21.7715H10.6396L8.81445 18.3057L6.98926 21.7715H5Z"
                                     fill="white" />
                             </svg>
-                        </a>
-                        <a href="{{ route('addproperty') }}" class="btn custom-btn-lg">
-                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
-                                    stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path
-                                    d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z"
-                                    stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M20 8V14" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M23 11H17" stroke="#0EA5E9" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                            </svg>
 
-                        </a>
+                        </button>
 
                     </div>
 
@@ -161,49 +154,33 @@
                     search: true,
                 }).render($refs.wrapper);">
                     <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
-                        <table x-ref="table" id="myTable" class="w-full text-left">
+                        <table x-ref="table" class="w-full text-left">
                             <thead>
                                 <tr>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Area
-                                    </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Property Name
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Address
+                                        Permit Stock
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        City
+                                        Permit Definition
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        State
-                                    </th>
+                                        Permit Types
+                                    </th>  
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Property Code
-                                    </th>
+                                        Visitor's Pass
+                                    </th> 
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Type
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        #Places
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        # Vehicles
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        # Users
-                                    </th>
+                                        Pre-Registration
+                                    </th>                                
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Actions
@@ -211,127 +188,41 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($properties as $property)
-                                    <tr>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">{{ $property->area }}</td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->name }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->address }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->city }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->state }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <div x-data="{ showModal: false }">
-                                                <button @click="showModal = true"
-                                                    class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
-                                                    style="background-color: #0EA5E9;">
-                                                    {{ $property->property_code }}
-                                                </button>
 
-                                                <template x-teleport="#x-teleport-target">
-                                                    <div class="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5"
-                                                        x-show="showModal" role="dialog"
-                                                        @keydown.window.escape="showModal = false">
-                                                        <div class="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"
-                                                            @click="showModal = false" x-show="showModal"
-                                                            x-transition:enter="ease-out"
-                                                            x-transition:enter-start="opacity-0"
-                                                            x-transition:enter-end="opacity-100"
-                                                            x-transition:leave="ease-in"
-                                                            x-transition:leave-start="opacity-100"
-                                                            x-transition:leave-end="opacity-0"></div>
-                                                        <div class="relative max-w-lg rounded-lg bg-white px-4 py-10 text-center transition-opacity duration-300 dark:bg-navy-700 sm:px-5"
-                                                            x-show="showModal" x-transition:enter="ease-out"
-                                                            x-transition:enter-start="opacity-0"
-                                                            x-transition:enter-end="opacity-100"
-                                                            x-transition:leave="ease-in"
-                                                            x-transition:leave-start="opacity-100"
-                                                            x-transition:leave-end="opacity-0">
-                                                            <div class="mt-4">
-                                                                <h2
-                                                                    class="text-2xl mb-2 text-slate-700 dark:text-navy-100">
-                                                                    {{ $property->address }}
-                                                                </h2>
-                                                                <div class="visible-print text-center">
-                                                                    {!! QrCode::size(200)->generate('https://app.amartineztowing.com/registration/' . $property->property_code) !!}
-                                                                    <p class="mt-2">Scan me to return to the original
-                                                                        page.</p>
-                                                                </div>
-                                                                <button @click="showModal = false"
-                                                                    class="btn mt-6 bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90"
-                                                                    style="background-color: #0EA5E9;">
-                                                                    Close
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </td>
+                                <tr>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+
+                                    </td>
+                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        <div class="flex justify-center space-x-2">
 
 
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->location_type }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->places }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            fecha
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            cinco
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <div class="flex justify-center space-x-2">
-                                                <a href="{{ route('properties.edit', $property->id) }}"
-                                                    class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="{{ route('properties.destroy', $property->id) }}"
-                                                    class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
-                                                    onclick="event.preventDefault(); showConfirmation('{{ $property->id }}');">
-                                                    <i class="fa fa-trash-alt"></i>
-                                                </a>
+                                        </div>
+                                    </td>
 
-                                                <script>
-                                                    function showConfirmation(propertyId) {
-                                                        Swal.fire({
-                                                            title: 'Are you sure?',
-                                                            text: 'You will not be able to recover this property!',
-                                                            icon: 'warning',
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: '#d33',
-                                                            cancelButtonColor: '#3085d6',
-                                                            confirmButtonText: 'Yes, delete it!',
-                                                            cancelButtonText: 'Cancel'
-                                                        }).then((result) => {
-                                                            if (result.isConfirmed) {
-                                                                document.getElementById('delete-form-' + propertyId).submit();
-                                                            }
-                                                        });
-                                                    }
-                                                </script>
+                                </tr>
 
-
-                                                <form id="delete-form-{{ $property->id }}"
-                                                    action="{{ route('properties.destroy', $property->id) }}"
-                                                    method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -342,19 +233,6 @@
             </div>
         </div>
         </div>
-        <div id="qrModal" class="modal hidden">
-            <div class="modal-overlay"></div>
-            <div class="modal-container">
-                <div class="modal-close"></div>
-                <div class="modal-body">
-                    <div class="visible-print text-center">
-                        {!! QrCode::size(100)->generate(Request::url()) !!}
-                        <p>Scan me to return to the original page.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
+    </main>
 </x-app-layout>
+

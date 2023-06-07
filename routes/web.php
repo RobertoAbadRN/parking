@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
  *       @Router - login
  * ==============================
  */
-Route::middleware('guest')->group(function () {
+    Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
@@ -93,16 +93,16 @@ Route::middleware('auth')->group(function () {
      *       @Router - properties/
      * ==============================
      */
+    
     Route::get('/properties', [PropertyController::class, 'index'])->name('properties');
     Route::post('properties/store', [PropertyController::class, 'storeProperty'])->name('properties.store');
-    Route::get('/adduser', [PropertyController::class, 'create'])->name('adduser');
+    Route::get('/addproperty', [PropertyController::class, 'create'])->name('addproperty');
     Route::get('/properties/list', [PropertyController::class, 'getDatos'])->name('properties.list');
     Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])->name('properties.edit');
     Route::put('/properties/{property}', [PropertyController::class, 'update'])->name('properties.update');
     Route::delete('/properties/{id}', [PropertyController::class, 'destroy'])->name('properties.destroy');
-    Route::delete('/properties/export', [PropertyController::class, 'expor'])->name('properties.export');
-
-    
+    Route::get('/properties/excel', [PropertyController::class, 'utiles_excel'])->name('utiles_excel');
+ 
 
         /**
      * ==============================
@@ -110,7 +110,8 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/users', [UsersController::class, 'index'])->name('users');
-
+    Route::get('/users/adduser', [UsersController::class, 'create'])->name('adduser');
+    Route::post('/users/store', [UsersController::class, 'store'])->name('users.store');
 
         /**
      * ==============================
@@ -131,21 +132,21 @@ Route::middleware('auth')->group(function () {
      *       @Router - visitors_pass/
      * ==============================
      */
-    Route::get('/visitors_pass', [VisitorsPasstroller::class, 'index'])->name('visitors_pass');
+    Route::get('/visitors_pass', [VisitorsController::class, 'show'])->name('visitors_pass');
 
        /**
      * ==============================
      *       @Router - documents/
      * ==============================
      */
-    Route::get('/documents', [DocumentsPasstroller::class, 'index'])->name('documents');
+    Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
 
      /**
      * ==============================
      *       @Router - settings/
      * ==============================
      */
-    Route::get('/settings', [DocumentsPasstroller::class, 'index'])->name('settings');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
 
    });

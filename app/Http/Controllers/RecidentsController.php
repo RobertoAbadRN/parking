@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,11 @@ class RecidentsController extends Controller
      */
     public function index()
     {
-        //
+        
+            $users = User::all(); 
+        
+            return view('recidents.index', ['users' => $users]);
+        
     }
 
     /**

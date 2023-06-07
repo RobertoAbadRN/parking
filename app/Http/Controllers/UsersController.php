@@ -31,7 +31,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        //
+        return view('users.adduser');   
     }
 
     /**
@@ -42,7 +42,31 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'username' => 'required',
+            'name' => 'required',
+            'phone' => 'required',
+            'email' => 'required|email',
+            'access_level' => 'required',
+            'property' => 'required',
+        ]);
+
+        // Crear un nuevo usuario con los datos del formulario
+        $user = new User();
+        $user->username = $validatedData['username'];
+        $user->name = $validatedData['name'];
+        $user->phone = $validatedData['phone'];
+        $user->email = $validatedData['email'];
+        $user->access_level = $validatedData['access_level'];
+        $user->property = $validatedData['property'];
+
+        // Guardar el nuevo usuario en la base de datos
+        $user->save();
+
+        // Redireccionar a la página deseada después de guardar los datos
+        return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente');
+    
     }
 
     /**

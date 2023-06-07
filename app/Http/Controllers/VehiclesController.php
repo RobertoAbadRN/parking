@@ -8,6 +8,11 @@ use App\Models\Vehicle;
 
 class VehiclesController extends Controller
 {
+     public function index()
+     {
+        return view('vehicles.index');
+        
+     }
     public function registerVehicle(Request $request)
     {
         // Obtener los datos del formulario
