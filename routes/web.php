@@ -100,9 +100,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/properties/list', [PropertyController::class, 'getDatos'])->name('properties.list');
     Route::get('/properties/{property}/edit', [PropertyController::class, 'edit'])->name('properties.edit');
     Route::put('/properties/{property}', [PropertyController::class, 'update'])->name('properties.update');
-    Route::delete('/properties/{id}', [PropertyController::class, 'destroy'])->name('properties.destroy');
+    Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
     Route::get('/properties/excel', [PropertyController::class, 'utiles_excel'])->name('utiles_excel');
- 
+    Route::get('properties/vehicles/{property_code}', [PropertyController::class, 'vehicles'])->name('properties.vehicles');
+
 
         /**
      * ==============================
@@ -112,6 +113,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [UsersController::class, 'index'])->name('users');
     Route::get('/users/adduser', [UsersController::class, 'create'])->name('adduser');
     Route::post('/users/store', [UsersController::class, 'store'])->name('users.store');
+    Route::get('/user/edit/{property}', [UsersController::class, 'edit'])->name('user.edit');
+    Route::put('/user/{id}', [UsersController::class, 'update'])->name('users.update');
 
         /**
      * ==============================

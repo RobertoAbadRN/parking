@@ -1,4 +1,4 @@
-<x-app-layout title="Add New Property" is-header-blur="true">
+<x-app-layout title="edit user" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
@@ -16,7 +16,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </li>
-                <li>Add New User</li>
+                <li>edit  User</li>
             </ul>
         </div>
 
@@ -80,16 +80,13 @@
             <div class="col-span-12 sm:col-span-10">
                 <div class="card p-4 sm:p-5">
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100">
-                        Add New User
+                        Edit User
                     </p>
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
                         <div class="mb-4">
                             <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="User Name" type="text" name="username"
-                                    value="{{ old('username') }}" />
+                                <input class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" placeholder="User Name" type="text" name="username" value="{{ old('username') }}" />
                             </label>
                             @error('username')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
@@ -97,9 +94,7 @@
                         </div>
                         <div class="mb-4">
                             <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Full Name" type="text" name="name" value="{{ old('name') }}" />
+                                <input class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" placeholder="Full Name" type="text" name="name" value="{{ old('name') }}" />
                             </label>
                             @error('name')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
@@ -108,9 +103,7 @@
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Phone" type="text" name="phone" value="{{ old('phone') }}" />
+                                <input class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" placeholder="Phone" type="text" name="phone" value="{{ old('phone') }}" />
                             </label>
                             @error('phone')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
@@ -119,9 +112,7 @@
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Email" type="email" name="email" value="{{ old('email') }}" />
+                                <input class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" placeholder="Email" type="email" name="email" value="{{ old('email') }}" />
                             </label>
                             @error('email')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
@@ -130,9 +121,7 @@
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="access_level">
+                                <select class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" name="access_level">
                                     <option value="" disabled selected>Select access level</option>
                                     <option value="property_leasion_agent">Property Leasion Agent</option>
                                     <option value="property_manager">Property Manager</option>
@@ -148,9 +137,7 @@
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="property">
+                                <select class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" name="property">
                                     <option value="" disabled selected>Select property</option>
                                     <option value="property1">Property 1</option>
                                     <option value="property2">Property 2</option>
@@ -162,8 +149,7 @@
                         </div>
 
                         <div>
-                            <button type="submit"
-                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                            <button type="submit" class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
                                 Submit
                             </button>
                         </div>

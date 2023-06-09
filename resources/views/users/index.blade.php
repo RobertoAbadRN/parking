@@ -190,7 +190,7 @@
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex justify-center space-x-2">
-                                                <a href="{{ route('properties.edit', $user->id) }}"
+                                                <a href="{{ route('user.edit', $user->id) }}"
                                                     class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                     <i class="fa fa-edit"></i>
                                                 </a>

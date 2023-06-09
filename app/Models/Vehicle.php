@@ -22,4 +22,8 @@ class Vehicle extends Model
         'color',
         'vehicle_type',
     ];
+    public function property()
+    {
+        return $this->belongsTo(Property::class, 'property_code', 'property_code');
+    }
 }

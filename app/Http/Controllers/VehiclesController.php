@@ -3,16 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Vehicle;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class VehiclesController extends Controller
 {
-     public function index()
-     {
-        return view('vehicles.index');
-        
-     }
+    public function index()
+    {
+        $query = "SELECT p.name AS property_name, COUNT(v.property_code) AS vehicle_count
+              FROM properties AS p
+              LEFT JOIN vehicles AS v ON p.property_code = v.property_code
+              GROUP BY p.property_code";
+
+        $vehicles = DB::select($query);
+
+        return view('vehicles.index', compact('vehicles'));
+    }
     public function registerVehicle(Request $request)
     {
         // Obtener los datos del formulario
@@ -30,8 +37,7 @@ class VehiclesController extends Controller
         $year = $request->input('year');
         $color = $request->input('color');
         $vehicle_type = $request->input('vehicle_type');
-    
-    
+
         // Guardar los datos en la base de datos
         $vehicle = new Vehicle();
         $vehicle->property_code = $property_code;
@@ -48,12 +54,12 @@ class VehiclesController extends Controller
         $vehicle->color = $color;
         $vehicle->vehicle_type = $vehicle_type;
         // Asignar cualquier otra propiedad necesaria en tu modelo "Vehicle"
-        
+
         $vehicle->save();
-    
+
         // Realizar cualquier otra acción necesaria, como redireccionar a una página de confirmación
         return redirect()->route('login')->with('success', 'Visitor pass registered successfully.');
 
     }
-    
+
 }

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Models\Property;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PropertyController extends Controller
 {
@@ -142,11 +142,11 @@ class PropertyController extends Controller
 
     public function utiles_excel()
     {
-        
+
         // Create new Spreadsheet object
-         // Crea una instancia de Spreadsheet
-         $spreadsheet = new Spreadsheet();
-         $sheet = $spreadsheet->getActiveSheet();
+        // Crea una instancia de Spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
         $datos = Property::orderBy('id', 'desc')->get();
         $spreadsheet->setActiveSheetIndex(0)
@@ -157,31 +157,39 @@ class PropertyController extends Controller
             ->setCellValue('E1', 'State')
             ->setCellValue('F1', 'Property Code')
             ->setCellValue('G1', ' Type');
-        $i=2;
-        foreach($datos as $dato)
-        {
-            
+        $i = 2;
+        foreach ($datos as $dato) {
+
             $spreadsheet->getActiveSheet()
-            ->setCellValue('A'.$i, $dato->name)
-            ->setCellValue('B'.$i, $dato->address)
-            ->setCellValue('C'.$i, $dato->city)
-            ->setCellValue('D'.$i, $dato->state)
-            ->setCellValue('E'.$i, $dato->property_code)
-            ->setCellValue('F'.$i, $dato->location_type)
-            ->setCellValue('G'.$i, $dato->places);
+                ->setCellValue('A' . $i, $dato->name)
+                ->setCellValue('B' . $i, $dato->address)
+                ->setCellValue('C' . $i, $dato->city)
+                ->setCellValue('D' . $i, $dato->state)
+                ->setCellValue('E' . $i, $dato->property_code)
+                ->setCellValue('F' . $i, $dato->location_type)
+                ->setCellValue('G' . $i, $dato->places);
             $i++;
         }
-         // Crea el archivo Excel
-         $writer = new Xlsx($spreadsheet);
-         $filename = 'Property.xlsx';
-         $writer->save($filename);
- 
-          // Descargar el archivo
+        // Crea el archivo Excel
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Property.xlsx';
+        $writer->save($filename);
+
+        // Descargar el archivo
         $response = response()->download($filename)->deleteFileAfterSend();
 
         // Redireccionar a la página anterior después de la descarga
         $response->headers->set('Refresh', '0;url=' . url()->previous());
 
         return $response;
+    }
+
+    public function vehicles($property_code)
+    {
+        $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
+            ->select('vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.model', 'properties.*')
+            ->where('vehicles.property_code', $property_code)
+            ->get();
+        return view('vehicles/listvehicles', compact('vehicles'));
     }
 }

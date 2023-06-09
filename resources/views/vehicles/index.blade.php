@@ -188,13 +188,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                                @foreach($vehicles as $vehicle)
                                 <tr>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $vehicle->property_name }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $vehicle->vehicle_count }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
 
@@ -222,7 +222,7 @@
                                     </td>
 
                                 </tr>
-
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

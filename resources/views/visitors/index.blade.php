@@ -184,41 +184,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                            @foreach($visitorPasses as $visitorPass)
                                 <tr>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $visitorPass->name }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $visitorPass->count() }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $activeCount }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $expiredCount }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
+                                        {{ $invalidCount }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                         <div class="flex justify-center space-x-2">
-
-
+                                            <!-- Acciones -->
                                         </div>
                                     </td>
 
                                 </tr>
-
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

@@ -44,7 +44,7 @@ class UsersController extends Controller
     {
         // Validar los datos del formulario
         $validatedData = $request->validate([
-            'username' => 'required',
+            'user' => 'required',
             'name' => 'required',
             'phone' => 'required',
             'email' => 'required|email',
@@ -54,7 +54,7 @@ class UsersController extends Controller
 
         // Crear un nuevo usuario con los datos del formulario
         $user = new User();
-        $user->username = $validatedData['username'];
+        $user->username = $validatedData['user'];
         $user->name = $validatedData['name'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
@@ -86,9 +86,15 @@ class UsersController extends Controller
      * @param  \App\Models\Property  $property
      * @return \Illuminate\Http\Response
      */
-    public function edit(Property $property)
+    public function edit($id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'User not found.');
+        }
+
+        return view('users.edituser', compact('user'));
     }
 
     /**
@@ -98,9 +104,33 @@ class UsersController extends Controller
      * @param  \App\Models\Property  $property
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Property $property)
+    public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'User not found.');
+        }
+
+        $validated = $request->validate([
+            'username' => 'required|max:255',
+            'name' => 'required|max:255',
+            'phone' => 'required|max:255',
+            'email' => 'required|email',
+            'access_level' => 'required',
+            'property' => 'required',
+        ]);
+
+        $user->username = $validated['username'];
+        $user->name = $validated['name'];
+        $user->phone = $validated['phone'];
+        $user->email = $validated['email'];
+        $user->access_level = $validated['access_level'];
+        $user->property = $validated['property'];
+
+        $user->save();
+
+        return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }
 
     /**
