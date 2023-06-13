@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\Vehicle;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -19,7 +21,12 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        $properties = Property::all();
+        $properties = Property::select('properties.*', DB::raw('(SELECT COUNT(*) FROM vehicles WHERE vehicles.property_code = properties.property_code) AS vehicle_count'), DB::raw('COUNT(users.id) AS user_count'))
+    ->leftJoin('users', 'properties.property_code', '=', 'users.property_code')
+    ->groupBy('properties.property_code')
+    ->get();
+
+    //dd($properties);
         return view('properties/index', compact('properties'));
     }
     public function create()
@@ -191,5 +198,10 @@ class PropertyController extends Controller
             ->where('vehicles.property_code', $property_code)
             ->get();
         return view('vehicles/listvehicles', compact('vehicles'));
+    }
+    public function users($propertyCode)
+    {
+        $users = User::where('property_code', $propertyCode)->get();
+        return view('properties.users', compact('users'));
     }
 }

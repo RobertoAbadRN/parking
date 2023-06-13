@@ -41,7 +41,7 @@
 </head>
 
 <body x-data x-bind="$store.global.documentBody"
-    class="@isset($isSidebarOpen) {{ $isSidebarOpen === 'true' ? 'is-sidebar-open' : '' }} @endisset @isset($isHeaderBlur) {{ $isHeaderBlur === 'true' ? 'is-header-blur' : '' }} @endisset @isset($hasMinSidebar) {{ $hasMinSidebar === 'true' ? 'has-min-sidebar' : '' }} @endisset  @isset($headerSticky) {{ $headerSticky === 'false' ? 'is-header-not-sticky' : '' }} @endisset">
+    class="@isset($isHeaderBlur) {{ $isHeaderBlur === 'true' ? 'is-header-blur' : '' }} @endisset @isset($hasMinSidebar) {{ $hasMinSidebar === 'true' ? 'has-min-sidebar' : '' }} @endisset  @isset($headerSticky) {{ $headerSticky === 'false' ? 'is-header-not-sticky' : '' }} @endisset">
 
     <!-- App preloader-->
     <x-app-preloader></x-app-preloader>
@@ -53,7 +53,7 @@
             <!-- Main Sidebar -->
             <x-app-partials.main-sidebar></x-app-partials.main-sidebar>
 
-            <!-- Sidebar Panel -->
+            <!-- Sidebar Panel --> 
             <x-app-partials.sidebar-panel></x-app-partials.sidebar-panel>
         </div>
 

@@ -1,8 +1,8 @@
-<x-app-layout title="Table Gridjs Component" is-sidebar-open="true" is-header-blur="true">
+<x-app-layout title="properties" is-sidebar-open="true" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
-                Dashboards 
+                Dashboards
             </h2>
             <div class="hidden h-full py-1 sm:flex">
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
@@ -161,13 +161,13 @@
                     search: true,
                 }).render($refs.wrapper);">
                     <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
-                        <table x-ref="table" id="myTable" class="w-full text-left">
+                        <table x-ref="table"  class="w-full text-left">
                             <thead>
                                 <tr>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
+                                    <th class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5" >
                                         Area
                                     </th>
+                                      
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Property Name
@@ -255,14 +255,19 @@
                                                             x-transition:leave-end="opacity-0">
                                                             <div class="mt-4">
                                                                 <h2
-                                                                    class="text-2xl mb-2 text-slate-700 dark:text-navy-100">
+                                                                    class="text-lg mb-2 text-slate-700 dark:text-navy-100">
                                                                     {{ $property->address }}
                                                                 </h2>
-                                                                <div class="visible-print text-center">
+                                                                <h4
+                                                                    class="text-lg mb-2 text-slate-700 dark:text-navy-100">
+                                                                    QR code: {{ $property->property_code }}
+                                                                </h4>
+                                                                <div class="visible-print flex justify-center items-center">
                                                                     {!! QrCode::size(200)->generate('https://app.amartineztowing.com/registration/' . $property->property_code) !!}
-                                                                    <p class="mt-2">Scan me to return to the original
-                                                                        page.</p>
+                                                                   
                                                                 </div>
+                                                                <p class="mt-2 ">Scan me to return to the original
+                                                                    page.</p>
                                                                 <button @click="showModal = false"
                                                                     class="btn mt-6 bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90"
                                                                     style="background-color: #0EA5E9;">
@@ -275,7 +280,6 @@
                                             </div>
                                         </td>
 
-
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             {{ $property->location_type }}
                                         </td>
@@ -283,10 +287,10 @@
                                             {{ $property->places }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            fecha
+                                            {{$property->vehicle_count}}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            cinco
+                                            {{$property->user_count}}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex justify-center space-x-2">
@@ -298,6 +302,10 @@
                                                     class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                     <i class="fa fa-car"></i>
                                                 </a>
+                                                <a href="{{ route('properties.users', $property->property_code) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                    <i class="fas fa-user"></i>
+                                                </a>
+                                                
                                                 <a href="{{ route('properties.destroy', $property->id) }}"
                                                     class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                     onclick="event.preventDefault(); showConfirmation('{{ $property->id }}');">

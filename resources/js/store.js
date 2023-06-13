@@ -2,7 +2,7 @@ export default {
   isDarkModeEnabled: false,
   isMonochromeModeEnabled: false,
   isSearchbarActive: false,
-  isSidebarExpanded: false,
+  isSidebarExpanded: true,
   isRightSidebarExpanded: false,
 
   init() {

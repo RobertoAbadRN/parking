@@ -103,6 +103,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/properties/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
     Route::get('/properties/excel', [PropertyController::class, 'utiles_excel'])->name('utiles_excel');
     Route::get('properties/vehicles/{property_code}', [PropertyController::class, 'vehicles'])->name('properties.vehicles');
+    Route::get('properties/users/{property_code}', [PropertyController::class, 'users'])->name('properties.users');
 
 
         /**
