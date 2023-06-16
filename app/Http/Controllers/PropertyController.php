@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
-use App\Models\Vehicle;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -22,11 +24,11 @@ class PropertyController extends Controller
     public function index()
     {
         $properties = Property::select('properties.*', DB::raw('(SELECT COUNT(*) FROM vehicles WHERE vehicles.property_code = properties.property_code) AS vehicle_count'), DB::raw('COUNT(users.id) AS user_count'))
-    ->leftJoin('users', 'properties.property_code', '=', 'users.property_code')
-    ->groupBy('properties.property_code')
-    ->get();
+            ->leftJoin('users', 'properties.property_code', '=', 'users.property_code')
+            ->groupBy('properties.property_code')
+            ->get();
 
-    //dd($properties);
+        //dd($properties);
         return view('properties/index', compact('properties'));
     }
     public function create()
@@ -66,19 +68,18 @@ class PropertyController extends Controller
         // Handle the logo file if it was uploaded
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
-            // Store the logo file and get its path
-            $logoPath = $logo->store('public/logos');
-            // Set the logo path on the property instance
-            $property->logo = $logoPath;
+            $filename = time() . '.' . $logo->getClientOriginalExtension();
+            Storage::disk('public')->put($filename, File::get($logo));
+            // Guarda el nombre del archivo en la base de datos
+            $property->logo = $filename;
         }
 
         // Guardar el modelo en la base de datos
         $property->save();
 
         // Redireccionar a una página de éxito o mostrar un mensaje de éxito
-        $request->session()->flash('css', 'success');
-        $request->session()->flash('message', "The record has been created successfully");
-        return redirect()->route('properties');
+        // Redireccionar a los detalles de la propiedad actualizada
+        return redirect()->route('properties')->with('success_message', 'The data has been updated successfully ');
 
     }
     private function generateUniquePropertyCode()
@@ -154,8 +155,10 @@ class PropertyController extends Controller
         // Crea una instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-
-        $datos = Property::orderBy('id', 'desc')->get();
+        $datos = Property::select('properties.*', DB::raw('(SELECT COUNT(*) FROM vehicles WHERE vehicles.property_code = properties.property_code) AS vehicle_count'), DB::raw('COUNT(users.id) AS user_count'))
+            ->leftJoin('users', 'properties.property_code', '=', 'users.property_code')
+            ->groupBy('properties.property_code')
+            ->get();
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A1', 'Area')
             ->setCellValue('B1', 'Property Name')
@@ -163,18 +166,24 @@ class PropertyController extends Controller
             ->setCellValue('D1', 'City')
             ->setCellValue('E1', 'State')
             ->setCellValue('F1', 'Property Code')
-            ->setCellValue('G1', ' Type');
+            ->setCellValue('G1', ' Type')
+            ->setCellValue('H1', ' Places')
+            ->setCellValue('I1', ' Vehicles')
+            ->setCellValue('J1', ' Users');
         $i = 2;
         foreach ($datos as $dato) {
 
             $spreadsheet->getActiveSheet()
-                ->setCellValue('A' . $i, $dato->name)
-                ->setCellValue('B' . $i, $dato->address)
-                ->setCellValue('C' . $i, $dato->city)
-                ->setCellValue('D' . $i, $dato->state)
-                ->setCellValue('E' . $i, $dato->property_code)
-                ->setCellValue('F' . $i, $dato->location_type)
-                ->setCellValue('G' . $i, $dato->places);
+                ->setCellValue('A' . $i, $dato->area)
+                ->setCellValue('B' . $i, $dato->name)
+                ->setCellValue('C' . $i, $dato->address)
+                ->setCellValue('D' . $i, $dato->city)
+                ->setCellValue('E' . $i, $dato->state)
+                ->setCellValue('F' . $i, $dato->property_code)
+                ->setCellValue('G' . $i, $dato->location_type)
+                ->setCellValue('H' . $i, $dato->places)
+                ->setCellValue('I' . $i, $dato->vehicle_countt)
+                ->setCellValue('J' . $i, $dato->user_count);
             $i++;
         }
         // Crea el archivo Excel
@@ -194,10 +203,16 @@ class PropertyController extends Controller
     public function vehicles($property_code)
     {
         $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
-            ->select('vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.model', 'properties.*')
+            ->select('vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.model', 'properties.address')
             ->where('vehicles.property_code', $property_code)
             ->get();
-        return view('vehicles/listvehicles', compact('vehicles'));
+
+        $address = $vehicles->pluck('address'); // Extract the address field from the collection
+
+//dd($vehicles);
+
+        return view('vehicles/listvehicles', compact('vehicles', 'address'));
+
     }
     public function users($propertyCode)
     {

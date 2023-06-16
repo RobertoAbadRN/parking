@@ -10,7 +10,7 @@
             <ul class="hidden flex-wrap items-center space-x-2 sm:flex">
                 <li class="flex items-center space-x-2">
                     <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#">PROPERTIES</a>
+                        href="properties">PROPERTIES</a>
                     <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -83,7 +83,7 @@
                         Add New Property
                     </p>
 
-                    <form action="{{ route('properties.store') }}" method="POST">
+                    <form action="{{ route('properties.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="mt-4 space-y-4">
@@ -217,6 +217,9 @@
                                 </span>
                             </label>
                             <div class="flex justify-end space-x-2">
+                                <a href="{{ url('/properties') }}"  class="btn bg-primary font-medium text-white hover:bg-danger-focus focus:bg-danger-focus active:bg-danger-focus/90">
+                                    Cancel
+                                  </a> 
                                 <button
                                     class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90"
                                     type="submit">

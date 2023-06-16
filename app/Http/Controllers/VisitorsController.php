@@ -67,5 +67,5 @@ class VisitorsController extends Controller
         return redirect()->route('login')->with('success', 'Visitor pass registered successfully.');
 
     }
-
+    
 }

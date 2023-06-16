@@ -130,6 +130,10 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
+    Route::get('/addvehicle/{property_code}', [VehiclesController::class, 'create'])->name('addvehicle');
+    Route::post('/vehicles', [VehiclesController::class, 'store'])->name('vehicles.store');
+
+
 
        /**
      * ==============================
