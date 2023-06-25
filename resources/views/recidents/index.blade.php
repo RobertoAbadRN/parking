@@ -113,7 +113,7 @@
                                             {{ $user->banned }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $user->last_login_date }}
+                                            {{ $user->last_login}}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex justify-center space-x-2">

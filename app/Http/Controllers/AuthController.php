@@ -17,19 +17,23 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'email', 'exists:users'],
             'password' => ['required'],
         ]);
-
+    
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         $validated = $validator->validated();
-
+    
         if (\Auth::attempt(array('email' => $validated['email'], 'password' => $validated['password']))) {
+            // Usuario autenticado correctamente
+            $user = \Auth::user();
+            $user->last_login = now();
+            $user->save();
+    
             return redirect()->route('index');
         } else {
             $validator->errors()->add(
@@ -38,6 +42,7 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
     }
+    
 
     public function registerView(){
         return view('register');

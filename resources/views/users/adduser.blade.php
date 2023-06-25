@@ -82,13 +82,14 @@
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100">
                         Add New User
                     </p>
+
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
                         <div class="mb-4">
                             <label class="relative flex">
                                 <input
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="User Name" type="text" name="username"
+                                    placeholder="User Name" type="text" name="user"
                                     value="{{ old('username') }}" />
                             </label>
                             @error('username')
@@ -147,27 +148,37 @@
                         </div>
 
                         <div class="mb-4">
+
                             <label class="relative flex">
                                 <select
                                     class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
                                     name="property">
                                     <option value="" disabled selected>Select property</option>
-                                    <option value="property1">Property 1</option>
-                                    <option value="property2">Property 2</option>
+                                    @foreach ($addresses as $address)
+                                        <option value="{{ $address }}">{{ $address }}</option>
+                                    @endforeach
                                 </select>
                             </label>
+
+
                             @error('property')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div>
+                            <button type="button"
+                                class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
+                                onclick="window.location.href='{{ route('users') }}'">
+                                Cancel
+                            </button>
                             <button type="submit"
-                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                class="btn bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
                                 Submit
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

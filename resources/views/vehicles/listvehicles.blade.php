@@ -59,6 +59,11 @@
                             style="width: auto; height: 40px;">
                             <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
                         </a>
+                        <a href="{{ route('addvehicle', ['property_code' => request()->route('property_code')]) }}"
+                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
+                            style="width: auto; height: 40px;">
+                            <i class="fa fa-envelope" aria-hidden="true"></i> &nbsp; send email
+                        </a>
 
                     </div>
 
@@ -169,23 +174,53 @@
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             {{ $vehicle->permit_status }}
+                
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex justify-center space-x-2">
-                                                <a href="#"
+                                                <a href="{{ route('edit.vehicle', ['id' => $vehicle->id, 'property_code' => $property_code]) }}"
                                                     class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-
+                                                                                                                                          
                                                 <a href="#"
                                                     class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                     <i class="fa fa-print"></i>
                                                 </a>
 
-                                                <a href="#"
-                                                    class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
+                                                <a href="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id, 'property_code' => $property_code]) }}"
+                                                    class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
+                                                    onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
+                                                    <i class="fa fa-trash-alt"></i>
+                                                 </a>
+                                                 
+                                                 <script>
+                                                    function showConfirmation(vehicleId) {
+                                                       Swal.fire({
+                                                          title: 'Are you sure?',
+                                                          text: 'You will not be able to recover this vehicle!',
+                                                          icon: 'warning',
+                                                          showCancelButton: true,
+                                                          confirmButtonColor: '#d33',
+                                                          cancelButtonColor: '#3085d6',
+                                                          confirmButtonText: 'Yes, delete it!',
+                                                          cancelButtonText: 'Cancel'
+                                                       }).then((result) => {
+                                                          if (result.isConfirmed) {
+                                                             document.getElementById('delete-form-' + vehicleId).submit();
+                                                          }
+                                                       });
+                                                    }
+                                                 </script>
+                                                 
+                                                 <form id="delete-form-{{ $vehicle->id }}"
+                                                       action="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id, 'property_code' => $property_code]) }}"
+                                                       method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                 </form>
+                                                 
+                                                 
 
                                             </div>
                                         </td>

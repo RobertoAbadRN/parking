@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\User;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -17,11 +16,11 @@ class UsersController extends Controller
      */
     public function index()
     {
-        
-            $users = User::all(); 
-        
-            return view('users.index', ['users' => $users]);
-        
+        $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
+            ->select('users.*', 'properties.name')
+            ->get();
+
+        return view('users.index', ['users' => $users]);
     }
 
     /**
@@ -31,7 +30,10 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('users.adduser');   
+
+        $addresses = Property::pluck('address');
+
+        return view('users.adduser', ['addresses' => $addresses]);
     }
 
     /**
@@ -54,7 +56,7 @@ class UsersController extends Controller
 
         // Crear un nuevo usuario con los datos del formulario
         $user = new User();
-        $user->username = $validatedData['user'];
+        $user->user= $validatedData['user'];
         $user->name = $validatedData['name'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
@@ -65,8 +67,8 @@ class UsersController extends Controller
         $user->save();
 
         // Redireccionar a la página deseada después de guardar los datos
-        return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente');
-    
+        return redirect()->route('users')->with('success', 'Usuario creado exitosamente');
+
     }
 
     /**
@@ -89,12 +91,15 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = User::find($id);
+        $addresses = Property::pluck('address');
 
         if (!$user) {
-            return redirect()->route('user.index')->with('error', 'User not found.');
+            return redirect()->route('users')->with('error', 'User not found.');
         }
 
-        return view('users.edituser', compact('user'));
+        return view('users.edituser', compact('user', 'addresses'));
+
+
     }
 
     /**
@@ -109,11 +114,11 @@ class UsersController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('user.index')->with('error', 'User not found.');
+            return redirect()->route('users')->with('error', 'User not found.');
         }
 
         $validated = $request->validate([
-            'username' => 'required|max:255',
+            'user' => 'required|max:255',
             'name' => 'required|max:255',
             'phone' => 'required|max:255',
             'email' => 'required|email',
@@ -121,7 +126,7 @@ class UsersController extends Controller
             'property' => 'required',
         ]);
 
-        $user->username = $validated['username'];
+        $user->user = $validated['user'];
         $user->name = $validated['name'];
         $user->phone = $validated['phone'];
         $user->email = $validated['email'];
@@ -130,7 +135,7 @@ class UsersController extends Controller
 
         $user->save();
 
-        return redirect()->route('user.index')->with('success', 'User updated successfully.');
+        return redirect()->route('users')->with('success', 'User updated successfully.');
     }
 
     /**

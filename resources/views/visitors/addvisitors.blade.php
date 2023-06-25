@@ -16,8 +16,9 @@
             <div class="card px-4 pb-4 sm:px-5">
                 <div class="my-3 flex h-8 items-center justify-between">
                     <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
-                        address
-                    </h2>
+                        {{ $address }}
+                      </h2>
+                      
                 </div>
                 <div class="max-w-5xl">
                     <div class="mt-5">
@@ -144,11 +145,11 @@
                                                     class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                                     required>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de
-                                                    vehículo:</label>
+
+                                            <label class="block mb-3">
+                                                <span>Vehicle Type / Tipo de vehículo:</span>
                                                 <select name="vehicle_type" id="vehicle_type"
-                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent"
                                                     required>
                                                     <option value="">-- Select vehicle type / Selecciona el tipo
                                                         de vehículo --</option>
@@ -156,7 +157,9 @@
                                                     <option value="Truck">Truck</option>
                                                     <option value="Motorcycle">Motorcycle</option>
                                                 </select>
-                                            </div>
+                                            </label>
+
+
                                             <div class="flex justify-center">
                                                 <button type="submit"
                                                     class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit
@@ -171,78 +174,140 @@
                                     x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
                                     x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
                                     <div>
-                                        <form action="{{ route('visitors.registerVisitorPass') }}" method="POST" class="form">
-                                            <h2 class="text-center mb-4 pt-4">Register your vehicle for a temporary Visitor's Pass</h2>
+                                        <form action="{{ route('visitors.registerVisitorPass') }}" method="POST"
+                                            class="form">
+                                            <h2 class="text-center mb-4 pt-4">Register your vehicle for a temporary
+                                                Visitor's Pass</h2>
                                             @csrf
-                                        
-                                            <input type="hidden" name="property_code" value="{{ request('property_code') }}">
-                                        
+
+                                            <input type="hidden" name="property_code"
+                                                value="{{ request('property_code') }}">
+
                                             <div class="mb-3">
-                                                <label for="visitor_name" class="form-label">Visitor's Name / Nombre del Visitante</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="visitor_name" name="visitor_name" required>
+                                                <label for="visitor_name" class="form-label">Visitor's Name / Nombre
+                                                    del Visitante</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="visitor_name" name="visitor_name" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
-                                                <label for="visitor_phone" class="form-label">Visitor's Phone / Teléfono del Visitante</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="visitor_phone" name="visitor_phone" required>
+                                                <label for="visitor_phone" class="form-label">Visitor's Phone /
+                                                    Teléfono del Visitante</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="visitor_phone" name="visitor_phone" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
-                                                <label for="license_plate" class="form-label">License Plate / Placa del Vehículo</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="license_plate" name="license_plate" required>
+                                                <label for="license_plate" class="form-label">License Plate / Placa
+                                                    del Vehículo</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="license_plate" name="license_plate" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
                                                 <label for="year" class="form-label">Year / Año</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="year" name="year" required>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="year" name="year" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
                                                 <label for="make" class="form-label">Make / Marca</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="make" name="make" required>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="make" name="make" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
                                                 <label for="model" class="form-label">Model</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="model" name="model" required>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="model" name="model" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
                                                 <label for="color" class="form-label">Color / Color</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="color" name="color" required>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="color" name="color" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
-                                                <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de Vehículo</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="vehicle_type" name="vehicle_type" required>
+                                                <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de
+                                                    Vehículo</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="vehicle_type" name="vehicle_type" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
-                                                <label for="resident_name" class="form-label">Resident's Name / Nombre del Residente</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="resident_name" name="resident_name" required>
+                                                <label for="resident_name" class="form-label">Resident's Name / Nombre
+                                                    del Residente</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="resident_name" name="resident_name" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
-                                                <label for="unit_number" class="form-label">Resident's Unit Number / Número de Unidad del Residente</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="unit_number" name="unit_number" required>
+                                                <label for="unit_number" class="form-label">Resident's Unit Number /
+                                                    Número de Unidad del Residente</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="unit_number" name="unit_number" required>
                                             </div>
-                                        
+
                                             <div class="mb-3">
-                                                <label for="resident_phone" class="form-label">Resident's Phone / Teléfono del Residente</label>
-                                                <input type="text" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="resident_phone" name="resident_phone" required>
+                                                <label for="resident_phone" class="form-label">Resident's Phone /
+                                                    Teléfono del Residente</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="resident_phone" name="resident_phone" required>
                                             </div>
-                                        
-                                            <div class="mb-3">
-                                                <label for="valid_from" class="form-label">Valid From / Válido Desde</label>
-                                                <div class="flex space-x-2">
-                                                    <input type="date" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="valid_from_date" name="valid_from_date" required>
-                                                    <input type="time" class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent" id="valid_from_time" name="valid_from_time" required>
-                                                </div>
-                                            </div>
-                                        
-                                            <button type="submit" class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit / Enviar</button>
+
+                                            <label class="relative flex">
+                                                <input
+                                                  x-init="$el._x_flatpickr = flatpickr($el, { enableTime: true, dateFormat: 'Y-m-d h:i K', time_24hr: false })"
+                                                  class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                  placeholder="Choose date and time..."
+                                                  type="text"
+                                                  name="valid_from"
+                                                />
+                                                <span
+                                                  class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent"
+                                                >
+                                                  <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-5 w-5 transition-colors duration-200"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                  >
+                                                    <path
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                              </label>
+                                              
+                                              
+                                              
+                                              
+                                              
+                                              
+                                            
+                                                                                       
+
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit
+                                                / Enviar</button>
                                         </form>
-                                        
+
                                     </div>
                                 </div>
                             </div>

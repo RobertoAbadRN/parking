@@ -201,22 +201,27 @@ class PropertyController extends Controller
     }
 
     public function vehicles($property_code)
-    {
-        $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
-            ->select('vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.model', 'properties.address')
-            ->where('vehicles.property_code', $property_code)
-            ->get();
+{
+    $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
+        ->select('vehicles.id', 'vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.model', 'properties.address')
+        ->where('vehicles.property_code', $property_code)
+        ->get();
 
-        $address = $vehicles->pluck('address'); // Extract the address field from the collection
+    $address = $vehicles->pluck('address'); // Extrae el campo de dirección de la colección
 
-//dd($vehicles);
+    return view('vehicles.listvehicles', compact('vehicles', 'address', 'property_code'));
+}
 
-        return view('vehicles/listvehicles', compact('vehicles', 'address'));
 
-    }
-    public function users($propertyCode)
-    {
-        $users = User::where('property_code', $propertyCode)->get();
-        return view('properties.users', compact('users'));
-    }
+public function users($propertyCode)
+{
+    $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
+                 ->where('users.property_code', $propertyCode)
+                 ->select('users.*', 'properties.address')
+                 ->distinct()
+                 ->get();
+
+    return view('properties.users', compact('users'));
+}
+
 }

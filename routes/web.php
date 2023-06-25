@@ -10,6 +10,9 @@ use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VisitorsController;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,6 +37,20 @@ use Illuminate\Support\Facades\Route;
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
     Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
+
+    
+    /**
+ * ==============================
+ *       @Router - ForgotPassword
+ * ==============================
+ */    
+Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
+Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
+Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
+    
+
+
        /**
  * ==============================
  *       @Router -  visitors
@@ -44,6 +61,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('/visitors/addvisitors', [VisitorsController::class, 'addVisitors'])->name('visitors.addvisitors');
     Route::post('/visitors/register-visitor-pass', [VisitorsController::class, 'registerVisitorPass'])->name('visitors.registerVisitorPass');
     Route::post('/register-vehicle', [VehiclesController::class, 'registerVehicle'])->name('visitors.registerResidentVehicle');
+   
 
 });
 
@@ -115,7 +133,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/adduser', [UsersController::class, 'create'])->name('adduser');
     Route::post('/users/store', [UsersController::class, 'store'])->name('users.store');
     Route::get('/user/edit/{property}', [UsersController::class, 'edit'])->name('user.edit');
-    Route::put('/user/{id}', [UsersController::class, 'update'])->name('users.update');
+    Route::put('/user/{user}', [UsersController::class, 'update'])->name('users.update');
+
+
 
         /**
      * ==============================
@@ -132,6 +152,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
     Route::get('/addvehicle/{property_code}', [VehiclesController::class, 'create'])->name('addvehicle');
     Route::post('/vehicles', [VehiclesController::class, 'store'])->name('vehicles.store');
+    Route::get('/vehicles/{id}/edit/{property_code}', [VehiclesController::class, 'edit'])->name('edit.vehicle');
+    Route::post('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');   
+    Route::delete('/vehicles/{vehicle}/properties/{property_code}', [VehiclesController::class, 'destroy'])->name('vehicles.destroy');
+
+
 
 
 
@@ -141,6 +166,9 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/visitors_pass', [VisitorsController::class, 'show'])->name('visitors_pass');
+    Route::get('/list-visitors/{property_code}', [VisitorsController::class, 'listVisitors'])->name('list.visitors');
+    Route::get('/list-visitors/addtemporary/{property_code}', [VisitorsController::class, 'addTemporary'])->name('temporary.visitors.pass');
+    Route::post('/visitors/add', [VisitorsController::class, 'storeTemporary'])->name('visitors.add');
 
        /**
      * ==============================

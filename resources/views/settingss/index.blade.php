@@ -1,4 +1,4 @@
-<x-app-layout title="Table Gridjs Component" is-sidebar-open="true" is-header-blur="true">
+<x-app-layout title="Settings" is-sidebar-open="true" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
@@ -23,27 +23,6 @@
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
                     <div class="inline-flex space-x-4">
-                        <button class="btn custom-btn-lg" onclick="copyTableToClipboard()">
-                            <svg width="30" height="30" viewBox="0 0 16 16" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 0V3H9L6 0Z" fill="#0ea5e9" fill-opacity="1" />
-                                <path d="M9 4H5V0H0V12H9V4Z" fill="#0EA5E9" fill-opacity="1" />
-                                <path d="M13 4V7H16L13 4Z" fill="#0EA5E9" fill-opacity="1" />
-                                <path d="M12 4H10V13H7V16H16V8H12V4Z" fill="#0EA5E9" fill-opacity="1" />
-                            </svg>
-                        </button>
-                        <button class="btn custom-btn-lg" onclick="printTable()">
-                            <svg width="35" height="35" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 14V18H6V20H18V18H20V14H4ZM17 19H7V16H17V19Z" fill="#0EA5E9"
-                                    fill-opacity="1" />
-                                <path
-                                    d="M16 10V6L13.3 4H8V10H4V13H20V10H16ZM13 5L14.3 6H13V5ZM15 11H9V5H12V7H15V11ZM19 12H18V11H19V12Z"
-                                    fill="#0EA5E9" fill-opacity="1" />
-                            </svg>
-
-                        </button>
-
                         <button class="btn custom-btn-lg" onclick="exportTableToPdf()">
                             <svg width="30" height="30" viewBox="0 0 130 167" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -163,66 +142,87 @@
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Permit Stock
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Permit Definition
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Permit Types
-                                    </th>  
+                                    </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Visitor's Pass
-                                    </th> 
+                                    </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Pre-Registration
-                                    </th>                                
+                                    </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Actions
+                                        View
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach ($properties as $property)
+                                    <tr>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            {{ $property->address }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <button
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                2 languages
+                                            </button>
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <button
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                Edit
+                                            </button>
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <button
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                Edit
+                                            </button>
 
-                                <tr>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <button
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                Edit
+                                            </button>
 
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <a href="{{ route('properties.vehicles', $property->property_code) }}"
+                                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90 lg:mr-1">
+                                                <i class="fas fa-car mr-2"></i>
+                                                Vehicles
+                                            </a>
+                                            <a href="{{ route('properties.users', $property->property_code) }}"
+                                            class="btn bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90">
+                                                <i class="fas fa-users mr-2"></i>
+                                                Users
+                                            </a>
+                                            
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
 
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-
-                                    </td>
-                                    <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                        <div class="flex justify-center space-x-2">
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <div class="flex justify-center space-x-2">
 
 
-                                        </div>
-                                    </td>
+                                            </div>
+                                        </td>
 
-                                </tr>
-
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -235,4 +235,3 @@
         </div>
     </main>
 </x-app-layout>
-
