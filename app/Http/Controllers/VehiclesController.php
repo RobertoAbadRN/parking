@@ -10,6 +10,8 @@ use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class VehiclesController extends Controller
 {
@@ -266,5 +268,8 @@ class VehiclesController extends Controller
 
         return redirect()->route('properties.vehicles', ['property_code' => $property_code])->with('success_message', 'Vehicle deleted successfully');
     }
+
+
+   
 
 }

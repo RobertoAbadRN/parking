@@ -267,7 +267,7 @@
                                                     id="resident_phone" name="resident_phone" required>
                                             </div>
 
-                                            <label class="relative flex">
+                                            <label class="relative flex mb-3">
                                                 <input
                                                   x-init="$el._x_flatpickr = flatpickr($el, { enableTime: true, dateFormat: 'Y-m-d h:i K', time_24hr: false })"
                                                   class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
@@ -293,15 +293,7 @@
                                                     />
                                                   </svg>
                                                 </span>
-                                              </label>
-                                              
-                                              
-                                              
-                                              
-                                              
-                                              
-                                            
-                                                                                       
+                                              </label>                                    
 
                                             <button type="submit"
                                                 class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit

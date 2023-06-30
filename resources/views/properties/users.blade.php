@@ -26,7 +26,7 @@
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
                     <div class="inline-flex space-x-4">
-                        
+
                         <button class="btn custom-btn-lg">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -51,11 +51,16 @@
                             </svg>
 
                         </button>
-                        <a href="{{ route('adduser') }}"
-                        class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
-                        style="background-color: #0EA5E9; width: auto; height: 35px;">
-                        <i class="fa fa-user"></i>&nbsp;Add User
-                    </a>
+                        @php
+                            $propertyCode = request()->segment(3);
+                        @endphp
+
+                        <a href="{{ route('propertiesUser', ['property_code' => $propertyCode]) }}"
+                            class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
+                            style="background-color: #0EA5E9; width: auto; height: 35px;">
+                            <i class="fa fa-user"></i>&nbsp;Add User
+                        </a>
+
 
                     </div>
 

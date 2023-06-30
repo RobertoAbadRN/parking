@@ -38,11 +38,6 @@
                             <i class="fa fa-user"></i>
                             &nbsp;Add user
                         </a>
-
-                        <a href="{{ route('adduser') }}" class="btn btn-xs bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-                            <i class="fa fa-user"></i>
-                            &nbsp;Add new Property
-                        </a>
                         
                     </div>                      
                     

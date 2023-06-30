@@ -14,6 +14,10 @@ class AuthController extends Controller
     {
         return view('login');
     }
+    public function loginView2()
+    {
+        return view('login2');
+    }
 
     public function login(Request $request)
     {

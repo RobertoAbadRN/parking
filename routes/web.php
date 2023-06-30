@@ -13,6 +13,7 @@ use App\Http\Controllers\VisitorsController;
 use App\Http\Controllers\VisitorController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\EmailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,6 +34,7 @@ use Illuminate\Support\Facades\Route;
  */
     Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
+    Route::get('/login2', [\App\Http\Controllers\AuthController::class, 'loginView2'])->name('loginView2');
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
@@ -57,8 +59,9 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
  * ==============================
  */
     Route::get('/visitors/{property_code}', [VisitorsController::class, 'index'])->name('visitors');
-    //Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/visitors/addvisitors', [VisitorsController::class, 'addVisitors'])->name('visitors.addvisitors');
+    //Route::get('/visitors', [VisitorsController::class, 'index'])->name('visitors.index');
+
     Route::post('/visitors/register-visitor-pass', [VisitorsController::class, 'registerVisitorPass'])->name('visitors.registerVisitorPass');
     Route::post('/register-vehicle', [VehiclesController::class, 'registerVehicle'])->name('visitors.registerResidentVehicle');
    
@@ -68,11 +71,7 @@ Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPass
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
-    /**
-     * ==============================
-     *       @Router - dashboards/
-     * ==============================
-     */
+   
     Route::get('/', [HomeController::class, 'dashboardsCrmAnalytics'])->name('index');
     Route::get('/dashboards/crm-analytics', [HomeController::class, 'dashboardsCrmAnalytics'])->name('dashboards/crm-analytics');
     Route::get('/dashboards/orders', [HomeController::class, 'dashboardsOrders'])->name('dashboards/orders');
@@ -122,6 +121,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/properties/excel', [PropertyController::class, 'utiles_excel'])->name('utiles_excel');
     Route::get('properties/vehicles/{property_code}', [PropertyController::class, 'vehicles'])->name('properties.vehicles');
     Route::get('properties/users/{property_code}', [PropertyController::class, 'users'])->name('properties.users');
+    Route::put('/properties/{property}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('properties.updatePermitStatus');
+    Route::get('/properties/user/{property_code}', [PropertyController::class, 'adduser'])
+    ->name('propertiesUser');
+
 
 
         /**
@@ -155,7 +158,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/{id}/edit/{property_code}', [VehiclesController::class, 'edit'])->name('edit.vehicle');
     Route::post('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');   
     Route::delete('/vehicles/{vehicle}/properties/{property_code}', [VehiclesController::class, 'destroy'])->name('vehicles.destroy');
-
+   
 
 
 
@@ -186,5 +189,15 @@ Route::middleware('auth')->group(function () {
 
 
    });
+
+
+    /**
+     * ==============================
+     *       @Router - semails/
+     * ==============================
+     */
+
+    Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');
+
 
    

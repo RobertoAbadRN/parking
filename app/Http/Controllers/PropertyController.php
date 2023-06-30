@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Facades\Session;
+
 
 class PropertyController extends Controller
 {
@@ -23,13 +26,31 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        $properties = Property::select('properties.*', DB::raw('(SELECT COUNT(*) FROM vehicles WHERE vehicles.property_code = properties.property_code) AS vehicle_count'), DB::raw('COUNT(users.id) AS user_count'))
-            ->leftJoin('users', 'properties.property_code', '=', 'users.property_code')
-            ->groupBy('properties.property_code')
-            ->get();
-
-        //dd($properties);
+        $properties = Property::select(
+            'properties.id',
+            'properties.area',
+            'properties.name as property_name',
+            'properties.address',
+            'properties.property_code',
+            'properties.permit_status',
+            DB::raw('(SELECT COUNT(*) FROM vehicles WHERE vehicles.property_code = properties.property_code) AS vehicle_count'),
+            'users.user as user_name',
+            'users.name as name_user'
+        )
+        ->join('users', 'users.property_code', '=', 'properties.property_code')
+        ->groupBy('properties.id', 'properties.area', 'property_name', 'properties.address', 'properties.property_code', 'properties.permit_status', 'users.user', 'users.name')
+        ->get();
+        
         return view('properties/index', compact('properties'));
+         
+        
+        
+    
+
+
+    
+
+
     }
     public function create()
     {
@@ -201,27 +222,56 @@ class PropertyController extends Controller
     }
 
     public function vehicles($property_code)
-{
-    $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
-        ->select('vehicles.id', 'vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.model', 'properties.address')
-        ->where('vehicles.property_code', $property_code)
-        ->get();
+    {
+        $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
+            ->select('vehicles.id', 'vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make','vehicles.reserved_space', 'vehicles.model', 'properties.address', 'vehicles.created_at','vehicles.permit_status', 'vehicles.email', 'vehicles.phone', 'vehicles.vehicle_type', 'vehicles.color', 'vehicles.vin', 'vehicles.start_date', 'vehicles.end_date')
+            ->where('vehicles.property_code', $property_code)
+            ->get();
 
-    $address = $vehicles->pluck('address'); // Extrae el campo de dirección de la colección
+        $address = $vehicles->pluck('address'); // Extrae el campo de dirección de la colección
 
-    return view('vehicles.listvehicles', compact('vehicles', 'address', 'property_code'));
-}
+        return view('vehicles.listvehicles', compact('vehicles', 'address', 'property_code'));
+    }
+    
+
+    public function users($propertyCode)
+    {
+        $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
+            ->where('users.property_code', $propertyCode)
+            ->select('users.*', 'properties.address')
+            ->distinct()
+            ->get();
+
+        return view('properties.users', compact('users'));
+    }
 
 
-public function users($propertyCode)
-{
-    $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
-                 ->where('users.property_code', $propertyCode)
-                 ->select('users.*', 'properties.address')
-                 ->distinct()
-                 ->get();
+    public function updatePermitStatus(Request $request, Property $property)
+    {
+        $permitStatus = $request->input('permitStatus');
+        
+        $property->permit_status = $permitStatus;
+        $property->save();
 
-    return view('properties.users', compact('users'));
-}
+        return response()->json([
+            'success_message' => 'Permit status updated successfully',
+            'permitStatus' => $property->permit_status,
+        ]);
+    }
+
+    public function adduser(Request $request)
+    {
+        $property_code = $request->property_code;
+    
+        $address = Property::where('property_code', $property_code)
+            ->pluck('address')
+            ->first();
+    
+        // Resto del código del controlador
+    
+        return view('properties.formadduser', compact('property_code', 'address'));
+    }
+    
+    
 
 }

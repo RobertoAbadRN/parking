@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VisitorPass;
 use App\Models\Property;
+use App\Models\VisitorPass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class VisitorsController extends Controller
 {
-   
+
     public function index(Request $request)
-{
-    $property_code = $request->query('property_code');
-    
-    $property = Property::where('property_code', $property_code)->first();
-    
-    if (!$property) {
-        abort(404); // Si no se encuentra la propiedad, puedes mostrar una página de error 404
+    {
+        $property_code = $request->query('property_code');
+
+        $property = Property::where('property_code', $property_code)->first();
+
+        if (!$property) {
+            abort(404); // Si no se encuentra la propiedad, puedes mostrar una página de error 404
+        }
+
+        $address = $property->address;
+
+        return view('visitors/addvisitors', compact('property_code', 'address'));
     }
-    
-    $address = $property->address;
-    
-    return view('visitors/addvisitors', compact('property_code', 'address'));
-}
-    
+
     public function show()
     {
         $visitorPasses = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
@@ -87,19 +87,16 @@ class VisitorsController extends Controller
     }
 
     public function listVisitors($property_code)
-{
-    $property = Property::where('property_code', $property_code)->first();
+    {
+        $property = Property::where('property_code', $property_code)->first();
 
-    $visitors = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
-        ->where('visitorpasses.property_code', $property_code)
-        ->select('visitorpasses.valid_from', 'visitorpasses.license_plate', 'visitorpasses.make', 'visitorpasses.model', 'visitorpasses.color', 'visitorpasses.year', 'visitorpasses.unit_number', 'visitorpasses.status', 'visitorpasses.visitor_name', 'visitorpasses.resident_phone', 'visitorpasses.vehicle_type', 'visitorpasses.resident_name')
-        ->get();
+        $visitors = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
+            ->where('visitorpasses.property_code', $property_code)
+            ->select('visitorpasses.valid_from', 'visitorpasses.license_plate', 'visitorpasses.make', 'visitorpasses.model', 'visitorpasses.color', 'visitorpasses.year', 'visitorpasses.unit_number', 'visitorpasses.status', 'visitorpasses.visitor_name', 'visitorpasses.resident_phone', 'visitorpasses.vehicle_type', 'visitorpasses.resident_name')
+            ->get();
 
-    return view('visitors.listvisitors', compact('property', 'visitors'));
-}
-
-    
-
+        return view('visitors.listvisitors', compact('property', 'visitors'));
+    }
 
     public function addTemporary(Request $request)
     {

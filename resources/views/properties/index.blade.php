@@ -73,6 +73,8 @@
                         </div>
                     @endif
 
+                    
+
                     <script>
                         setTimeout(function() {
                             var successMessage = document.getElementById('success_message');
@@ -112,31 +114,24 @@
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        City
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        State
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Property Code
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Type
+                                        Name
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        #Places
+                                        Username
                                     </th>
+
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         # Vehicles
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        # Users
+                                        Status
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
@@ -147,18 +142,14 @@
                             <tbody>
                                 @foreach ($properties as $property)
                                     <tr>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">{{ $property->area }}</td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->name }}
+                                            {{ $property->area }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            {{ $property->property_name }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             {{ $property->address }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->city }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->state }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div x-data="{ showModal: false }">
@@ -196,11 +187,14 @@
                                                                     class="text-lg mb-2 text-slate-700 dark:text-navy-100">
                                                                     QR code: {{ $property->property_code }}
                                                                 </h4>
+
                                                                 <div
                                                                     class="visible-print flex justify-center items-center">
-                                                                    {!! QrCode::size(200)->generate('https://app.amartineztowing.com/registration/' . $property->property_code) !!}
-
+                                                                    {!! QrCode::size(200)->generate(
+                                                                        'https://amartineztowingop.com/visitors/addvisitors?property_code=' . $property->property_code,
+                                                                    ) !!}
                                                                 </div>
+
                                                                 <p class="mt-2 ">Scan me to return to the original
                                                                     page.</p>
                                                                 <button @click="showModal = false"
@@ -214,19 +208,62 @@
                                                 </template>
                                             </div>
                                         </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            {{ $property->name_user }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            {{ $property->user_name }}
+                                        </td>
 
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->location_type }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->places }}
-                                        </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             {{ $property->vehicle_count }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->user_count }}
+                                            @if ($property->permit_status == 1)
+                                                on
+                                                <label class="inline-flex items-center space-x-2">
+                                                    <input id="permit-status-toggle-{{ $property->id }}"
+                                                        class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
+                                                        type="checkbox" checked
+                                                        onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
+                                                    
+                                                </label>
+                                            @else
+                                                off
+                                                <label class="inline-flex items-center space-x-2">
+                                                    <input id="permit-status-toggle-{{ $property->id }}"
+                                                        class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
+                                                        type="checkbox"
+                                                        onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
+                                                    
+                                                </label>
+                                            @endif
                                         </td>
+                                        <!-- Agrega esta etiqueta script en el head o antes de usar la función updatePermitStatus -->
+                                        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+                                        <script>
+                                            function updatePermitStatus(propertyId, isChecked) {
+                                                const permitStatus = isChecked ? 1 : 0;
+
+                                                // Realiza una solicitud al servidor para actualizar el campo permit_status en la base de datos
+                                                // Puedes utilizar AJAX o enviar una solicitud HTTP al endpoint correspondiente
+
+                                                // Ejemplo utilizando Axios
+                                                axios.put(`/properties/${propertyId}/update-permit-status`, {
+                                                        permitStatus
+                                                    })
+                                                    .then(response => {
+                                                        console.log(response.data);
+                                                    })
+                                                    .catch(error => {
+                                                        console.error(error);
+                                                    });
+                                            }
+                                        </script>
+
+
+
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex justify-center space-x-2">
                                                 <a href="{{ route('properties.edit', $property->id) }}"
@@ -239,7 +276,7 @@
                                                 </a>
                                                 <a href="{{ route('properties.users', $property->property_code) }}"
                                                     class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                    <i class="fas fa-user"></i>
+                                                    <i class="fas fa-users"></i>
                                                 </a>
 
                                                 <a href="{{ route('properties.destroy', $property->id) }}"

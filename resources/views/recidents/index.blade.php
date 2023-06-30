@@ -27,15 +27,29 @@
                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
                             style="width: auto; height: 40px;">
                             <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
-                        </a>  
-                        <a href="#" class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" style="width: auto; height: 40px;">
+                        </a>
+                        <a href="#"
+                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90"
+                            style="width: auto; height: 40px;">
                             <i class="fa fa-users" aria-hidden="true"></i> &nbsp; Add Visitors
                         </a>
-                        
-                    </div>                      
-                    
+                        <a href="#"
+                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90"
+                            style="width: auto; height: 40px;">
+                            <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Status Vehicle
+                        </a>
+                        <a href="#"
+                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90"
+                            style="width: auto; height: 40px;">
+                            <i class="fa fa-envelope" aria-hidden="true"></i> &nbsp; Send Documents
+                        </a>
+
+
+
+                    </div>
+
                 </div>
-                
+
             </div>
 
             <div class="card pb-4">
@@ -81,7 +95,7 @@
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Name
                                     </th>
-                                    
+
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Email
@@ -89,11 +103,11 @@
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Status
-                                    </th> 
+                                    </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         login
-                                    </th>                                   
+                                    </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         Actions
@@ -113,7 +127,7 @@
                                             {{ $user->banned }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $user->last_login}}
+                                            {{ $user->last_login }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <div class="flex justify-center space-x-2">
