@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewUserNotification;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -31,9 +33,9 @@ class UsersController extends Controller
     public function create()
     {
 
-        $addresses = Property::pluck('address');
+        $properties = Property::all();
 
-        return view('users.adduser', ['addresses' => $addresses]);
+        return view('users.adduser', compact('properties'));
     }
 
     /**
@@ -42,34 +44,53 @@ class UsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        // Validar los datos del formulario
-        $validatedData = $request->validate([
-            'user' => 'required',
-            'name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email',
-            'access_level' => 'required',
-            'property' => 'required',
-        ]);
+public function store(Request $request)
+{
+    // Validar los datos del formulario
+    $validatedData = $request->validate([
+        'user' => 'required',
+        'name' => 'required',
+        'phone' => 'required',
+        'email' => 'required|email',
+        'password' => 'required',
+        'access_level' => 'required',
+        'property_code' => 'required',
+    ]);
+    //dd($validatedData);
 
-        // Crear un nuevo usuario con los datos del formulario
-        $user = new User();
-        $user->user= $validatedData['user'];
-        $user->name = $validatedData['name'];
-        $user->phone = $validatedData['phone'];
-        $user->email = $validatedData['email'];
-        $user->access_level = $validatedData['access_level'];
-        $user->property = $validatedData['property'];
+    // Obtener el correo electrónico y el usuario del formulario
+$correo = $validatedData['email'];
+$user = $validatedData['user'];
 
-        // Guardar el nuevo usuario en la base de datos
-        $user->save();
+    // Generar la contraseña sin encriptar
+    $plainPassword = $validatedData['password'];
 
-        // Redireccionar a la página deseada después de guardar los datos
-        return redirect()->route('users')->with('success', 'Usuario creado exitosamente');
+    // Enviar el correo al usuario
+    Mail::to($correo)->send(new NewUserNotification(User::make($validatedData), $plainPassword));
 
-    }
+    // Encriptar la contraseña antes de asignarla al campo 'password' del modelo User
+    $validatedData['password'] = bcrypt($validatedData['password']);
+
+    // Crear el usuario en la base de datos
+       // Crear el usuario en la base de datos y asignar el valor de 'banned' directamente
+       $user = User::create([
+        'user' => $validatedData['user'],
+        'name' => $validatedData['name'],
+        'phone' => $validatedData['phone'],
+        'email' => $validatedData['email'],
+        'password' => $validatedData['password'],
+        'access_level' => $validatedData['access_level'],
+        'property_code' => $validatedData['property_code'],
+        'banned' => 'no',
+    ]);
+
+    // Redireccionar a una página de éxito o mostrar un mensaje de éxito
+    return redirect()->route('users')->with('success', 'User created successfully!');
+}
+
+
+    
+    
 
     /**
      * Display the specified resource.
@@ -98,7 +119,6 @@ class UsersController extends Controller
         }
 
         return view('users.edituser', compact('user', 'addresses'));
-
 
     }
 
