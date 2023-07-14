@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Property;
 use App\Models\User;
+use App\Models\Resident;
+use App\Models\Vehicle;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -15,22 +17,25 @@ class RecidentsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        
-            $users = User::all(); 
-        
-            return view('recidents.index', ['users' => $users]);
-        
-    }
+{
+    $residents = Resident::join('vehicles', 'residents.property_code', '=', 'vehicles.property_code')
+        ->select('residents.*', 'vehicles.make', 'vehicles.model', 'vehicles.permit_type')
+        ->get();
+
+    return view('residents.index', compact('residents'));
+}
+
 
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function addResident()
     {
-        //
+        $properties = Property::all();
+        
+        return view('recidents.addresident', compact('properties'));
     }
 
     /**

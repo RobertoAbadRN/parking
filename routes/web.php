@@ -1,19 +1,17 @@
 <?php
 
+use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PropertyController;
-use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RecidentsController;
-use App\Http\Controllers\VehiclesController;
-use App\Http\Controllers\VisitorsPassController;
-use App\Http\Controllers\DocumentsController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VisitorsController;
-use App\Http\Controllers\VisitorController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\EmailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,14 +23,14 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 /**
  * ==============================
  *       @Router - login
  * ==============================
  */
-    Route::middleware('guest')->group(function () {
+Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
     Route::get('/login2', [\App\Http\Controllers\AuthController::class, 'loginView2'])->name('loginView2');
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
@@ -40,38 +38,37 @@ use Illuminate\Support\Facades\Route;
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
     Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
 
-    
     /**
- * ==============================
- *       @Router - ForgotPassword
- * ==============================
- */    
-Route::get('forget-password', [ForgotPasswordController::class, 'showForgetPasswordForm'])->name('forget.password.get');
-Route::post('forget-password', [ForgotPasswordController::class, 'submitForgetPasswordForm'])->name('forget.password.post'); 
-Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetPasswordForm'])->name('reset.password.get');
-Route::post('reset-password', [ForgotPasswordController::class, 'submitResetPasswordForm'])->name('reset.password.post');
-    
+     * ==============================
+     *       @Router - ForgotPassword
+     * ==============================
+     */
+// Mostrar formulario de olvidó su contraseña
+    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+// Enviar correo con enlace de restablecimiento
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+// Mostrar formulario para restablecer contraseña
+    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+// Actualizar contraseña
+    Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
-
-       /**
- * ==============================
- *       @Router -  visitors
- * ==============================
- */
+    /**
+     * ==============================
+     *       @Router -  visitors
+     * ==============================
+     */
     Route::get('/visitors/{property_code}', [VisitorsController::class, 'index'])->name('visitors');
     Route::post('/visitors/addvisitors', [VisitorsController::class, 'addVisitors'])->name('visitors.addvisitors');
     //Route::get('/visitors', [VisitorsController::class, 'index'])->name('visitors.index');
 
     Route::post('/visitors/register-visitor-pass', [VisitorsController::class, 'registerVisitorPass'])->name('visitors.registerVisitorPass');
     Route::post('/register-vehicle', [VehiclesController::class, 'registerVehicle'])->name('visitors.registerResidentVehicle');
-   
 
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
-   
     Route::get('/', [HomeController::class, 'dashboardsCrmAnalytics'])->name('index');
     Route::get('/dashboards/crm-analytics', [HomeController::class, 'dashboardsCrmAnalytics'])->name('dashboards/crm-analytics');
     Route::get('/dashboards/orders', [HomeController::class, 'dashboardsOrders'])->name('dashboards/orders');
@@ -110,7 +107,7 @@ Route::middleware('auth')->group(function () {
      *       @Router - properties/
      * ==============================
      */
-    
+
     Route::get('/properties', [PropertyController::class, 'index'])->name('properties');
     Route::post('properties/store', [PropertyController::class, 'storeProperty'])->name('properties.store');
     Route::get('/addproperty', [PropertyController::class, 'create'])->name('addproperty');
@@ -123,11 +120,9 @@ Route::middleware('auth')->group(function () {
     Route::get('properties/users/{property_code}', [PropertyController::class, 'users'])->name('properties.users');
     Route::put('/properties/{property}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('properties.updatePermitStatus');
     Route::get('/properties/user/{property_code}', [PropertyController::class, 'adduser'])
-    ->name('propertiesUser');
+        ->name('propertiesUser');
 
-
-
-        /**
+    /**
      * ==============================
      *       @Router - users/
      * ==============================
@@ -137,17 +132,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/users/store', [UsersController::class, 'store'])->name('users.store');
     Route::get('/user/edit/{property}', [UsersController::class, 'edit'])->name('user.edit');
     Route::put('/user/{user}', [UsersController::class, 'update'])->name('users.update');
+    Route::get('/verificar-correo', [UsersController::class, 'verificarCorreo'])->name('verificar-correo');
+    Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('user.destroy');
+    Route::get('/users/excel/{property_code}', [UsersController::class, 'list_users'])->name('list_users');
+    Route::get('/users/excelusers', [UsersController::class, 'excel_users'])->name('excel_users');
 
-
-
-        /**
+    /**
      * ==============================
      *       @Router - Recidents/
      * ==============================
      */
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
+    Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
+    Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
+    Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');
+    Route::post('/residents/{resident}/delete', [RecidentsController::class, 'destroy'])->name('residents.destroy');
+    Route::post('import-csv', [RecidentsController::class, 'importCSV'])->name('importCSV');
+    Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
 
-        /**
+    /**
      * ==============================
      *       @Router - vehicles/
      * ==============================
@@ -156,14 +159,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/addvehicle/{property_code}', [VehiclesController::class, 'create'])->name('addvehicle');
     Route::post('/vehicles', [VehiclesController::class, 'store'])->name('vehicles.store');
     Route::get('/vehicles/{id}/edit/{property_code}', [VehiclesController::class, 'edit'])->name('edit.vehicle');
-    Route::post('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');   
+    Route::post('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');
     Route::delete('/vehicles/{vehicle}/properties/{property_code}', [VehiclesController::class, 'destroy'])->name('vehicles.destroy');
-   
+    Route::get('/vehicles/excel/{property_code}', [VehiclesController::class, 'listvehicles_excel'])->name('listvehicles_excel');
+    Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
+    Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
 
-
-
-
-       /**
+    /**
      * ==============================
      *       @Router - visitors_pass/
      * ==============================
@@ -172,32 +174,29 @@ Route::middleware('auth')->group(function () {
     Route::get('/list-visitors/{property_code}', [VisitorsController::class, 'listVisitors'])->name('list.visitors');
     Route::get('/list-visitors/addtemporary/{property_code}', [VisitorsController::class, 'addTemporary'])->name('temporary.visitors.pass');
     Route::post('/visitors/add', [VisitorsController::class, 'storeTemporary'])->name('visitors.add');
+    Route::get('/excelvisitors', [VisitorsController::class, 'excel_visitorspases'])->name('excel_visitorspases');
+    Route::get('/excelvisitorsid/{property_code}', [VisitorsController::class, 'excel_visitorforid'])->name('excel_visitorforid');
 
-       /**
+    /**
      * ==============================
      *       @Router - documents/
      * ==============================
      */
     Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
 
-     /**
+    /**
      * ==============================
      *       @Router - settings/
      * ==============================
      */
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
+});
 
-   });
+/**
+ * ==============================
+ *       @Router - semails/
+ * ==============================
+ */
 
-
-    /**
-     * ==============================
-     *       @Router - semails/
-     * ==============================
-     */
-
-    Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');
-
-
-   
+Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');

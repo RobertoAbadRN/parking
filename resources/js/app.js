@@ -87,6 +87,9 @@ import inputMask from "./directives/inputMask";
 import notification from "./magics/notification";
 import clipboard from "./magics/clipboard";
 
+// Datatables 
+//import 'laravel-datatables-vite';
+
 // Register HTML, XML language for highlight.js
 // Just for demo purpose only for highlighting code
 hljs.registerLanguage("xml", xml);

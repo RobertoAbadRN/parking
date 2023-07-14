@@ -1,53 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- Agregar el archivo de estilo del DataTables -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-  
+
     <!-- Agregar el archivo de estilo del DataTables Responsive -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
-  
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
+
     <!-- Agregar jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-  
+
     <!-- Agregar DataTables -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-  
+
     <!-- Agregar DataTables Responsive -->
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-  </head>
-  <table id="example" class="display nowrap" style="width:100%">
-    <thead>
 
+    <!-- Agregar Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-        <tr>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th>
-            <th>Extn.</th>
-            <th>E-mail</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Tiger</td>
-            <td>Nixon</td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>61</td>
-            <td>2011-04-25</td>
-            <td>$320,800</td>
-            <td>5421</td>
-            <td>t.nixon@datatables.net</td>
-        </tr>
-      
-    </tbody>
-</table>
-    
+    <title>DataTables with Tailwind CSS</title>
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <table id="example" class="table-auto min-w-full">
+            <thead>
+                <tr>
+                    <th class="px-4 py-2">First name</th>
+                    <th class="px-4 py-2">Last name</th>
+                    <th class="px-4 py-2">Position</th>
+                    <th class="px-4 py-2">Office</th>
+                    <th class="px-4 py-2">Age</th>
+                    <th class="px-4 py-2">Start date</th>
+                    <th class="px-4 py-2">Salary</th>
+                    <th class="px-4 py-2">Extn.</th>
+                    <th class="px-4 py-2">E-mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="px-4 py-2">Tiger</td>
+                    <td class="px-4 py-2">Nixon</td>
+                    <td class="px-4 py-2">System Architect</td>
+                    <td class="px-4 py-2">Edinburgh</td>
+                    <td class="px-4 py-2">61</td>
+                    <td class="px-4 py-2">2011-04-25</td>
+                    <td class="px-4 py-2">$320,800</td>
+                    <td class="px-4 py-2">5421</td>
+                    <td class="px-4 py-2">t.nixon@datatables.net</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <script>
-        $('#example').DataTable({
-    responsive: true
-});
+        $(document).ready(function() {
+            $('#example').DataTable({
+                responsive: true
+            });
+        });
     </script>
+</body>
+
+</html>

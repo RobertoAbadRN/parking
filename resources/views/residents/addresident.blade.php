@@ -1,4 +1,4 @@
-<x-app-layout title="Add New user" is-header-blur="true">
+<x-app-layout title="Add New Resident" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
@@ -16,7 +16,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </li>
-                <li>Add New User</li>
+                <li>Add New Resident</li>
             </ul>
         </div>
 
@@ -78,29 +78,29 @@
         <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             <div class="col-span-12 sm:col-span-10">
                 <div class="card p-4 sm:p-5">
-                    <p class="text-base font-medium text-slate-700 dark:text-navy-100">
-                        Add New User
+                    <p class="text-base font-medium text-slate-700 dark:text-navy-100 mb-5">
+                        Add New Resident 
                     </p>
-
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
-                        <div class="mb-4">
+                        <div class="mb-4 pt-5">
                             <label class="relative flex">
                                 <input
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="User Name" type="text" name="user" value="{{ old('user') }}" />
+                                    placeholder="Resident name" type="text" name="resident_name" value="{{ old('resident_name') }}" />
                             </label>
-                            @error('user')
+                            @error('resident_name')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
+                        
                         <div class="mb-4">
                             <label class="relative flex">
                                 <input
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Full Name" type="text" name="name" value="{{ old('name') }}" />
+                                    placeholder="Apart/unit" type="text" name="apart_unit" value="{{ old('apart_unit') }}" />
                             </label>
-                            @error('name')
+                            @error('apart_unit')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
@@ -140,24 +140,14 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="access_level">
-                                    <option value="" disabled selected>Select access level</option>
-                                    <option value="property_leasion_agent">Property Leasion Agent</option>
-                                    <option value="property_manager">Property Manager</option>
-                                    <option value="property_owner">Property Owner</option>
-                                    <option value="parking_inspector">Parking Inspector</option>
-                                    <option value="company_administrator">Company Administrator</option>
-                                </select>
+                                <input type="hidden" name="access_level" value="Resident">
                             </label>
                             @error('access_level')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
-                        </div>
+                        </div>                        
                         <div class="mb-4">
                             <label class="relative flex">
                                 <select

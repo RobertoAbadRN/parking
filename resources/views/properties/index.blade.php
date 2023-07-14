@@ -58,288 +58,225 @@
 
             </div>
 
-            <div class="card pb-4">
-                <div class="mb-3 flex h-3 items-center justify-between px-4 sm:px-5">
+            <!-- Basic Table -->
+            <div class="card px-4 pb-4 sm:px-5">
+                <div class="container mx-auto">
+                    <table id="properties" class="table-auto min-w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2">Area</th>
+                                <th class="px-4 py-2">Property Name</th>
+                                <th class="px-4 py-2"> Address</th>
+                                <th class="px-4 py-2"> City</th>
+                                <th class="px-4 py-2"> State</th>
+                                <th class="px-4 py-2"> Property Code</th>
+                                <th class="px-4 py-2">Type</th>
+                                <th class="px-4 py-2">#places</th>
+                                <th class="px-4 py-2"># Vehicles</th>
+                                <th class="px-4 py-2"># Users</th>
+                                <th class="px-4 py-2">Status</th>
+                                <th class="px-4 py-2">Actions</th>
 
-                    @if (session('success_message'))
-                        <div id="success_message" class="bg-green-500 text-white px-4 py-2 mb-4 rounded-md">
-                            {{ session('success_message') }}
-                        </div>
-                    @endif
-
-                    @if (session('error_message'))
-                        <div id="error_message" class="bg-red-500 text-white px-4 py-2 mb-4 rounded-md">
-                            {{ session('error_message') }}
-                        </div>
-                    @endif
-
-                    
-
-                    <script>
-                        setTimeout(function() {
-                            var successMessage = document.getElementById('success_message');
-                            var errorMessage = document.getElementById('error_message');
-
-                            if (successMessage) {
-                                successMessage.remove();
-                            }
-
-                            if (errorMessage) {
-                                errorMessage.remove();
-                            }
-                        }, 5000);
-                    </script>
-                </div>
-                <div x-data x-init="$el._x_grid = new Gridjs.Grid({
-                    from: $refs.table,
-                    sort: true,
-                    search: true,
-                }).render($refs.wrapper);">
-                    <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
-                        <table x-ref="table" class="table-auto">
-                            <thead>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($properties as $property)
                                 <tr>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Area
-                                    </th>
+                                    <td class="px-4 py-2">
+                                        {{ $property->area }}
 
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Property Name
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Address
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Property Code
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Name
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Username
-                                    </th>
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->name }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->address }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->city }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->state }}
+                                    </td>
 
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        # Vehicles
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Status
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($properties as $property)
-                                    <tr>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->area }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->property_name }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->address }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <div x-data="{ showModal: false }">
-                                                <button @click="showModal = true"
-                                                    class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
-                                                    style="background-color: #0EA5E9;">
-                                                    {{ $property->property_code }}
-                                                </button>
-
-                                                <template x-teleport="#x-teleport-target">
-                                                    <div class="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden px-4 py-6 sm:px-5"
-                                                        x-show="showModal" role="dialog"
-                                                        @keydown.window.escape="showModal = false">
-                                                        <div class="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"
-                                                            @click="showModal = false" x-show="showModal"
-                                                            x-transition:enter="ease-out"
-                                                            x-transition:enter-start="opacity-0"
-                                                            x-transition:enter-end="opacity-100"
-                                                            x-transition:leave="ease-in"
-                                                            x-transition:leave-start="opacity-100"
-                                                            x-transition:leave-end="opacity-0"></div>
-                                                        <div class="relative max-w-lg rounded-lg bg-white px-4 py-10 text-center transition-opacity duration-300 dark:bg-navy-700 sm:px-5"
-                                                            x-show="showModal" x-transition:enter="ease-out"
-                                                            x-transition:enter-start="opacity-0"
-                                                            x-transition:enter-end="opacity-100"
-                                                            x-transition:leave="ease-in"
-                                                            x-transition:leave-start="opacity-100"
-                                                            x-transition:leave-end="opacity-0">
-                                                            <div class="mt-4">
-                                                                <h2
-                                                                    class="text-lg mb-2 text-slate-700 dark:text-navy-100">
-                                                                    {{ $property->address }}
-                                                                </h2>
-                                                                <h4
-                                                                    class="text-lg mb-2 text-slate-700 dark:text-navy-100">
-                                                                    QR code: {{ $property->property_code }}
-                                                                </h4>
-
-                                                                <div
-                                                                    class="visible-print flex justify-center items-center">
-                                                                    {!! QrCode::size(200)->generate(
-                                                                        'https://amartineztowingop.com/visitors/addvisitors?property_code=' . $property->property_code,
-                                                                    ) !!}
-                                                                </div>
-
-                                                                <p class="mt-2 ">Scan me to return to the original
-                                                                    page.</p>
-                                                                <button @click="showModal = false"
-                                                                    class="btn mt-6 bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90"
-                                                                    style="background-color: #0EA5E9;">
-                                                                    Close
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                    <td class="px-4 py-2">
+                                        <button id="boton-modelo-{{ $property->id }}"
+                                            class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
+                                            style="background-color: #0EA5E9;">
+                                            {{ $property->property_code }}
+                                        </button>
+                                        <!-- Ventana modal -->
+                                        <div id="modal-modelo-{{ $property->id }}"
+                                            class="fixed z-10 inset-0 overflow-y-auto hidden">
+                                            <div class="flex items-center justify-center min-h-screen px-4">
+                                                <div class="fixed inset-0 bg-black opacity-50"></div>
+                                                <!-- Capa de fondo semitransparente -->
+                                                <div class="bg-white rounded-lg max-w-lg mx-auto p-6 relative">
+                                                    <h2
+                                                        class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
+                                                        {{ $property->address }}
+                                                    </h2>
+                                                    <h4
+                                                        class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
+                                                        QR code: {{ $property->property_code }}
+                                                    </h4>
+                                                    <div class="visible-print flex justify-center items-center">
+                                                        {!! QrCode::size(200)->generate(
+                                                            'https://amartineztowingop.com/visitors/addvisitors?property_code=' . $property->property_code,
+                                                        ) !!}
                                                     </div>
-                                                </template>
+
+                                                    <p class="mt-2">Scan me to return to the original page.</p>
+
+                                                    <button id="cerrar-modal-modelo-{{ $property->id }}"
+                                                        class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
+                                                        Cerrar
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->name_user }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->user_name }}
-                                        </td>
+                                        </div>
 
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $property->vehicle_count }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            @if ($property->permit_status == 1)
-                                                on
-                                                <label class="inline-flex items-center space-x-2">
-                                                    <input id="permit-status-toggle-{{ $property->id }}"
-                                                        class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
-                                                        type="checkbox" checked
-                                                        onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
-                                                    
-                                                </label>
-                                            @else
-                                                off
-                                                <label class="inline-flex items-center space-x-2">
-                                                    <input id="permit-status-toggle-{{ $property->id }}"
-                                                        class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
-                                                        type="checkbox"
-                                                        onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
-                                                    
-                                                </label>
-                                            @endif
-                                        </td>
-                                        <!-- Agrega esta etiqueta script en el head o antes de usar la función updatePermitStatus -->
-                                        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-                                        <script>
-                                            function updatePermitStatus(propertyId, isChecked) {
-                                                const permitStatus = isChecked ? 1 : 0;
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->location_type }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->places }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->total_cars }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $property->total_users }}
+                                    </td>
 
-                                                // Realiza una solicitud al servidor para actualizar el campo permit_status en la base de datos
-                                                // Puedes utilizar AJAX o enviar una solicitud HTTP al endpoint correspondiente
+                                    <td class="px-4 py-2 text-center">
+                                        @if ($property->permit_status == 1)
+                                            on
+                                            <label class="inline-flex items-center space-x-2">
+                                                <input id="permit-status-toggle-{{ $property->id }}"
+                                                    class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
+                                                    type="checkbox" checked
+                                                    onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
 
-                                                // Ejemplo utilizando Axios
-                                                axios.put(`/properties/${propertyId}/update-permit-status`, {
-                                                        permitStatus
-                                                    })
-                                                    .then(response => {
-                                                        console.log(response.data);
-                                                    })
-                                                    .catch(error => {
-                                                        console.error(error);
+                                            </label>
+                                        @else
+                                            off
+                                            <label class="inline-flex items-center space-x-2">
+                                                <input id="permit-status-toggle-{{ $property->id }}"
+                                                    class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
+                                                    type="checkbox"
+                                                    onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
+
+                                            </label>
+                                        @endif
+
+                                    </td>
+                                    <!-- Agrega esta etiqueta script en el head o antes de usar la función updatePermitStatus -->
+                                    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+                                    <script>
+                                        function updatePermitStatus(propertyId, isChecked) {
+                                            const permitStatus = isChecked ? 1 : 0;
+
+                                            // Realiza una solicitud al servidor para actualizar el campo permit_status en la base de datos
+                                            // Puedes utilizar AJAX o enviar una solicitud HTTP al endpoint correspondiente
+
+                                            // Ejemplo utilizando Axios
+                                            axios.put(`/properties/${propertyId}/update-permit-status`, {
+                                                    permitStatus
+                                                })
+                                                .then(response => {
+                                                    console.log(response.data);
+                                                })
+                                                .catch(error => {
+                                                    console.error(error);
+                                                });
+                                        }
+                                    </script>
+                                    <td class="px-4 py-2 text-center">
+                                        <div class="flex justify-center space-x-2">
+                                            <a href="{{ route('properties.edit', $property->id) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="{{ route('properties.vehicles', $property->property_code) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fa fa-car"></i>
+                                            </a>
+                                            <a href="{{ route('properties.users', $property->property_code) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fas fa-users"></i>
+                                            </a>
+
+                                            <a href="{{ route('properties.destroy', $property->id) }}"
+                                                class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
+                                                onclick="event.preventDefault(); showConfirmation('{{ $property->id }}');">
+                                                <i class="fa fa-trash-alt"></i>
+                                            </a>
+
+                                            <script>
+                                                function showConfirmation(propertyId) {
+                                                    Swal.fire({
+                                                        title: 'Are you sure?',
+                                                        text: 'You will not be able to recover this property!',
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#d33',
+                                                        cancelButtonColor: '#3085d6',
+                                                        confirmButtonText: 'Yes, delete it!',
+                                                        cancelButtonText: 'Cancel'
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            document.getElementById('delete-form-' + propertyId).submit();
+                                                        }
                                                     });
-                                            }
-                                        </script>
+                                                }
+                                            </script>
 
 
+                                            <form id="delete-form-{{ $property->id }}"
+                                                action="{{ route('properties.destroy', $property->id) }}"
+                                                method="POST" style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
 
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <div class="flex justify-center space-x-2">
-                                                <a href="{{ route('properties.edit', $property->id) }}"
-                                                    class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="{{ route('properties.vehicles', $property->property_code) }}"
-                                                    class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                    <i class="fa fa-car"></i>
-                                                </a>
-                                                <a href="{{ route('properties.users', $property->property_code) }}"
-                                                    class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                    <i class="fas fa-users"></i>
-                                                </a>
-
-                                                <a href="{{ route('properties.destroy', $property->id) }}"
-                                                    class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
-                                                    onclick="event.preventDefault(); showConfirmation('{{ $property->id }}');">
-                                                    <i class="fa fa-trash-alt"></i>
-                                                </a>
-
-                                                <script>
-                                                    function showConfirmation(propertyId) {
-                                                        Swal.fire({
-                                                            title: 'Are you sure?',
-                                                            text: 'You will not be able to recover this property!',
-                                                            icon: 'warning',
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: '#d33',
-                                                            cancelButtonColor: '#3085d6',
-                                                            confirmButtonText: 'Yes, delete it!',
-                                                            cancelButtonText: 'Cancel'
-                                                        }).then((result) => {
-                                                            if (result.isConfirmed) {
-                                                                document.getElementById('delete-form-' + propertyId).submit();
-                                                            }
-                                                        });
-                                                    }
-                                                </script>
-
-
-                                                <form id="delete-form-{{ $property->id }}"
-                                                    action="{{ route('properties.destroy', $property->id) }}"
-                                                    method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>
-                        <div x-ref="wrapper"></div>
-                    </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        </div>
-        <div id="qrModal" class="modal hidden">
-            <div class="modal-overlay"></div>
-            <div class="modal-container">
-                <div class="modal-close"></div>
-                <div class="modal-body">
-                    <div class="visible-print text-center">
-                        {!! QrCode::size(100)->generate(Request::url()) !!}
-                        <p>Scan me to return to the original page.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <script>
+            $(document).ready(function() {
+                $('#properties').DataTable({
+                    responsive: true
+                });
+            });
+        </script>
+        <script>
+            const botonesModelo = document.querySelectorAll('[id^="boton-modelo-"]');
+            const modalesModelo = document.querySelectorAll('[id^="modal-modelo-"]');
+            const botonesCerrarModal = document.querySelectorAll('[id^="cerrar-modal-modelo-"]');
 
+            botonesModelo.forEach((boton, index) => {
+                boton.addEventListener('click', () => {
+                    modalesModelo[index].classList.remove('hidden');
+                });
+            });
 
+            botonesCerrarModal.forEach((boton, index) => {
+                boton.addEventListener('click', () => {
+                    modalesModelo[index].classList.add('hidden');
+                });
+            });
+        </script>
+
+    </main>
 
 </x-app-layout>

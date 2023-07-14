@@ -1,19 +1,29 @@
-<x-app-layout title="Table Gridjs Component" is-sidebar-open="true" is-header-blur="true">
+<x-app-layout title="visitors" is-sidebar-open="true" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
-            <h6 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
-                LIST OF VISITOR'S PASS: {{ $property->address }}
-            </h6>
+            <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
+                Dashboards 
+            </h2>
             <div class="hidden h-full py-1 sm:flex">
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
             </div>
+            <ul class="hidden flex-wrap items-center space-x-2 sm:flex">
+                <li class="flex items-center space-x-2">
+                    <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
+                        href="#"> LIST OF VISITOR'S PASS: {{ $property->address }}</a>
+                    <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </li>
+            </ul>
         </div>
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
             <!-- From HTML Table -->
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
                     <div class="inline-flex space-x-4">
-                        <button class="btn custom-btn-lg">
+                        <a href="{{ route('excel_visitorforid', ['property_code' => request()->route('property_code')]) }}" class="btn custom-btn-lg">
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
@@ -36,7 +46,7 @@
                                     fill="white" />
                             </svg>
 
-                        </button>
+                        </a>
                         <a href="{{ route('temporary.visitors.pass', ['property_code' => request()->route('property_code')]) }}"
                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
                             style="width: auto; height: 40px;">
@@ -49,276 +59,237 @@
 
             </div>
 
-            <div class="card pb-4">
-                <div class="mb-3 flex h-3 items-center justify-between px-4 sm:px-5">
+            <!-- Basic Table -->
+            <div class="card px-4 pb-4 sm:px-5">
+                @if (session('success_message'))
+                    <div id="success_message" class="bg-green-500 text-white px-4 py-2 mb-4 rounded-md">
+                        {{ session('success_message') }}
+                    </div>
+                @endif
 
-                    @if (session('success_message'))
-                        <div id="success_message" class="bg-green-500 text-white px-4 py-2 mb-4 rounded-md">
-                            {{ session('success_message') }}
-                        </div>
-                    @endif
+                @if (session('error_message'))
+                    <div id="error_message" class="bg-red-500 text-white px-4 py-2 mb-4 rounded-md">
+                        {{ session('error_message') }}
+                    </div>
+                @endif
 
-                    @if (session('error_message'))
-                        <div id="error_message" class="bg-red-500 text-white px-4 py-2 mb-4 rounded-md">
-                            {{ session('error_message') }}
-                        </div>
-                    @endif
+                <script>
+                    setTimeout(function() {
+                        var successMessage = document.getElementById('success_message');
+                        var errorMessage = document.getElementById('error_message');
 
-                    <script>
-                        setTimeout(function() {
-                            var successMessage = document.getElementById('success_message');
-                            var errorMessage = document.getElementById('error_message');
+                        if (successMessage) {
+                            successMessage.remove();
+                        }
 
-                            if (successMessage) {
-                                successMessage.remove();
-                            }
+                        if (errorMessage) {
+                            errorMessage.remove();
+                        }
+                    }, 5000);
+                </script>
+                <div class="container mx-auto py-5">
+                    <table id="listvisitors" class="table-auto min-w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2"> Visitor's Name</th>
+                                <th class="px-4 py-2"> Valid From</th>
+                                <th class="px-4 py-2"> License Plate</th>
+                                <th class="px-4 py-2"> Make</th>
+                                <th class="px-4 py-2"> Model</th>
+                                <th class="px-4 py-2">Color</th>
+                                <th class="px-4 py-2">Year</th>
+                                <th class="px-4 py-2">Unit Number</th>
+                                <th class="px-4 py-2">Phone</th>
+                                <th class="px-4 py-2">Type</th>
+                                <th class="px-4 py-2">Status</th>
+                                <th class="px-4 py-2">Actions</th>
 
-                            if (errorMessage) {
-                                errorMessage.remove();
-                            }
-                        }, 5000);
-                    </script>
-                </div>
-                <div x-data x-init="$el._x_grid = new Gridjs.Grid({
-                    from: $refs.table,
-                    sort: true,
-                    search: true,
-                }).render($refs.wrapper);">
-                    <div class="is-scrollbar-hidden min-w-full overflow-x-auto">
-                        <table x-ref="table" class="w-full text-left">
-                            <thead>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($visitors as $visitor)
                                 <tr>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Visitor's Name
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Valid From
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        License Plate
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Make
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Model
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Color
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Year
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Unit Number
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Phone
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Type
-                                    </th>
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Status
-                                    </th>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->visitor_name }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->valid_from }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->license_plate }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->make }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->model }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->color }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->year }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->unit_number }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->resident_phone }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->vehicle_type }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $visitor->status }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        <div x-data="{ visitorData: {} }">
+                                            <a @click="visitorData = {
+                                              validFrom: '{{ $visitor->valid_from }}',
+                                              licensePlate: '{{ $visitor->license_plate }}',
+                                              make: '{{ $visitor->make }}',
+                                              model: '{{ $visitor->model }}',
+                                              color: '{{ $visitor->color }}',
+                                              year: '{{ $visitor->year }}',
+                                              unitNumber: '{{ $visitor->unit_number }}',
+                                              visitorName: '{{ $visitor->visitor_name }}',
+                                              phone: '{{ $visitor->resident_phone }}',
+                                              type: '{{ $visitor->vehicle_type }}',
+                                              residentName: '{{ $visitor->resident_name }}',  
+                                              status: '{{ $visitor->status }}'
+                                          }; printVisitorDetails(visitorData)"
+                                                class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
+                                                <i class="fas fa-print"></i>
+                                                &nbsp; Print
+                                            </a>
+                                            <script>
+                                                function printVisitorDetails(visitorData) {
+                                                    const printContent = `
+                                              <div class="header">
+                                                  <h2>Address: {{ $property->address }}</h2>
+                                              </div>
+                                              <div class="body">
+                                                  <table>
+                                                      <tr>
+                                                          <td>Visitor's Name:</td>
+                                                          <td>${visitorData.visitorName}</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td>Phone:</td>
+                                                          <td>${visitorData.phone}</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td>License Plate:</td>
+                                                          <td>${visitorData.licensePlate}</td>
+                                                      </tr>
 
-                                    <th
-                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
-                                        Actions
-                                    </th>
+                                                      <tr>
+                                                          <td>Year:</td>
+                                                          <td>${visitorData.year}</td>
+                                                      </tr>
+                                                     
+                                                      <tr>
+                                                          <td>Make:</td>
+                                                          <td>${visitorData.make}</td>
+                                                      </tr>
+                                                      
+                                                      <tr>
+                                                          <td>Model:</td>
+                                                          <td>${visitorData.model}</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td>Color:</td>
+                                                          <td>${visitorData.color}</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td>Type:</td>
+                                                          <td>${visitorData.type}</td>
+                                                      </tr>
+                                                      
+                                                      <tr>
+                                                          <td>Unit Number:</td>
+                                                          <td>${visitorData.unitNumber}</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td>Recident Name:</td>
+                                                          <td>${visitorData.residentName}</td>
+                                                      </tr>
+                                                      <tr>
+                                                          <td>Valid From:</td>
+                                                          <td>${visitorData.validFrom}</td>
+                                                      </tr>
+                                                  </table>
+                                              </div>
+                                              <div class="footer">
+            <p>Your vehicle has been Registered for a Visitor's Pass.</p>
+            <p>Your visitor's pass is valid for 24 hours.</p>
+            <p>If your vehicle is parked on the premises of Demo Property before or after the allowed time, it will be removed at your expense.</p>
+            ${visitorData.status === 'Pending' ? '<p>Payment pending</p>' : ''}
+        </div>
+                                              `;
+
+                                                    const printWindow = window.open('', '_blank');
+                                                    printWindow.document.open();
+                                                    printWindow.document.write(`
+                                              <html>
+                                              <head>
+                                                  <title>Visitor Details</title>
+                                                  <style>
+                                                      /* Estilos para el formato de impresión */
+                                                      body {
+                                                          font-family: Arial, sans-serif;
+                                                          font-size: 12px;
+                                                          line-height: 1.4;
+                                                      }
+                                                      .header {
+                                                          margin-bottom: 20px;
+                                                      }
+                                                      .footer {
+                                                          margin-top: 20px;
+                                                          font-size: 10px;
+                                                          color: gray;
+                                                      }
+                                                      table {
+                                                          width: 100%;
+                                                          border-collapse: collapse;
+                                                      }
+                                                      td {
+                                                          padding: 8px;
+                                                          border: 1px solid #ccc;
+                                                      }
+                                                      td:first-child {
+                                                          font-weight: bold;
+                                                      }
+                                                  </style>
+                                              </head>
+                                              <body>
+                                                  ${printContent}
+                                              </body>
+                                              </html>
+                                              `);
+                                                    printWindow.document.close();
+                                                    printWindow.print();
+                                                    printWindow.close();
+                                                }
+                                            </script>
+                                        </div>
+                                    </td>
+
+
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($visitors as $visitor)
-                                    <tr>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->visitor_name }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->valid_from }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->license_plate }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->make }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->model }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->color }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->year }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->unit_number }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->resident_phone }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->vehicle_type }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            {{ $visitor->status }}
-                                        </td>
-                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <div x-data="{ visitorData: {} }">
-                                                <a @click="visitorData = {
-                                                  validFrom: '{{ $visitor->valid_from }}',
-                                                  licensePlate: '{{ $visitor->license_plate }}',
-                                                  make: '{{ $visitor->make }}',
-                                                  model: '{{ $visitor->model }}',
-                                                  color: '{{ $visitor->color }}',
-                                                  year: '{{ $visitor->year }}',
-                                                  unitNumber: '{{ $visitor->unit_number }}',
-                                                  visitorName: '{{ $visitor->visitor_name }}',
-                                                  phone: '{{ $visitor->resident_phone }}',
-                                                  type: '{{ $visitor->vehicle_type }}',
-                                                  residentName: '{{ $visitor->resident_name }}',  
-                                                  status: '{{ $visitor->status }}'
-                                              }; printVisitorDetails(visitorData)"
-                                                    class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-                                                    <i class="fas fa-print"></i>
-                                                    &nbsp; Print
-                                                </a>
-                                                <script>
-                                                    function printVisitorDetails(visitorData) {
-                                                        const printContent = `
-                                                  <div class="header">
-                                                      <h2>Address: {{ $property->address }}</h2>
-                                                  </div>
-                                                  <div class="body">
-                                                      <table>
-                                                          <tr>
-                                                              <td>Visitor's Name:</td>
-                                                              <td>${visitorData.visitorName}</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>Phone:</td>
-                                                              <td>${visitorData.phone}</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>License Plate:</td>
-                                                              <td>${visitorData.licensePlate}</td>
-                                                          </tr>
-
-                                                          <tr>
-                                                              <td>Year:</td>
-                                                              <td>${visitorData.year}</td>
-                                                          </tr>
-                                                         
-                                                          <tr>
-                                                              <td>Make:</td>
-                                                              <td>${visitorData.make}</td>
-                                                          </tr>
-                                                          
-                                                          <tr>
-                                                              <td>Model:</td>
-                                                              <td>${visitorData.model}</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>Color:</td>
-                                                              <td>${visitorData.color}</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>Type:</td>
-                                                              <td>${visitorData.type}</td>
-                                                          </tr>
-                                                          
-                                                          <tr>
-                                                              <td>Unit Number:</td>
-                                                              <td>${visitorData.unitNumber}</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>Recident Name:</td>
-                                                              <td>${visitorData.residentName}</td>
-                                                          </tr>
-                                                          <tr>
-                                                              <td>Valid From:</td>
-                                                              <td>${visitorData.validFrom}</td>
-                                                          </tr>
-                                                      </table>
-                                                  </div>
-                                                  <div class="footer">
-                <p>Your vehicle has been Registered for a Visitor's Pass.</p>
-                <p>Your visitor's pass is valid for 24 hours.</p>
-                <p>If your vehicle is parked on the premises of Demo Property before or after the allowed time, it will be removed at your expense.</p>
-                ${visitorData.status === 'Pending' ? '<p>Payment pending</p>' : ''}
-            </div>
-                                                  `;
-
-                                                        const printWindow = window.open('', '_blank');
-                                                        printWindow.document.open();
-                                                        printWindow.document.write(`
-                                                  <html>
-                                                  <head>
-                                                      <title>Visitor Details</title>
-                                                      <style>
-                                                          /* Estilos para el formato de impresión */
-                                                          body {
-                                                              font-family: Arial, sans-serif;
-                                                              font-size: 12px;
-                                                              line-height: 1.4;
-                                                          }
-                                                          .header {
-                                                              margin-bottom: 20px;
-                                                          }
-                                                          .footer {
-                                                              margin-top: 20px;
-                                                              font-size: 10px;
-                                                              color: gray;
-                                                          }
-                                                          table {
-                                                              width: 100%;
-                                                              border-collapse: collapse;
-                                                          }
-                                                          td {
-                                                              padding: 8px;
-                                                              border: 1px solid #ccc;
-                                                          }
-                                                          td:first-child {
-                                                              font-weight: bold;
-                                                          }
-                                                      </style>
-                                                  </head>
-                                                  <body>
-                                                      ${printContent}
-                                                  </body>
-                                                  </html>
-                                                  `);
-                                                        printWindow.document.close();
-                                                        printWindow.print();
-                                                        printWindow.close();
-                                                    }
-                                                </script>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div>
-                        <div x-ref="wrapper"></div>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        </div>
+        <script>
+            $(document).ready(function() {
+                $('#listvisitors').DataTable({
+                    responsive: true
+                });
+            });
+        </script>
 
 
     </main>
