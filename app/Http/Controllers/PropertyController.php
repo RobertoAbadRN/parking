@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\User;
@@ -197,22 +198,24 @@ class PropertyController extends Controller
         return $response;
     }
 
+
     public function vehicles($property_code)
     {
-        $vehicles = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
-            ->join('residents', 'residents.property_code', '=', 'properties.property_code')
-            ->select('vehicles.id', 'residents.apart_unit', 'residents.resident_name', 'residents.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'residents.reserved_space', 'vehicles.model', 'properties.address', 'vehicles.created_at', 'residents.permit_status', 'residents.email', 'residents.phone', 'vehicles.vehicle_type', 'vehicles.color', 'vehicles.vin', 'vehicles.start_date', 'vehicles.end_date')
+        $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
+            ->join('departaments', 'departaments.user_id', '=', 'users.id')
+            ->select('vehicles.*', 'users.name', 'users.email', 'users.phone', 'departaments.apart_unit', 'departaments.reserved_space')
             ->where('vehicles.property_code', $property_code)
+            ->groupBy('vehicles.id')
             ->get();
     
-        $address = $vehicles->pluck('address'); // Extrae el campo de dirección de la colección
-    
-        return view('vehicles.listvehicles', compact('vehicles', 'address', 'property_code'));
+        return view('vehicles.listvehicles', compact('vehicles', 'property_code'));
     }
     
     
     
-    
+
+
+
 
     public function users($propertyCode)
     {

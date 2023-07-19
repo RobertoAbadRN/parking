@@ -17,11 +17,14 @@ class Vehicle extends Model
         'year',
         'color',
         'vehicle_type',
+        'start_date',
+        'end_date'
     ];
 
     public function property()
     {
         return $this->belongsTo(Property::class, 'property_code', 'property_code');
+        
     }
 
   

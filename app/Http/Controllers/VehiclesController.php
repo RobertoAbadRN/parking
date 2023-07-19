@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\Vehicle;
 use App\Models\Resident;
+use App\Models\Departament; // Importar el modelo Departament
+use App\Models\User;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -20,20 +22,22 @@ class VehiclesController extends Controller
     public function index()
     {
         $vehicles = Property::select('properties.property_code', 'properties.address as property_address')
-            ->selectRaw('COUNT(vehicles.property_code) as vehicle_count')
-            ->selectRaw('SUM(CASE WHEN vehicles.permit_status = "pending" THEN 1 ELSE 0 END) as nopermit')
-            ->selectRaw('SUM(CASE WHEN vehicles.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
-            ->selectRaw('SUM(CASE WHEN vehicles.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended')
-            ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+            ->selectRaw('COUNT(departaments.property_code) as vehicle_count')
+            ->selectRaw('SUM(CASE WHEN departaments.permit_status = "pending" THEN 1 ELSE 0 END) as nopermit')
+            ->selectRaw('SUM(CASE WHEN departaments.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
+            ->selectRaw('SUM(CASE WHEN departaments.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended')
+            ->leftJoin('departaments', 'properties.property_code', '=', 'departaments.property_code')
             ->groupBy('properties.property_code')
             ->get();
-
+    
         $nopermit = $vehicles->sum('nopermit');
         $expired = $vehicles->sum('expired');
         $suspended = $vehicles->sum('suspended');
-
+    
         return view('vehicles.index', compact('vehicles', 'nopermit', 'expired', 'suspended'));
     }
+    
+    
 
     public function create($property_code)
     {
@@ -91,6 +95,9 @@ class VehiclesController extends Controller
         return redirect()->route('login')->with('success', 'Resident and vehicle registered successfully.');
     }
 
+
+
+
     public function store(Request $request)
     {
         // Validar los datos del formulario
@@ -114,48 +121,103 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
+        
 
-        // Verificar si la validación falla
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+       // Obtener los valores individuales
+$license_plate = $request->input('license_plate');
+$resident_name = $request->input('resident_name');
+$apart_unit = $request->input('apart_unit');
+$email = $request->input('email');
+$phone = $request->input('phone');
+$preferred_language = $request->input('preferred_language');
+$vin = $request->input('vin');
+$make = $request->input('make');
+$model = $request->input('model');
+$year = $request->input('year');
+$color = $request->input('color');
+$vehicle_type = $request->input('vehicle_type');
+$property_code = $request->input('property_code');
+$permit_status = $request->input('permit_status');
+$permit_type = $request->input('permit_type');
+$reserved_space = $request->input('reserved_space');
+$start_date = $request->input('start_date');
+$end_date = $request->input('end_date');
 
-        // Obtener todos los valores del formulario
-        $formData = $request->all();
+// Buscar el usuario existente por correo electrónico
+$user = User::where('email', $email)->first();
 
-        // Obtener los valores individuales
-        $license_plate = $request->input('license_plate');
-        $resident_name = $request->input('resident_name');
-        $apart_unit = $request->input('apart_unit');
-        $email = $request->input('email');
-        $phone = $request->input('phone');
-        $preferred_language = $request->input('preferred_language');
+if ($user) {
+    // El usuario ya existe, asociar el vehículo y el departamento al usuario existente
+    $vehicle = new Vehicle();
+    // Asignar los valores del vehículo
+    $vehicle->property_code = $property_code;
+    $vehicle->license_plate = $license_plate;
+    $vehicle->vin = $vin;
+    $vehicle->make = $make;
+    $vehicle->model = $model;
+    $vehicle->year = $year;
+    $vehicle->color = $color;
+    $vehicle->vehicle_type = $vehicle_type;
+    $vehicle->permit_type = $permit_type;
+    $vehicle->start_date = $start_date;
+    $vehicle->end_date = $end_date;
 
-        // Crear una nueva instancia del modelo Vehicle y asignar los valores de los campos
-        $vehicle = new Vehicle();
-        $vehicle->property_code = $formData['property_code'];
-        $vehicle->license_plate = $license_plate;
-        $vehicle->vin = $formData['vin'];
-        $vehicle->make = $formData['make'];
-        $vehicle->model = $formData['model'];
-        $vehicle->year = $formData['year'];
-        $vehicle->color = $formData['color'];
-        $vehicle->vehicle_type = $formData['vehicle_type'];
-        // Asignar cualquier otra propiedad necesaria en tu modelo "Vehicle"
-        $vehicle->save();
+    // Guardar el vehículo
+    $vehicle->save();
 
-        // Crear una nueva instancia del modelo Resident y asignar los valores de los campos
-        $resident = new Resident();
-        $resident->resident_name = $resident_name;
-        $resident->apart_unit = $apart_unit;
-        $resident->email = $email;
-        $resident->phone = $phone;
-        $resident->property_code = $formData['property_code'];
-        $resident->preferred_language = $preferred_language;
-        $resident->reserved_space = $formData['reserved_space'];
-        $resident->resident_status = 'Pending';
-        // Asignar cualquier otra propiedad necesaria en tu modelo "Resident"
-        $resident->save();
+    $departament = new Departament();
+    // Asignar los valores del departamento
+    $departament->apart_unit = $apart_unit;
+    $departament->reserved_space = $reserved_space;
+    $departament->property_code = $property_code;
+    $departament->permit_status = $permit_status;
+    
+    // Guardar el departamento
+    $departament->save();
+
+    // Asociar el vehículo y el departamento al usuario existente
+    $user->vehicles()->save($vehicle);
+    $user->departaments()->save($departament);
+} else {
+    // El usuario no existe, crear un nuevo usuario
+    $newUser = new User();
+    // Asignar los valores del nuevo usuario
+    $newUser->name = $resident_name;
+    $newUser->email = $email;
+    $newUser->phone = $phone;
+    $newUser->preferred_language = $preferred_language;
+    $newUser->property_code = $property_code;
+    // Guardar el nuevo usuario
+    $newUser->save();
+
+    // Crear el vehículo asociado al nuevo usuario
+    $vehicle = new Vehicle();
+    // Asignar los valores del vehículo
+    $vehicle->property_code = $property_code;
+    $vehicle->license_plate = $license_plate;
+    $vehicle->vin = $vin;
+    $vehicle->make = $make;
+    $vehicle->model = $model;
+    $vehicle->year = $year;
+    $vehicle->color = $color;
+    $vehicle->vehicle_type = $vehicle_type;
+    $vehicle->permit_type = $permit_type;
+    $vehicle->start_date = $start_date;
+    $vehicle->end_date = $end_date;
+
+    // Asociar el vehículo al nuevo usuario
+    $newUser->vehicles()->save($vehicle);
+
+    // Crear el departamento asociado al nuevo usuario
+    $departament = new Departament();
+    // Asignar los valores del departamento
+    $departament->apart_unit = $apart_unit;
+    $departament->reserved_space = $reserved_space;
+    $departament->property_code = $property_code;
+    $departament->permit_status = $permit_status;
+    // Asociar el departamento al nuevo usuario
+    $newUser->departaments()->save($departament);
+}
 
 
         // Verificar qué botón se presionó
@@ -376,7 +438,7 @@ class VehiclesController extends Controller
         // Create new Spreadsheet object
         // Crea una instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet = $spreadsheet->getActiveSheet(); 
         $datos = Property::select('properties.property_code', 'properties.address as property_address')
             ->selectRaw('COUNT(vehicles.property_code) as vehicle_count')
             ->selectRaw('SUM(CASE WHEN vehicles.permit_status = "pending" THEN 1 ELSE 0 END) as nopermit')

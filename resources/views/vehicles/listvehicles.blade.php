@@ -71,9 +71,9 @@
 
 
             <!-- Basic Table -->
-            <div class="card px-4 pb-4 sm:px-5">
+            <div class="card px-4 pb-4 sm:px-5 pt-5">
                 <div class="container mx-auto">
-                    <table id="example" class="table-auto min-w-full">
+                    <table id="example" class="table-auto min-w-full pt-5">
                         <thead>
                             <tr>
                                 <th class="px-4 py-2">Create at</th>
@@ -102,7 +102,7 @@
 
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $vehicle->resident_name }}
+                                        {{ $vehicle->name }}
                                     </td>
                                     <td class="px-4 py-2">
                                         {{ $vehicle->apart_unit }}
@@ -161,14 +161,11 @@
                                                 <i class="fa fa-edit"></i>
                                             </a>
 
-                                            <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                <i class="fa fa-print"></i>
-                                            </a>
-
                                             <a href="{{ route('send.email', ['id' => $vehicle->id, 'property_code' => $property_code, 'email' => $vehicle->email]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-envelope"></i>
                                             </a>
+                                            
 
 
                                             <a href="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id, 'property_code' => $property_code]) }}"
