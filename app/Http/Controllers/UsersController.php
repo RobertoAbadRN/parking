@@ -25,10 +25,13 @@ class UsersController extends Controller
 
      public function index()
      {
-        $users = User::all(); 
- 
+         $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
+                      ->select('users.*', 'properties.name as property_name')
+                      ->get();
+     
          return view('users.index', ['users' => $users]);
      }
+     
      
 
     /**

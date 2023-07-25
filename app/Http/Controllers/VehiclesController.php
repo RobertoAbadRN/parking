@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Departament;
 use App\Models\Property;
-use App\Models\Vehicle;
 use App\Models\Resident;
-use App\Models\Departament; // Importar el modelo Departament
-use App\Models\User;
+use App\Models\User; // Importar el modelo Departament
+use App\Models\Vehicle;
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -29,15 +29,13 @@ class VehiclesController extends Controller
             ->leftJoin('departaments', 'properties.property_code', '=', 'departaments.property_code')
             ->groupBy('properties.property_code')
             ->get();
-    
+
         $nopermit = $vehicles->sum('nopermit');
         $expired = $vehicles->sum('expired');
         $suspended = $vehicles->sum('suspended');
-    
+
         return view('vehicles.index', compact('vehicles', 'nopermit', 'expired', 'suspended'));
     }
-    
-    
 
     public function create($property_code)
     {
@@ -95,14 +93,11 @@ class VehiclesController extends Controller
         return redirect()->route('login')->with('success', 'Resident and vehicle registered successfully.');
     }
 
-
-
-
     public function store(Request $request)
     {
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
-            'resident_name' => 'required',
+            'name' => 'required',
             'email' => 'required|email',
             'phone' => 'required',
             'apart_unit' => 'required',
@@ -121,104 +116,102 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-        
 
-       // Obtener los valores individuales
-$license_plate = $request->input('license_plate');
-$resident_name = $request->input('resident_name');
-$apart_unit = $request->input('apart_unit');
-$email = $request->input('email');
-$phone = $request->input('phone');
-$preferred_language = $request->input('preferred_language');
-$vin = $request->input('vin');
-$make = $request->input('make');
-$model = $request->input('model');
-$year = $request->input('year');
-$color = $request->input('color');
-$vehicle_type = $request->input('vehicle_type');
-$property_code = $request->input('property_code');
-$permit_status = $request->input('permit_status');
-$permit_type = $request->input('permit_type');
-$reserved_space = $request->input('reserved_space');
-$start_date = $request->input('start_date');
-$end_date = $request->input('end_date');
+        // Obtener los valores individuales
+        $license_plate = $request->input('license_plate');
+        $name = $request->input('name');
+        $apart_unit = $request->input('apart_unit');
+        $email = $request->input('email');
+        $phone = $request->input('phone');
+        $preferred_language = $request->input('preferred_language');
+        $vin = $request->input('vin');
+        $make = $request->input('make');
+        $model = $request->input('model');
+        $year = $request->input('year');
+        $color = $request->input('color');
+        $vehicle_type = $request->input('vehicle_type');
+        $property_code = $request->input('property_code');
+        $permit_status = $request->input('permit_status');
+        $permit_type = $request->input('permit_type');
+        $reserved_space = $request->input('reserved_space');
+        $start_date = $request->input('start_date');
+        $end_date = $request->input('end_date');
 
 // Buscar el usuario existente por correo electrónico
-$user = User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
-if ($user) {
-    // El usuario ya existe, asociar el vehículo y el departamento al usuario existente
-    $vehicle = new Vehicle();
-    // Asignar los valores del vehículo
-    $vehicle->property_code = $property_code;
-    $vehicle->license_plate = $license_plate;
-    $vehicle->vin = $vin;
-    $vehicle->make = $make;
-    $vehicle->model = $model;
-    $vehicle->year = $year;
-    $vehicle->color = $color;
-    $vehicle->vehicle_type = $vehicle_type;
-    $vehicle->permit_type = $permit_type;
-    $vehicle->start_date = $start_date;
-    $vehicle->end_date = $end_date;
+        if ($user) {
+            // El usuario ya existe, asociar el vehículo y el departamento al usuario existente
+            $vehicle = new Vehicle();
+            // Asignar los valores del vehículo
+            $vehicle->property_code = $property_code;
+            $vehicle->license_plate = $license_plate;
+            $vehicle->vin = $vin;
+            $vehicle->make = $make;
+            $vehicle->model = $model;
+            $vehicle->year = $year;
+            $vehicle->color = $color;
+            $vehicle->vehicle_type = $vehicle_type;
+            $vehicle->permit_type = $permit_type;
+            $vehicle->start_date = $start_date;
+            $vehicle->end_date = $end_date;
 
-    // Guardar el vehículo
-    $vehicle->save();
+            // Guardar el vehículo
+            $vehicle->save();
 
-    $departament = new Departament();
-    // Asignar los valores del departamento
-    $departament->apart_unit = $apart_unit;
-    $departament->reserved_space = $reserved_space;
-    $departament->property_code = $property_code;
-    $departament->permit_status = $permit_status;
-    
-    // Guardar el departamento
-    $departament->save();
+            $departament = new Departament();
+            // Asignar los valores del departamento
+            $departament->apart_unit = $apart_unit;
+            $departament->reserved_space = $reserved_space;
+            $departament->property_code = $property_code;
+            $departament->permit_status = $permit_status;
 
-    // Asociar el vehículo y el departamento al usuario existente
-    $user->vehicles()->save($vehicle);
-    $user->departaments()->save($departament);
-} else {
-    // El usuario no existe, crear un nuevo usuario
-    $newUser = new User();
-    // Asignar los valores del nuevo usuario
-    $newUser->name = $resident_name;
-    $newUser->email = $email;
-    $newUser->phone = $phone;
-    $newUser->preferred_language = $preferred_language;
-    $newUser->property_code = $property_code;
-    // Guardar el nuevo usuario
-    $newUser->save();
+            // Guardar el departamento
+            $departament->save();
 
-    // Crear el vehículo asociado al nuevo usuario
-    $vehicle = new Vehicle();
-    // Asignar los valores del vehículo
-    $vehicle->property_code = $property_code;
-    $vehicle->license_plate = $license_plate;
-    $vehicle->vin = $vin;
-    $vehicle->make = $make;
-    $vehicle->model = $model;
-    $vehicle->year = $year;
-    $vehicle->color = $color;
-    $vehicle->vehicle_type = $vehicle_type;
-    $vehicle->permit_type = $permit_type;
-    $vehicle->start_date = $start_date;
-    $vehicle->end_date = $end_date;
+            // Asociar el vehículo y el departamento al usuario existente
+            $user->vehicles()->save($vehicle);
+            $user->departaments()->save($departament);
+        } else {
+            // El usuario no existe, crear un nuevo usuario
+            $newUser = new User();
+            // Asignar los valores del nuevo usuario
+            $newUser->name = $name;
+            $newUser->email = $email;
+            $newUser->phone = $phone;
+            $newUser->preferred_language = $preferred_language;
+            $newUser->property_code = $property_code;
+            // Guardar el nuevo usuario
+            $newUser->save();
 
-    // Asociar el vehículo al nuevo usuario
-    $newUser->vehicles()->save($vehicle);
+            // Crear el vehículo asociado al nuevo usuario
+            $vehicle = new Vehicle();
+            // Asignar los valores del vehículo
+            $vehicle->property_code = $property_code;
+            $vehicle->license_plate = $license_plate;
+            $vehicle->vin = $vin;
+            $vehicle->make = $make;
+            $vehicle->model = $model;
+            $vehicle->year = $year;
+            $vehicle->color = $color;
+            $vehicle->vehicle_type = $vehicle_type;
+            $vehicle->permit_type = $permit_type;
+            $vehicle->start_date = $start_date;
+            $vehicle->end_date = $end_date;
 
-    // Crear el departamento asociado al nuevo usuario
-    $departament = new Departament();
-    // Asignar los valores del departamento
-    $departament->apart_unit = $apart_unit;
-    $departament->reserved_space = $reserved_space;
-    $departament->property_code = $property_code;
-    $departament->permit_status = $permit_status;
-    // Asociar el departamento al nuevo usuario
-    $newUser->departaments()->save($departament);
-}
+            // Asociar el vehículo al nuevo usuario
+            $newUser->vehicles()->save($vehicle);
 
+            // Crear el departamento asociado al nuevo usuario
+            $departament = new Departament();
+            // Asignar los valores del departamento
+            $departament->apart_unit = $apart_unit;
+            $departament->reserved_space = $reserved_space;
+            $departament->property_code = $property_code;
+            $departament->permit_status = $permit_status;
+            // Asociar el departamento al nuevo usuario
+            $newUser->departaments()->save($departament);
+        }
 
         // Verificar qué botón se presionó
         if ($request->has('savePrintButton')) {
@@ -257,7 +250,7 @@ if ($user) {
         </head>
         <body>
             <h1>Vehicle Information</h1>
-            <p>Resident Name: ' . $vehicle->resident_name . '</p>
+            <p>Resident Name: ' . $vehicle->name . '</p>
             <p>Email: ' . $vehicle->email . '</p>
             <!-- Agrega aquí los demás campos del formulario -->
         </body>
@@ -278,76 +271,108 @@ if ($user) {
     {
         $vehicle = Vehicle::find($id);
         $property = Property::where('property_code', $property_code)->first();
+        $user = User::find($vehicle->user_id); // Obtener el usuario asociado al vehículo
+        $departament = Departament::where('user_id', $user->id)->first(); // Obtener el departamento asociado al usuario
         $properties = Property::pluck('address', 'property_code');
-        return view('vehicles.editvehicle', compact('vehicle', 'property', 'properties'));
+
+        return view('vehicles.editvehicle', compact('vehicle', 'property', 'user', 'departament', 'properties', 'id'));
     }
 
     public function update(Request $request, $id)
     {
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
-            'resident_name' => 'required',
-            'email' => 'required|email',
-            'phone' => 'required',
-            'apart_unit' => 'required',
-            'preferred_language' => 'required',
-            'license_plate' => 'required',
-            'vin' => 'required',
-            'make' => 'required',
-            'model' => 'required',
-            'year' => 'required',
-            'color' => 'required',
-            'vehicle_type' => 'required',
-            'property_code' => 'required',
-            'permit_status' => 'required',
-            'permit_type' => 'required',
-            'reserved_space' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
+            // Validation rules here
         ]);
-
+    
         // Verificar si la validación falla
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
+    
         // Obtener el vehículo existente
-        $vehicle = Vehicle::findOrFail($id);
-
-        // Actualizar los valores de los campos
-        $vehicle->resident_name = $request->input('resident_name');
-        $vehicle->email = $request->input('email');
-        $vehicle->phone = $request->input('phone');
-        $vehicle->apart_unit = $request->input('apart_unit');
-        $vehicle->preferred_language = $request->input('preferred_language');
-        $vehicle->license_plate = $request->input('license_plate');
-        $vehicle->vin = $request->input('vin');
-        $vehicle->make = $request->input('make');
-        $vehicle->model = $request->input('model');
-        $vehicle->year = $request->input('year');
-        $vehicle->color = $request->input('color');
-        $vehicle->vehicle_type = $request->input('vehicle_type');
-        $vehicle->property_code = $request->input('property_code');
-        $vehicle->permit_status = $request->input('permit_status');
-        $vehicle->permit_type = $request->input('permit_type');
-        $vehicle->reserved_space = $request->input('reserved_space');
-        $vehicle->start_date = $request->input('start_date');
-        $vehicle->end_date = $request->input('end_date');
-
-        // Guardar el vehículo actualizado en la base de datos
-        $vehicle->save();
-
-        // Redireccionar o mostrar un mensaje de éxito
+        $vehicle = Vehicle::find($id);
+    
+        // Verificar si el vehículo existe
+        if (!$vehicle) {
+            return redirect()->back()->with('error_message', 'Vehicle not found.');
+        }
+    
+        // Actualizar los valores de los campos del vehículo
+        $vehicle->update([
+            // Update fields here for the Vehicle model
+            'property_code' => $request->input('property_code'),
+            'license_plate' => $request->input('license_plate'),
+            'vin' => $request->input('vin'),
+            'make' => $request->input('make'),
+            'model' => $request->input('model'),
+            'year' => $request->input('year'),
+            'color' => $request->input('color'),
+            'vehicle_type' => $request->input('vehicle_type'),
+            'permit_type' => $request->input('permit_type'),
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
+        ]);
+    
+        // Obtener el usuario asociado al vehículo
+        $user = $vehicle->user;
+    
+        // Verificar si el usuario existe
+        if (!$user) {
+            return redirect()->back()->with('error_message', 'User not found.');
+        }
+    
+        // Actualizar los valores de los campos del usuario
+        $user->update([
+            // Update fields here for the User model
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
+            'preferred_language' => $request->input('preferred_language'),
+        ]);
+    
+        // Obtener el departamento asociado al usuario
+        $departament = Departament::where('user_id', $user->id)->first();
+    
+        // Verificar si el departamento existe
+        if (!$departament) {
+            // Si el departamento no existe, crear uno nuevo y asociarlo al usuario
+            $departament = new Departament([
+                // Set any relevant fields for the new Departament record based on the request data
+                'apart_unit' => $request->input('apart_unit'),
+                'reserved_space' => $request->input('reserved_space'),
+                'permit_status' => $request->input('permit_status'),
+            ]);
+            $departament->user_id = $user->id;
+            $departament->save();
+        } else {
+            // Si el departamento existe, actualizar los valores de los campos
+            $departament->update([
+                // Update fields here for the Departament model
+                'apart_unit' => $request->input('apart_unit'),
+                'reserved_space' => $request->input('reserved_space'),
+                'permit_status' => $request->input('permit_status'),
+            ]);
+        }
+    
         $property_code = $request->input('property_code');
-
+    
         return redirect()->route('properties.vehicles', ['property_code' => $property_code])->with('success_message', 'Vehicle saved successfully');
-
     }
-
+    
     public function destroy(Vehicle $vehicle, $property_code)
     {
         // Realiza las acciones necesarias para eliminar el vehículo, por ejemplo:
         $vehicle->delete();
+         // Obtener el departamento asociado al vehículo
+    $department = $vehicle->department;
+
+    // Eliminar el vehículo y el departamento
+    $vehicle->delete();
+
+    if ($department) {
+        $department->delete();
+    }
 
         return redirect()->route('properties.vehicles', ['property_code' => $property_code])->with('success_message', 'Vehicle deleted successfully');
     }
@@ -438,7 +463,7 @@ if ($user) {
         // Create new Spreadsheet object
         // Crea una instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet(); 
+        $sheet = $spreadsheet->getActiveSheet();
         $datos = Property::select('properties.property_code', 'properties.address as property_address')
             ->selectRaw('COUNT(vehicles.property_code) as vehicle_count')
             ->selectRaw('SUM(CASE WHEN vehicles.permit_status = "pending" THEN 1 ELSE 0 END) as nopermit')

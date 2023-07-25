@@ -30,29 +30,34 @@
                 <div class="card">
                     <div class="tabs flex flex-col">
                         <div class="tab-content p-4 sm:p-5">
-                            <form id="vehicleForm" action="{{ route('vehicles.store') }}" method="POST">
+                            <form id="vehicleForm" action="{{ route('vehicles.update', ['id' => $vehicle->id]) }}"
+                                method="POST">
                                 @csrf
+                                @error('error_message')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
                                 <div class="space-y-5">
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">Resident Name</span>
                                         <input
                                             class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            placeholder="Resident Name" type="text" name="resident_name"
-                                            value="{{ $vehicle->resident_name }}" required />
+                                            placeholder="Resident Name" type="text" name="name"
+                                            value="{{ old('resident_name', $user->name ?? '') }}" required />
                                     </label>
+
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">Email</span>
                                         <input
                                             class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                             placeholder="Email" type="email" name="email"
-                                            value="{{ $vehicle->email }}" required />
+                                            value="{{ $user->email }}" required />
                                     </label>
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">Phone</span>
                                         <input
                                             class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                             placeholder="Phone" type="tel" name="phone"
-                                            value="{{ $vehicle->phone }}" required />
+                                            value="{{ $user->phone }}" required />
                                     </label>
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">Apartment
@@ -60,7 +65,7 @@
                                         <input
                                             class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                             placeholder="Apartment Unit" type="text" name="apart_unit"
-                                            value="{{ $vehicle->apart_unit }}" required />
+                                            value="{{ $departament->apart_unit }}" required />
                                     </label>
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">Preferred
@@ -69,10 +74,10 @@
                                             class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                             name="preferred_language" required>
                                             <option value="spanish"
-                                                {{ $vehicle->preferred_language === 'spanish' ? 'selected' : '' }}>
+                                                {{ $user->preferred_language === 'spanish' ? 'selected' : '' }}>
                                                 Spanish</option>
                                             <option value="english"
-                                                {{ $vehicle->preferred_language === 'english' ? 'selected' : '' }}>
+                                                {{ $user->preferred_language === 'english' ? 'selected' : '' }}>
                                                 English</option>
                                         </select>
                                     </label>
@@ -182,62 +187,85 @@
 
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Reserved Space</span>
-                        <input name="reserved_space" value="{{ $vehicle->reserved_space }}"
+                        <input name="reserved_space" value="{{ $departament->reserved_space }}"
                             class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                             placeholder="Reserved Space" type="text" />
                     </label>
-                   
+
 
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Start Date</span>
                         <span class="relative mt-1.5 flex">
-                            <input id="start_date_input" name="start_date" value="{{ $vehicle->start_date }}" class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent datepicker-input" placeholder="Start Date:..." type="text" />
+                            <input id="start_date_input" name="start_date" value="{{ $vehicle->start_date }}"
+                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent datepicker-input"
+                                placeholder="Start Date:..." type="text" />
                         </span>
                     </label>
-                    
+
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">End Date</span>
                         <span class="relative mt-1.5 flex">
-                            <input id="end_date_input" name="end_date" value="{{ $vehicle->end_date }}" class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent datepicker-input" placeholder="End Date:..." type="text" />
+                            <input id="end_date_input" name="end_date" value="{{ $vehicle->end_date }}"
+                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent datepicker-input"
+                                placeholder="End Date:..." type="text" />
                         </span>
                     </label>
-                    
+
                     <div class="grid grid-cols-2 gap-4 pt-10">
-                        <button type="button" onclick="setDateRange(30)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1 Month</button>
-                        <button type="button" onclick="setDateRange(60)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">2 Months</button>
-                        <button type="button" onclick="setDateRange(90)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">3 Months</button>
-                        <button type="button" onclick="setDateRange(180)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">6 Months</button>
-                        <button type="button" onclick="setDateRange(365)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1 Year</button>
-                        <button type="button" onclick="setDateRange(7)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1 Week</button>
-                        <button type="button" onclick="setDateRange(14)" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">2 Weeks</button>
-                        <button type="button" onclick="setWeekendRange()" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">Weekend</button>
-                        <button type="button" onclick="setEndOfMonthRange()" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">End of Month</button>
-                        <button type="button" onclick="setEndOfYearRange()" class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">End of Year</button>
+                        <button type="button" onclick="setDateRange(30)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1
+                            Month</button>
+                        <button type="button" onclick="setDateRange(60)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">2
+                            Months</button>
+                        <button type="button" onclick="setDateRange(90)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">3
+                            Months</button>
+                        <button type="button" onclick="setDateRange(180)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">6
+                            Months</button>
+                        <button type="button" onclick="setDateRange(365)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1
+                            Year</button>
+                        <button type="button" onclick="setDateRange(7)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1
+                            Week</button>
+                        <button type="button" onclick="setDateRange(14)"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">2
+                            Weeks</button>
+                        <button type="button" onclick="setWeekendRange()"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">Weekend</button>
+                        <button type="button" onclick="setEndOfMonthRange()"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">End
+                            of Month</button>
+                        <button type="button" onclick="setEndOfYearRange()"
+                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">End
+                            of Year</button>
                     </div>
-                    
+
                     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                     <script>
                         const startInput = document.getElementById('start_date_input');
                         const endInput = document.getElementById('end_date_input');
-                    
+
                         function setDateRange(months) {
                             const currentDate = new Date();
                             const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
                             const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, startDate.getDate() - 1);
-                    
+
                             startInput.value = formatDate(startDate);
                             endInput.value = formatDate(endDate);
                         }
-                    
+
                         function formatDate(date) {
                             const year = date.getFullYear();
                             const month = String(date.getMonth() + 1).padStart(2, '0');
                             const day = String(date.getDate()).padStart(2, '0');
-                    
+
                             return `${year}-${month}-${day}`;
                         }
-                    
-                        document.addEventListener('DOMContentLoaded', function () {
+
+                        document.addEventListener('DOMContentLoaded', function() {
                             flatpickr('.datepicker-input', {
                                 enableTime: false,
                                 dateFormat: 'Y-m-d',
@@ -246,19 +274,6 @@
                             });
                         });
                     </script>
-                    
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 </div>
@@ -267,12 +282,12 @@
         <div class="flex justify-center mt-4">
             <button type="submit" name="saveButton" form="vehicleForm"
                 class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90 mr-2">
-                Save Vehicle
+                Edit Vehicle
             </button>
 
             <button type="submit" name="savePrintButton" form="vehicleForm"
                 class="btn mr-2 bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-                Save & Print
+                Edit & Print
             </button>
             @php
                 $property_code = request()->segment(2);

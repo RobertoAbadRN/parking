@@ -200,20 +200,19 @@ class PropertyController extends Controller
 
 
     public function vehicles($property_code)
-    {
-        $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
-            ->join('departaments', 'departaments.user_id', '=', 'users.id')
-            ->select('vehicles.*', 'users.name', 'users.email', 'users.phone', 'departaments.apart_unit', 'departaments.reserved_space')
-            ->where('vehicles.property_code', $property_code)
-            ->groupBy('vehicles.id')
-            ->get();
-    
-        return view('vehicles.listvehicles', compact('vehicles', 'property_code'));
-    }
-    
-    
-    
+{
+    $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
+        ->join('departaments', 'departaments.user_id', '=', 'users.id')
+        ->select('vehicles.*', 'users.name', 'users.email', 'users.phone', 'departaments.apart_unit', 'departaments.reserved_space')
+        ->where('vehicles.property_code', $property_code)
+        ->groupBy('vehicles.id')
+        ->get();
+        
+    $property = Property::where('property_code', $property_code)->select('name as property_name')->first();
+    $property_name = $property ? $property->property_name : '';
 
+    return view('vehicles.listvehicles', compact('vehicles', 'property_code', 'property_name'));
+}
 
 
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-07-2023 a las 23:48:29
+-- Tiempo de generación: 26-07-2023 a las 00:25:11
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.0.28
 
@@ -24,6 +24,32 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `departaments`
+--
+
+CREATE TABLE `departaments` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `apart_unit` varchar(255) NOT NULL,
+  `lease_expiration` date NOT NULL,
+  `reserved_space` int(3) NOT NULL,
+  `property_code` varchar(255) NOT NULL,
+  `permit_status` varchar(30) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `departaments`
+--
+
+INSERT INTO `departaments` (`id`, `apart_unit`, `lease_expiration`, `reserved_space`, `property_code`, `permit_status`, `created_at`, `updated_at`, `user_id`) VALUES
+(1, '2', '0000-00-00', 2, 'QyQxc', 'active', '2023-07-25 04:47:26', '2023-07-25 04:47:26', 1),
+(2, '3334', '0000-00-00', 2, 'QyQxc', 'active', '2023-07-25 04:51:57', '2023-07-25 04:51:57', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `failed_jobs`
 --
 
@@ -35,6 +61,20 @@ CREATE TABLE `failed_jobs` (
   `payload` longtext NOT NULL,
   `exception` longtext NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `files`
+--
+
+CREATE TABLE `files` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -63,7 +103,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (7, '2023_06_05_200313_create_visitorpasses_table', 4),
 (8, '2023_06_30_101426_create_user_properties_table', 5),
 (9, '2023_07_12_120500_create_residents_table', 6),
-(10, '2023_07_12_124158_add_password_to_residents_table', 7);
+(10, '2023_07_12_124158_add_password_to_residents_table', 7),
+(11, '2023_07_15_184629_create_departaments_table', 8),
+(12, '2023_07_18_112709_add_user_id_to_vehicles_table', 9),
+(15, '2023_07_20_174122_create_files_table', 10);
 
 -- --------------------------------------------------------
 
@@ -110,7 +153,7 @@ CREATE TABLE `personal_access_tokens` (
 
 CREATE TABLE `profiles` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name_profile` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -119,7 +162,7 @@ CREATE TABLE `profiles` (
 -- Volcado de datos para la tabla `profiles`
 --
 
-INSERT INTO `profiles` (`id`, `name`, `created_at`, `updated_at`) VALUES
+INSERT INTO `profiles` (`id`, `name_profile`, `created_at`, `updated_at`) VALUES
 (1, 'Resident', NULL, NULL),
 (2, 'Leasing agent', NULL, NULL),
 (3, 'Property manager', NULL, NULL),
@@ -158,38 +201,7 @@ CREATE TABLE `properties` (
 
 INSERT INTO `properties` (`id`, `area`, `name`, `address`, `city`, `state`, `country`, `zip_code`, `location_type`, `places`, `property_code`, `permit_status`, `logo`, `created_at`, `updated_at`) VALUES
 (6, 'prueba', 'edificio1', 'calle esmeralda', 'queretaro', 'Queretaro', 'México', '76915', 'Apartment Complex', '3', 'QyQxc', '1', NULL, '2023-07-03 22:13:07', '2023-07-04 17:40:27'),
-(9, 'prueba2', 'juan', 'margaritas 11', 'queretaro', 'Queretaro', 'México', '76900', 'Apartment Complex', '2', 'acUzh', '', '1688487450.png', '2023-07-04 16:17:30', '2023-07-04 16:17:30');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `residents`
---
-
-CREATE TABLE `residents` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `resident_name` varchar(255) NOT NULL,
-  `apart_unit` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `phone` varchar(255) NOT NULL,
-  `lease_expiration` date NOT NULL,
-  `reserved_space` varchar(255) NOT NULL,
-  `resident_status` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `property_code` varchar(255) NOT NULL,
-  `access_level` varchar(255) NOT NULL,
-  `permit_status` varchar(255) NOT NULL,
-  `preferred_language` varchar(255) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `residents`
---
-
-INSERT INTO `residents` (`id`, `resident_name`, `apart_unit`, `email`, `phone`, `lease_expiration`, `reserved_space`, `resident_status`, `password`, `property_code`, `access_level`, `permit_status`, `preferred_language`, `created_at`, `updated_at`) VALUES
-(1, 'prueba', '2', 'martin.amador.tic@gmail.com', '4428168746', '0000-00-00', '2', 'Pending', '', 'QyQxc', '', '', 'spanish', '2023-07-14 03:06:53', '2023-07-14 03:06:53');
+(9, 'prueba2', 'edificio2', 'margaritas 11', 'queretaro', 'Queretaro', 'México', '76900', 'Apartment Complex', '2', 'acUzh', '1', '1688487450.png', '2023-07-04 16:17:30', '2023-07-24 19:52:44');
 
 -- --------------------------------------------------------
 
@@ -210,6 +222,8 @@ CREATE TABLE `users` (
   `last_login` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `status` varchar(30) NOT NULL,
+  `preferred_language` varchar(30) NOT NULL,
+  `resident_status` varchar(255) NOT NULL,
   `remember_token` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -219,10 +233,9 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `user`, `phone`, `access_level`, `property_code`, `banned`, `last_login`, `password`, `status`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'martin', 'martin.amador.tic@gmail.com', NULL, 'mar', '2101616', 'Property Manager', 'QyQxc', 'NO', '2023-07-14 12:10:21', '$2y$10$oYRV.EII7.lW99y47XfwYuIaywnnSsgRzANhHrpBVdTqhFZHzOS92', '', NULL, '2023-06-01 23:41:18', '2023-07-14 18:10:21'),
-(2, 'admin', 'admin@gmail.com', NULL, 'admin123', '', 'Property Manager', 'acUzh', 'NO', '2023-06-28 16:25:02', '$2y$10$DGVPAkaYoo3MIfk5hj0eq.PkM77iimySNGCfzUEZK7K95NrQgjpru', '', NULL, '2023-06-05 21:34:08', '2023-06-28 22:25:02'),
-(46, 'martin', 'martin.reyes.qro@gmail.com', NULL, 'hola', '4428168746', 'property_leasion_agent', 'QyQx4', 'NO', '', '$2y$10$iVtZ3RO4O9R1WJjWEjBtse19fFpde3tZxNpQONptRgTzYBodQGGza', '', NULL, '2023-07-02 02:41:55', '2023-07-02 02:42:40');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `user`, `phone`, `access_level`, `property_code`, `banned`, `last_login`, `password`, `status`, `preferred_language`, `resident_status`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'martin', 'martin.amador.tic@gmail.com', NULL, 'mar', '2101616', 'Property Manager', 'QyQxc', 'NO', '2023-07-25 13:47:39', '$2y$10$oYRV.EII7.lW99y47XfwYuIaywnnSsgRzANhHrpBVdTqhFZHzOS92', '', 'spanish', '', NULL, '2023-06-01 23:41:18', '2023-07-25 19:47:39'),
+(2, 'admin', 'admin@gmail.com', NULL, 'admin123', '', 'Recidents', 'acUzh', 'NO', '2023-06-28 16:25:02', '$2y$10$DGVPAkaYoo3MIfk5hj0eq.PkM77iimySNGCfzUEZK7K95NrQgjpru', '', '', '', NULL, '2023-06-05 21:34:08', '2023-06-28 22:25:02');
 
 -- --------------------------------------------------------
 
@@ -243,6 +256,7 @@ CREATE TABLE `user_properties` (
 
 CREATE TABLE `vehicles` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `property_code` varchar(255) NOT NULL,
   `license_plate` varchar(255) NOT NULL,
   `vin` varchar(255) NOT NULL,
@@ -262,9 +276,8 @@ CREATE TABLE `vehicles` (
 -- Volcado de datos para la tabla `vehicles`
 --
 
-INSERT INTO `vehicles` (`id`, `property_code`, `license_plate`, `vin`, `make`, `model`, `year`, `color`, `vehicle_type`, `permit_type`, `start_date`, `end_date`, `created_at`, `updated_at`) VALUES
-(1, 'QyQxc', '25456', '55244', 'fortd', '1235', 1998, 'blanco', 'ford', '', '', '', '2023-07-14 02:51:17', '2023-07-14 02:51:17'),
-(2, 'QyQxc', '25456', '55244', 'fortd', '1235', 1998, 'blanco', 'ford', '', '', '', '2023-07-14 03:06:53', '2023-07-14 03:06:53');
+INSERT INTO `vehicles` (`id`, `user_id`, `property_code`, `license_plate`, `vin`, `make`, `model`, `year`, `color`, `vehicle_type`, `permit_type`, `start_date`, `end_date`, `created_at`, `updated_at`) VALUES
+(2, 1, 'QyQxc', '25456', '55244', 'fortd', '2022', 1998, 'blanco', 'ford ranger', 'visitor', '2023-07-24', '2023-08-23', '2023-07-25 04:51:57', '2023-07-25 04:51:57');
 
 -- --------------------------------------------------------
 
@@ -311,11 +324,23 @@ INSERT INTO `visitorpasses` (`id`, `property_code`, `visitor_name`, `visitor_pho
 --
 
 --
+-- Indices de la tabla `departaments`
+--
+ALTER TABLE `departaments`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
+
+--
+-- Indices de la tabla `files`
+--
+ALTER TABLE `files`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `migrations`
@@ -342,18 +367,12 @@ ALTER TABLE `personal_access_tokens`
 --
 ALTER TABLE `profiles`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `profiles_name_unique` (`name`);
+  ADD UNIQUE KEY `profiles_name_profile_unique` (`name_profile`);
 
 --
 -- Indices de la tabla `properties`
 --
 ALTER TABLE `properties`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `residents`
---
-ALTER TABLE `residents`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -374,7 +393,8 @@ ALTER TABLE `user_properties`
 -- Indices de la tabla `vehicles`
 --
 ALTER TABLE `vehicles`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `vehicles_user_id_foreign` (`user_id`);
 
 --
 -- Indices de la tabla `visitorpasses`
@@ -387,16 +407,28 @@ ALTER TABLE `visitorpasses`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `departaments`
+--
+ALTER TABLE `departaments`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `files`
+--
+ALTER TABLE `files`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT de la tabla `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `personal_access_tokens`
@@ -417,16 +449,10 @@ ALTER TABLE `properties`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT de la tabla `residents`
---
-ALTER TABLE `residents`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT de la tabla `vehicles`
@@ -450,6 +476,12 @@ ALTER TABLE `visitorpasses`
 ALTER TABLE `user_properties`
   ADD CONSTRAINT `user_properties_property_id_foreign` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `user_properties_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `vehicles`
+--
+ALTER TABLE `vehicles`
+  ADD CONSTRAINT `vehicles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

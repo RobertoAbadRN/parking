@@ -1,15 +1,15 @@
 <x-app-layout title="List of vehicles" is-sidebar-open="true" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
-            <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
-                <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                    href="{{ url('/vehicles') }}">
-                    @if ($vehicles->count() > 0)
-                        <p>LIST OF VEHICLES FOR: {{ $vehicles[0]->address }}</p>
-                    @else
-                        <p>ADDRESS: {{ $address }}</p>
-                    @endif
-                </a>
+            <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
+                href="{{ url('/vehicles') }}">
+                @if ($vehicles->count() > 0)
+                    <p>LIST OF VEHICLES FOR: {{ $property_name }}</p>
+                @else
+                    <p>LIST OF VEHICLES FOR: {{ $property_name !== '' ? $property_name : 'N/A' }}</p>
+                @endif
+            </a>
+
 
             </h4>
             <div class="hidden h-full py-1 sm:flex">
@@ -165,16 +165,13 @@
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-envelope"></i>
                                             </a>
-                                            
-
 
                                             <a href="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id, 'property_code' => $property_code]) }}"
                                                 class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                 onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
-
-
+                                            
                                             <script>
                                                 function showConfirmation(vehicleId) {
                                                     Swal.fire({

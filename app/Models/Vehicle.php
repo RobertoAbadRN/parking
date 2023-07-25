@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Vehicle extends Model
 {
     use HasFactory;
+    protected $table = 'vehicles';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         
@@ -26,6 +28,17 @@ class Vehicle extends Model
         return $this->belongsTo(Property::class, 'property_code', 'property_code');
         
     }
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+public function departament()
+{
+    return $this->belongsTo(Department::class, 'user_id');
+}
+
 
   
 }

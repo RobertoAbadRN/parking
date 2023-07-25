@@ -60,7 +60,7 @@
 
             <!-- Basic Table -->
             <div class="card px-4 pb-4 sm:px-5">
-                <div class="container mx-auto">
+                <div class="container mx-auto  pt-5">
                     <table id="properties" class="table-auto min-w-full">
                         <thead>
                             <tr>

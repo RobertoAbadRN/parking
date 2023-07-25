@@ -90,7 +90,7 @@
                                         {{$resident->created_at}} 
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->resident_name }}
+                                        {{ $resident->name }}
                                     </td>
                                     <td class="px-4 py-2">
                                         {{ $resident->apart_unit }}

@@ -112,7 +112,7 @@
                                         {{ $user->access_level }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $user->property }}
+                                        {{ $user->property_name }}
                                     </td>
                                     <td class="px-4 py-2">
                                         @if($user->banned == 'yes')

@@ -8,6 +8,8 @@ use App\Models\Resident;
 use App\Models\Vehicle;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class RecidentsController extends Controller
 {
@@ -17,13 +19,17 @@ class RecidentsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-{
-    $residents = Resident::join('vehicles', 'residents.property_code', '=', 'vehicles.property_code')
-        ->select('residents.*', 'vehicles.make', 'vehicles.model', 'vehicles.permit_type')
-        ->get();
-
-    return view('residents.index', compact('residents'));
-}
+    {
+        $residents = DB::table('users')
+            ->select('users.name', 'users.email', 'departaments.apart_unit', 'departaments.reserved_space', 'departaments.permit_status', 'vehicles.*')
+            ->join('departaments', 'users.id', '=', 'departaments.user_id')
+            ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
+            ->orderBy('users.id')
+            ->distinct() // Agregar la cláusula DISTINCT
+            ->get();
+        
+        return view('residents.index', compact('residents'));
+    }
 
 
     /**
