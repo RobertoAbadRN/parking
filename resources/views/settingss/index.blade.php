@@ -169,33 +169,33 @@
                                             {{ $property->address }}
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <button
-                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                            <a href="{{ route('settings.permit', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" title="Permit Definition">
                                                 <i class="fas fa-edit mr-2"></i>
                                                 2 languages
-                                            </button>
+                                            </a>
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <button
-                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                            <a href="{{ route('settings.permit.type', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" title="Edit Permit Type">
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit
-                                            </button>
+                                            </a>
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <button
-                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                            <a href="{{ route('settings.permit.visitor', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" title="Edit Custom Forms">
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit
-                                            </button>
+                                            </a>
 
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
-                                            <button
-                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                            <a href="{{ route('settings.permit.registration', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" title="Edit Custom Forms">
                                                 <i class="fas fa-edit mr-2"></i>
                                                 Edit
-                                            </button>
+                                            </a>
 
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
@@ -209,7 +209,7 @@
                                                 <i class="fas fa-users mr-2"></i>
                                                 Users
                                             </a>
-                                            
+
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
 

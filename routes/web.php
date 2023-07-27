@@ -191,6 +191,10 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::get('/settings/admin/permit/{property}', [SettingsController::class, 'permit'])->name('settings.permit');
+    Route::get('/settings/admin/permit/type/{property}', [SettingsController::class, 'permit_type'])->name('settings.permit.type');
+    Route::get('/settings/admin/visitors/{property}', [SettingsController::class, 'visitor'])->name('settings.permit.visitor');
+    Route::get('/settings/admin/pre-registration/{property}', [SettingsController::class, 'registration'])->name('settings.permit.registration');
 
     /**
      * ==============================
