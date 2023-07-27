@@ -13,7 +13,8 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
+Use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 class UsersController extends Controller
 {
     /**
@@ -21,15 +22,15 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   
+
 
      public function index()
      {
-        $users = User::all(); 
- 
+        $users = User::all();
+
          return view('users.index', ['users' => $users]);
      }
-     
+
 
     /**
      * Show the form for creating a new resource.
@@ -40,8 +41,8 @@ class UsersController extends Controller
     {
 
         $properties = Property::all();
-
-        return view('users.adduser', compact('properties'));
+        $roles = Role::all();
+        return view('users.adduser', compact('properties', 'roles'));
     }
 
     public function verificarCorreo(Request $request)
@@ -78,6 +79,7 @@ class UsersController extends Controller
             'password' => 'required',
             'access_level' => 'required',
             'property_code' => 'required',
+            'role' => 'required',
         ]);
         //dd($validatedData);
 
@@ -106,6 +108,7 @@ class UsersController extends Controller
             'property_code' => $validatedData['property_code'],
             'banned' => 'NO',
         ]);
+        $user->assignRole($request->role);
 
         // Redireccionar a una página de éxito o mostrar un mensaje de éxito
         return redirect()->route('users')->with('success_message', 'User created successfully!');
@@ -132,12 +135,13 @@ class UsersController extends Controller
 {
     $user = User::find($id);
     $properties = Property::pluck('address', 'property_code');
-
+    $userRole = DB::table('model_has_roles')->select('role_id')->where('model_id',  $id)->pluck('role_id')->toArray();
+    $roles = Role::all();
     if (!$user) {
         return redirect()->route('users')->with('error', 'User not found.');
     }
 
-    return view('users.edituser', compact('user', 'properties'));
+    return view('users.edituser', compact('user', 'properties', 'userRole', 'roles'));
 }
 
 
@@ -164,7 +168,7 @@ class UsersController extends Controller
             'password' => 'nullable|min:8',
             'access_level' => 'required',
             'property_code' => 'required',
-
+            'role'          => 'required'
         ]);
 
         $user = User::find($id);
@@ -174,12 +178,13 @@ class UsersController extends Controller
         $user->email = $validatedData['email'];
         $user->access_level = $validatedData['access_level'];
         $user->property_code = $validatedData['property_code'];
-    
+
         if ($request->filled('password')) {
-            $user->password = Hash::make($validatedData['password']);
+            $user->password = bcrypt($validatedData['password']);
         }
-    
+
         $user->save();
+        $user->syncRoles($request->role);
 
         return redirect()->route('users')->with('success_message', 'User updated successfully.');
     }

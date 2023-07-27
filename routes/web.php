@@ -9,6 +9,7 @@ use App\Http\Controllers\RecidentsController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VisitorsController;
@@ -190,6 +191,14 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+
+    /**
+     * ==============================
+     *       @Router - roles/
+     * ==============================
+     */
+    //Route::resource('/roles', [RoleController::class]);
+    Route::resource('/roles', RoleController::class);
 
 });
 

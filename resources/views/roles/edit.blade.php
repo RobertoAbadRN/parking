@@ -10,13 +10,13 @@
             <ul class="hidden flex-wrap items-center space-x-2 sm:flex">
                 <li class="flex items-center space-x-2">
                     <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#">Users</a>
+                        href="#">Roles</a>
                     <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </li>
-                <li>Add New User</li>
+                <li>Edit Role</li>
             </ul>
         </div>
 
@@ -37,7 +37,7 @@
                                     </svg>
                                 </div>
                                 <h3 class="text-xs font-medium text-slate-700 dark:text-navy-100">
-                                    Create Account
+                                    Edit Role
                                 </h3>
                             </li>
                             <li class="step before:bg-primary dark:before:bg-accent">
@@ -78,128 +78,44 @@
         <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             <div class="col-span-12 sm:col-span-10">
                 <div class="card p-4 sm:p-5">
-                    <p class="text-base font-medium text-slate-700 dark:text-navy-100">
-                        Add New User
+                    <p class="text-base mb-1 font-medium text-slate-700 dark:text-navy-100">
+                        Role
                     </p>
-
-                    <form action="{{ route('users.store') }}" method="POST">
+                    <form action="{{ route('roles.update', ['role' => $role->id]) }}" method="POST">
                         @csrf
+                        @method('PUT')
                         <div class="mb-4">
                             <label class="relative flex">
                                 <input
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="User Name" type="text" name="user" value="{{ old('user') }}" />
-                            </label>
-                            @error('user')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Full Name" type="text" name="name" value="{{ old('name') }}" />
+                                    placeholder="Name" type="text" name="name" value="{{ old('name') ?? $role->name }}" />
                             </label>
                             @error('name')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
-
                         <div class="mb-4">
-                            <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Phone" type="text" name="phone" value="{{ old('phone') }}" />
-                            </label>
-                            @error('phone')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <input id="email"
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Email" type="email" name="email" value="{{ old('email') }}" />
-                            </label>
-                            @if ($errors->has('email'))
-                                <span class="text-tiny+ text-error">{{ $errors->first('email') }}</span>
-                            @endif
-
-                            <span id="email-error" class="text-tiny+ text-error"></span>
-                        </div>
-
-
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Password" type="password" name="password" />
-                            </label>
-                            @error('password')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="access_level">
-                                    <option value="" disabled selected>Select access level</option>
-                                    <option value="property_leasion_agent">Property Leasion Agent</option>
-                                    <option value="property_manager">Property Manager</option>
-                                    <option value="property_owner">Property Owner</option>
-                                    <option value="parking_inspector">Parking Inspector</option>
-                                    <option value="company_administrator">Company Administrator</option>
-                                </select>
-                            </label>
+                            <p class="text-base mb-4 font-medium text-slate-700 dark:text-navy-100">
+                                Access level user
+                            </p>
+                            @foreach ($permissions as $permission)
+                                <div class="mb-4">
+                                    <input id="access_level{{$permission->id}}" type="checkbox" name="access_level[]" value="{{  $permission->id }}" {{ (in_array($permission->id , old('syncPermissions', $syncPermissions))) ? ' checked' : '' }} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="access_level{{$permission->id}}" class="ml-2 text-sm font-medium text-gray-400 dark:text-gray-500">{{$permission->name}}</label>
+                                </div>
+                            @endforeach
                             @error('access_level')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="property_code">
-                                    <option value="" disabled selected>Select property</option>
-                                    @foreach ($properties as $property)
-                                        <option value="{{ $property->property_code }}">{{ $property->address }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            @error('property_code')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="role">
-                                    <option value="" disabled selected>Select role</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            @error('role')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-
                         <div>
-
                             <button type="submit"
                                 class="btn bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
                                 Submit
                             </button>
                             <button type="button"
                                 class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
-                                onclick="window.location.href='{{ route('users') }}'">
+                                onclick="window.location.href='{{ route('roles.index') }}'">
                                 Cancel
                             </button>
                         </div>
@@ -233,8 +149,9 @@
                     });
                 });
             });
+            const multiSelect = document.querySelector("#multiSelection");
+            const multiSelectInstance = te.Select.getInstance(multiSelect);
+            multiSelectInstance.setValue(["3", "4", "5"]);
         </script>
-
-
     </main>
 </x-app-layout>
