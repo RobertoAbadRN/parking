@@ -58,6 +58,11 @@
                             style="width: auto; height: 40px;">
                             <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
                         </a>
+                        <a href="#"
+                        class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
+                        style="width: auto; height: 40px;">
+                        <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Visitor
+                    </a>
 
                     </div>
                 </div>
