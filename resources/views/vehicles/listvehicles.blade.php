@@ -171,7 +171,7 @@
                                                 onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
-                                            
+
                                             <script>
                                                 function showConfirmation(vehicleId) {
                                                     Swal.fire({

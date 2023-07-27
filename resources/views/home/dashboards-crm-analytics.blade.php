@@ -6,69 +6,84 @@
             <div class="col-span-12 lg:col-span-8">
                 <div class="flex items-center justify-between space-x-2">
                     <h2 class="text-base font-medium tracking-wide text-slate-800 line-clamp-1 dark:text-navy-100">
-                        Autos registrados
+                        DASHBOARD
                     </h2>
                 </div>
             </div>
             <div class="col-span-12 lg:col-span-12">
                 <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-2">
 
-                    <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
-                        <div class="flex justify-between space-x-1">
-                            <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
-                                {{ number_format($totalVehicles) }}
-                            </p>
-                            <i class="fas fa-car text-primary dark:text-accent"></i>
+                    <a href="{{ route('vehicles') }}">
+                        <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
+                            <div class="flex justify-between space-x-1">
+                                <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
+                                    {{ number_format($totalVehicles) }}
+                                </p>
+                                <i class="fas fa-car text-primary dark:text-accent"></i>
+                            </div>
+                            <p class="mt-1 text-xs+">Autos</p>
                         </div>
-                        <p class="mt-1 text-xs+">Autos</p>
-                    </div>
+                    </a>
+                    
                     
 
 
-                    <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
-                        <div class="flex justify-between">
-                            <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
-                                {{ $recidentsCount }}
-                            </p>
-                            <i class="fas fa-users text-primary dark:text-accent"></i>
+                    <a href="{{ route('recidents') }}">
+                        <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
+                            <div class="flex justify-between">
+                                <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
+                                    {{ $recidentsCount }}
+                                </p>
+                                <i class="fas fa-users text-primary dark:text-accent"></i>
+                            </div>
+                            <p class="mt-1 text-xs+">Recidents</p>
                         </div>
-                        <p class="mt-1 text-xs+">Recidents</p>
-                    </div>
+                    </a>
+                    
                     
 
 
-                    <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
-                        <div class="flex justify-between">
-                            <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
-                                {{ $propertiesCount }}
-                            </p>
-                            <i class="fas fa-home text-primary dark:text-accent"></i>
+                    <a href="{{ route('properties') }}">
+                        <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
+                            <div class="flex justify-between">
+                                <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
+                                    {{ $propertiesCount }}
+                                </p>
+                                <i class="fas fa-home text-primary dark:text-accent"></i>
+                            </div>
+                            <p class="mt-1 text-xs+">Properties</p>
                         </div>
-                        <p class="mt-1 text-xs+">Properties</p>
-                    </div>
+                    </a>
+                    
                     
 
 
-                    <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
-                        <div class="flex justify-between">
-                            <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
-                                {{ $visitorPassesCount }}
-                            </p>
-                            <i class="fas fa-users text-primary dark:text-accent"></i>
+                    <a href="{{ route('visitors_pass') }}">
+                        <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
+                            <div class="flex justify-between">
+                                <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
+                                    {{ $visitorPassesCount }}
+                                </p>
+                                <i class="fas fa-users text-primary dark:text-accent"></i>
+                            </div>
+                            <p class="mt-1 text-xs+">Visitors Pass</p>
                         </div>
-                        <p class="mt-1 text-xs+">Visitor Passes</p>
-                    </div>
+                    </a>
+                    
                     
 
-                    <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
-                        <div class="flex justify-between">
-                            <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
-                                {{ $usersCount }}
-                            </p>
-                            <i class="fas fa-users text-primary dark:text-accent"></i>
+                    <a href="{{ route('recidents') }}">
+                        <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
+                            <div class="flex justify-between">
+                                <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
+                                    {{ $usersCount }}
+                                </p>
+                                <i class="fas fa-users text-primary dark:text-accent"></i>
+                            </div>
+                            <p class="mt-1 text-xs+">Recidents</p>
                         </div>
-                        <p class="mt-1 text-xs+">Recidents</p>
-                    </div>
+                    </a>
+                    
                     
 
                 </div>

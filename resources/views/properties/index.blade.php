@@ -125,13 +125,13 @@
                                                             'https://amartineztowingop.com/visitors/addvisitors?property_code=' . $property->property_code,
                                                         ) !!}
                                                     </div>
-
-                                                    <p class="mt-2">Scan me to return to the original page.</p>
+                                                    <p class="my-2">Scan me to return to the original page.</p>
 
                                                     <button id="cerrar-modal-modelo-{{ $property->id }}"
                                                         class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
                                                         Cerrar
                                                     </button>
+                                                    
                                                 </div>
                                             </div>
                                         </div>
@@ -276,6 +276,38 @@
                 });
             });
         </script>
+        <script>
+            // Obtener el elemento de la imagen del QR code por su ID
+            const qrCodeImage = document.querySelector('.visible-print img');
+
+            // Agregar el evento de clic a la imagen del QR code
+            qrCodeImage.addEventListener('click', function() {
+                // Obtener el URL de la imagen del QR code
+                const qrCodeUrl = qrCodeImage.src;
+
+                // Crear un elemento temporal de input para copiar el URL al portapapeles
+                const tempInput = document.createElement('input');
+                tempInput.value = qrCodeUrl;
+
+                // Agregar el elemento de input al DOM
+                document.body.appendChild(tempInput);
+
+                // Seleccionar el texto dentro del elemento de input
+                tempInput.select();
+                tempInput.setSelectionRange(0, 99999); // Para dispositivos móviles
+
+                // Intentar copiar el texto al portapapeles
+                document.execCommand('copy');
+
+                // Remover el elemento de input del DOM
+                document.body.removeChild(tempInput);
+
+                // Mostrar una notificación o realizar cualquier otra acción para indicar que se ha copiado el URL
+                alert('URL del QR code copiado al portapapeles: ' + qrCodeUrl);
+            });
+        </script>
+
+
 
     </main>
 
