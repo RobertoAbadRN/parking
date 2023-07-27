@@ -85,6 +85,7 @@
                                 <th class="px-4 py-2">Model</th>
                                 <th class="px-4 py-2">Reserved Space</th>
                                 <th class="px-4 py-2">Permit Status</th>
+                                <th class="px-4 py-2">Status</th>
                                 <th class="px-4 py-2">E-mail</th>
                                 <th class="px-4 py-2">Phone</th>
                                 <th class="px-4 py-2">Type</th>
@@ -138,7 +139,14 @@
                                         ?>
 
                                     </td>
-
+                                    <td class="px-4 py-2 text-center">
+                                        @if ($vehicle->status === 'approved')
+                                            Approved
+                                        @else
+                                            Not Approved
+                                        @endif
+                                    </td>
+                                    
                                     <td class="px-4 py-2">
                                         {{ $vehicle->email }}
                                     </td>
@@ -160,7 +168,9 @@
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-
+                                            <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fa fa-print"></i>
+                                            </a>
                                             <a href="{{ route('send.email', ['id' => $vehicle->id, 'property_code' => $property_code, 'email' => $vehicle->email]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-envelope"></i>
@@ -171,6 +181,11 @@
                                                 onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
+                                            <a href="#" onclick="updateStatus({{ $vehicle->id }})"
+                                                class="btn h-8 w-auto px-3 py-1 bg-green-500 text-white hover:bg-green-600 focus:bg-green-700 active:bg-green-800 rounded">
+                                                Approve
+                                             </a>
+                                            
 
                                             <script>
                                                 function showConfirmation(vehicleId) {
@@ -208,6 +223,31 @@
                 </div>
             </div>
         </div>
+        <script>
+            function updateStatus(vehicleId) {
+              // Realizar la solicitud POST utilizando AJAX
+              fetch(`/vehicles/update-status/${vehicleId}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                  status: 'approved'
+                })
+              })
+              .then(response => response.json())
+              .then(data => {
+                // Manejar la respuesta del servidor si es necesario
+                console.log(data);
+                // Opcional: redireccionar o actualizar la página si es necesario
+                // window.location.reload();
+              })
+              .catch(error => {
+                console.error('Error:', error);
+              });
+            }
+          </script>          
 
         <script>
             $(document).ready(function() {

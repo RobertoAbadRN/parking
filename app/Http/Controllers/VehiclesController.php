@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Departament;
 use App\Models\Property;
 use App\Models\Resident;
-use App\Models\User; // Importar el modelo Departament
 use App\Models\Vehicle;
+use App\Models\User; // Importar el modelo Departament
 use Carbon\Carbon;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -508,5 +508,23 @@ class VehiclesController extends Controller
 
         return $response;
     }
+    public function updateStatus(Request $request, $vehicleId)
+{
+    try {
+        // Encontrar el vehículo por su ID
+        $vehicle = Vehicle::findOrFail($vehicleId);
+
+        // Actualizar el campo 'status' a 'approved'
+        $vehicle->status = 'approved';
+        $vehicle->save();
+
+        // Enviar un mensaje a la vista usando with()
+        return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
+
+    } catch (\Exception $e) {
+        // Si ocurre un error, redirigir con un mensaje de error
+        return Redirect::back()->with('error_message', 'Error updating vehicle status');
+    }
+}
 
 }

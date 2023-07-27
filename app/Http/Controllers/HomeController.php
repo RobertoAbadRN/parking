@@ -14,33 +14,16 @@ class HomeController extends Controller
 {
     public function dashboardsCrmAnalytics()
     {
-        // Get the current month and year
-        $currentMonth = Carbon::now()->format('m');
-        $currentYear = Carbon::now()->format('Y');
-
-        // Query the database to get the sum of autos per month
-        $monthlySum = Vehicle::selectRaw('MONTH(created_at) as month, COUNT(*) as total_autos')
-            ->whereYear('created_at', $currentYear)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get();
-
-        // Prepare the data for the chart
-        $chartData = [];
-        foreach ($monthlySum as $data) {
-            $chartData[] = [
-                'month' => $data->month,
-                'total_autos' => $data->total_autos,
-            ];
+        
              // Calculate the total count of vehicles
           $totalVehicles = Vehicle::count();
           $recidentsCount = User::where('access_level', 'Recidents')->count();
           $propertiesCount = Property::count();
           $visitorPassesCount = VisitorPass::count();
           $usersCount = User::where('access_level', 'Recidents')->count();
-        }
+       
 
-        return view('home.dashboards-crm-analytics', compact('chartData', 'totalVehicles','recidentsCount', 'propertiesCount','visitorPassesCount', 'usersCount'));
+        return view('home.dashboards-crm-analytics', compact( 'totalVehicles','recidentsCount', 'propertiesCount','visitorPassesCount', 'usersCount'));
     
     }
     public function elementsAvatar()

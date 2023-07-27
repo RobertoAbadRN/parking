@@ -165,6 +165,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/excel/{property_code}', [VehiclesController::class, 'listvehicles_excel'])->name('listvehicles_excel');
     Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
+    Route::post('/vehicles/update-status/{vehicle}', [VehiclesController::class, 'updateStatus'])->name('update_status');
 
     /**
      * ==============================
