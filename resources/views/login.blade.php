@@ -4,7 +4,7 @@
             <h1 class="text-4xl font-bold text-gray-800 mb-4">¡En mantenimiento!</h1>
             <p class="text-lg text-gray-600">Estamos trabajando en el sitio en este momento. Por favor, vuelve más tarde.</p>
         </div>
-        
+
     </main>
 
 

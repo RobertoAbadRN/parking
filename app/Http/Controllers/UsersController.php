@@ -21,18 +21,18 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   
+
 
      public function index()
      {
          $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
                       ->select('users.*', 'properties.name as property_name')
                       ->get();
-     
+
          return view('users.index', ['users' => $users]);
      }
-     
-     
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -177,11 +177,11 @@ class UsersController extends Controller
         $user->email = $validatedData['email'];
         $user->access_level = $validatedData['access_level'];
         $user->property_code = $validatedData['property_code'];
-    
+
         if ($request->filled('password')) {
             $user->password = Hash::make($validatedData['password']);
         }
-    
+
         $user->save();
 
         return redirect()->route('users')->with('success_message', 'User updated successfully.');

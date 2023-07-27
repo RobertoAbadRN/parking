@@ -12,6 +12,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VisitorsController;
+use App\Http\Controllers\DocusignController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -198,6 +199,16 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+
+    /**
+     * ==============================
+     *       @Router - Docusign
+     * ==============================
+     */
+    Route::get('docusign',[DocusignController::class, 'index'])->name('docusign');
+    Route::get('connect-docusign',[DocusignController::class, 'connectDocusign'])->name('connect.docusign');
+    Route::get('docusign/callback',[DocusignController::class,'callback'])->name('docusign.callback');
+    Route::get('sign-document',[DocusignController::class,'signDocument'])->name('docusign.sign');
 
 });
 

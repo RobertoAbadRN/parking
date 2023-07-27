@@ -158,6 +158,10 @@
                                     </th>
                                     <th
                                         class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
+                                        Docusign
+                                    </th>
+                                    <th
+                                        class="whitespace-nowrap bg-slate-200 px-4 py-3 font-semibold uppercase text-slate-800 dark:bg-navy-800 dark:text-navy-100 lg:px-5">
                                         View
                                     </th>
                                 </tr>
@@ -199,6 +203,14 @@
 
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
+                                            <a
+                                                href="{{ route('connect.docusign') }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                Sign document
+                                            </a>
+                                        </td>
+                                        <td class="whitespace-nowrap px-4 py-3 sm:px-5">
                                             <a href="{{ route('properties.vehicles', $property->property_code) }}"
                                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90 lg:mr-1">
                                                 <i class="fas fa-car mr-2"></i>
@@ -209,7 +221,7 @@
                                                 <i class="fas fa-users mr-2"></i>
                                                 Users
                                             </a>
-                                            
+
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3 sm:px-5">
 
