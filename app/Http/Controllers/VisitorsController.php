@@ -27,23 +27,23 @@ class VisitorsController extends Controller
         return view('visitors/addvisitors', compact('property_code', 'address'));
     }
 
+   
+    
     public function show()
-    {
-        $visitorPasses = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
-            ->select('properties.property_code', 'properties.name')
-            ->distinct()
-            ->get();
+{
+    $properties = Property::select('properties.name as nombre_propiedad', 'properties.property_code',
+        DB::raw('COUNT(visitorpasses.id) as pass_issued'),
+        DB::raw('SUM(CASE WHEN visitorpasses.status = "Active" THEN 1 ELSE 0 END) as active_passes'),
+        DB::raw('SUM(CASE WHEN visitorpasses.status = "Expired" THEN 1 ELSE 0 END) as expired_passes'),
+        DB::raw('SUM(CASE WHEN visitorpasses.status = "Invalid" THEN 1 ELSE 0 END) as invalid_passes'))
+        ->leftJoin('visitorpasses', 'properties.property_code', '=', 'visitorpasses.property_code')
+        ->groupBy('properties.name', 'properties.property_code')
+        ->get();
 
-        $expiredCount = VisitorPass::where('status', 'expired')->count();
-        $activeCount = VisitorPass::where('status', 'active')->count();
-        $invalidCount = VisitorPass::where('status', 'invalid')->count();
-
-        // Obtener el property_code
-        $propertyCode = request()->get('property_code');
-
-        return view('visitors/index', compact('visitorPasses', 'expiredCount', 'activeCount', 'invalidCount'))
-            ->with('property_code', $propertyCode);
-    }
+    // Puedes pasar la colección con los resultados a la vista
+    return view('visitors/index', ['properties' => $properties]);
+}
+    
 
     public function registerVisitorPass(Request $request)
     {
@@ -158,22 +158,22 @@ class VisitorsController extends Controller
 
     public function excel_visitorspases()
     {
-           // Create new Spreadsheet object
+        // Create new Spreadsheet object
         // Crea una instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $datos=VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
-        ->select('properties.property_code', 'properties.name')
-        ->distinct()
-        ->get();
+        $datos = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
+            ->select('properties.property_code', 'properties.name')
+            ->distinct()
+            ->get();
 
-    $expiredCount = VisitorPass::where('status', 'expired')->count();
-    $activeCount = VisitorPass::where('status', 'active')->count();
-    $invalidCount = VisitorPass::where('status', 'invalid')->count();
+        $expiredCount = VisitorPass::where('status', 'expired')->count();
+        $activeCount = VisitorPass::where('status', 'active')->count();
+        $invalidCount = VisitorPass::where('status', 'invalid')->count();
 
-    // Obtener el property_code
-    $propertyCode = request()->get('property_code');
+        // Obtener el property_code
+        $propertyCode = request()->get('property_code');
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A1', 'Property')
@@ -187,8 +187,8 @@ class VisitorsController extends Controller
             $spreadsheet->getActiveSheet()
                 ->setCellValue('A' . $i, $dato->name)
                 ->setCellValue('B' . $i, $dato->count())
-                ->setCellValue('C' . $i, $activeCount )
-                ->setCellValue('D' . $i, $expiredCount )
+                ->setCellValue('C' . $i, $activeCount)
+                ->setCellValue('D' . $i, $expiredCount)
                 ->setCellValue('E' . $i, $invalidCount);
 
             $i++;
@@ -209,15 +209,15 @@ class VisitorsController extends Controller
 
     public function excel_visitorforid($property_code)
     {
-           // Create new Spreadsheet object
+        // Create new Spreadsheet object
         // Crea una instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $datos=VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
-        ->where('visitorpasses.property_code', $property_code)
-        ->select('visitorpasses.valid_from', 'visitorpasses.license_plate', 'visitorpasses.make', 'visitorpasses.model', 'visitorpasses.color', 'visitorpasses.year', 'visitorpasses.unit_number', 'visitorpasses.status', 'visitorpasses.visitor_name', 'visitorpasses.resident_phone', 'visitorpasses.vehicle_type', 'visitorpasses.resident_name')
-        ->get();
+        $datos = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
+            ->where('visitorpasses.property_code', $property_code)
+            ->select('visitorpasses.valid_from', 'visitorpasses.license_plate', 'visitorpasses.make', 'visitorpasses.model', 'visitorpasses.color', 'visitorpasses.year', 'visitorpasses.unit_number', 'visitorpasses.status', 'visitorpasses.visitor_name', 'visitorpasses.resident_phone', 'visitorpasses.vehicle_type', 'visitorpasses.resident_name')
+            ->get();
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A1', 'Visitors name')
@@ -246,7 +246,6 @@ class VisitorsController extends Controller
                 ->setCellValue('I' . $i, $dato->resident_phone)
                 ->setCellValue('J' . $i, $dato->vehicle_type)
                 ->setCellValue('K' . $i, $dato->status);
-                ;
 
             $i++;
         }
