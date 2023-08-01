@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\DocusignController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
@@ -144,12 +145,19 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
+    Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
+    Route::post('/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
     Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
     Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
     Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');
     Route::post('/residents/{resident}/delete', [RecidentsController::class, 'destroy'])->name('residents.destroy');
     Route::post('import-csv', [RecidentsController::class, 'importCSV'])->name('importCSV');
-    Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
+    Route::post('/updatestatus', [RecidentsController::class, 'updateStatus'])->name('updateStatus');
+
+
+
+
+
 
     /**
      * ==============================
@@ -178,12 +186,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/excelvisitors', [VisitorsController::class, 'excel_visitorspases'])->name('excel_visitorspases');
     Route::get('/excelvisitorsid/{property_code}', [VisitorsController::class, 'excel_visitorforid'])->name('excel_visitorforid');
 
-    /**
+     /**
+
      * ==============================
+
      *       @Router - documents/
+
      * ==============================
+
      */
+
     Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
+
+    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
+
+    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
+
+    // Ruta para mostrar el formulario de edición
+
+    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
+
+    // Ruta para enviar los datos del formulario y actualizar el documento
+
+    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
+
+    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+
+
 
     /**
      * ==============================
@@ -215,3 +244,20 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');
+ /**
+
+     * ==============================
+
+     *       @Router - Docusign
+
+     * ==============================
+
+     */
+
+    Route::get('docusign', [DocusignController::class, 'index'])->name('docusign');
+
+    Route::get('connect-docusign', [DocusignController::class, 'connectDocusign'])->name('connect.docusign');
+
+    Route::get('docusign/callback', [DocusignController::class, 'callback'])->name('docusign.callback');
+
+    Route::get('sign-document', [DocusignController::class, 'signDocument'])->name('docusign.sign');

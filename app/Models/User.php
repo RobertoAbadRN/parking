@@ -27,8 +27,12 @@ class User extends Authenticatable
         'access_level',
         'property_code',
         'banned',
-
+        'status', 
     ];
+    public function department()
+    {
+        return $this->hasOne(Department::class); // Assuming the foreign key is 'user_id'
+    }	
 
     /**
      * The attributes that should be hidden for serialization.
