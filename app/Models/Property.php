@@ -11,7 +11,7 @@ class Property extends Model
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($property) {
             $property->property_code = Str::random(5);
         });
@@ -30,4 +30,9 @@ class Property extends Model
         'property_code',
         'logo',
     ];
+
+    public function Settings()
+    {
+        return $this->hasMany('App\Models\PropertySetting');
+    }
 }

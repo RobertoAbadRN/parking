@@ -46,7 +46,10 @@
 
 <!-- Agregar jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<!-- Agregar axios -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+<!-- Agregar jquery-validate -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.js"></script>
 <!-- Agregar DataTables -->
 <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
@@ -68,7 +71,7 @@
             <!-- Main Sidebar -->
             <x-app-partials.main-sidebar></x-app-partials.main-sidebar>
 
-            <!-- Sidebar Panel --> 
+            <!-- Sidebar Panel -->
             <x-app-partials.sidebar-panel></x-app-partials.sidebar-panel>
         </div>
 

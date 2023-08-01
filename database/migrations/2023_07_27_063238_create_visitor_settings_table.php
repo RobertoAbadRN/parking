@@ -13,14 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('visitor_settings');
         Schema::create('visitor_settings', function (Blueprint $table) {
             $table->id();
             $table->string('field')->nullable();
             $table->boolean('required')->nullable();
             $table->boolean('validation')->nullable();
+            $table->boolean('active')->nullable();
             $table->string('name')->nullable();
             $table->string('valor')->nullable();
-            $table->string('type')->nullable();
+            $table->string('type')->nullable()->default('form');
+            $table->bigInteger('property_id')->nullable();
             $table->timestamps();
         });
     }

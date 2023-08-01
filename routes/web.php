@@ -195,7 +195,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings/admin/permit/type/{property}', [SettingsController::class, 'permit_type'])->name('settings.permit.type');
     Route::get('/settings/admin/visitors/{property}', [SettingsController::class, 'visitor'])->name('settings.permit.visitor');
     Route::get('/settings/admin/pre-registration/{property}', [SettingsController::class, 'registration'])->name('settings.permit.registration');
-
+    Route::post('/settings/languages', [SettingsController::class, 'language'])->name('settings.language');
+    Route::post('/settings/languages/store', [SettingsController::class, 'store'])->name('settings.language.store');
+    Route::post('/settings/visitors/store', [SettingsController::class, 'visitorSettingStore'])->name('settings.visitor.store');
     /**
      * ==============================
      *       @Router - roles/
