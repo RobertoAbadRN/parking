@@ -4,11 +4,7 @@
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
                 <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
                     href="{{ url('/vehicles') }}">
-                    @if ($vehicles->count() > 0)
-                        <p>LIST OF VEHICLES FOR: {{ $vehicles[0]->address }}</p>
-                    @else
-                        <p>ADDRESS: {{ $address }}</p>
-                    @endif
+                    <p>LIST OF VEHICLES FOR: {{ $property_name }}</p>
                 </a>
 
             </h4>
@@ -161,7 +157,8 @@
                                                 <i class="fa fa-edit"></i>
                                             </a>
 
-                                            <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                            <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-print"></i>
                                             </a>
 

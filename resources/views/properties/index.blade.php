@@ -38,6 +38,38 @@
 
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
 
+            @if (session('success_message'))
+                <div id="success-message"
+                    class="alert flex rounded-lg border border-success px-4 py-4 text-success sm:px-5">
+
+                    {{ session('success_message') }}
+
+                </div>
+            @endif
+
+
+
+            <script>
+                // Ocultar el mensaje de éxito después de 5 segundos
+
+                setTimeout(function() {
+
+                    var successMessage = document.getElementById('success-message');
+
+                    if (successMessage) {
+
+                        successMessage.style.display = 'none';
+
+                    }
+
+                }, 5000);
+            </script>
+            @if (session('error'))
+                <div class="text-red-500 mb-4">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <!-- From HTML Table -->
 
             <div class="inline-flex space-x-2">
@@ -119,25 +151,15 @@
 
                                 <th class="px-4 py-2"> Address</th>
 
-                                <th class="px-4 py-2"> City</th>
-
-                                <th class="px-4 py-2"> State</th>
-
                                 <th class="px-4 py-2"> Property Code</th>
 
-                                <th class="px-4 py-2">Type</th>
-
-                                <th class="px-4 py-2">#places</th>
+                                <th class="px-4 py-2">Nickname</th>
 
                                 <th class="px-4 py-2"># Vehicles</th>
-
-                                <th class="px-4 py-2"># Users</th>
 
                                 <th class="px-4 py-2">Status</th>
 
                                 <th class="px-4 py-2">Actions</th>
-
-
 
                             </tr>
 
@@ -152,8 +174,6 @@
 
                                         {{ $property->area }}
 
-
-
                                     </td>
 
                                     <td class="px-4 py-2">
@@ -167,20 +187,6 @@
                                         {{ $property->address }}
 
                                     </td>
-
-                                    <td class="px-4 py-2">
-
-                                        {{ $property->city }}
-
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        {{ $property->state }}
-
-                                    </td>
-
-
 
                                     <td class="px-4 py-2">
 
@@ -208,7 +214,7 @@
                                                     <h2
                                                         class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
 
-                                                        {{ $property->address }}
+                                                        {{ $property->name }}
 
                                                     </h2>
 
@@ -246,17 +252,9 @@
 
                                         </div>
                                     </td>
+                                    <td class="px-4 py-2 text-center">
 
-                                    <td class="px-4 py-2">
-
-                                        {{ $property->location_type }}
-
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        {{ $property->places }}
-
+                                        {{ $property->nickname }}
                                     </td>
 
                                     <td class="px-4 py-2">
@@ -265,89 +263,25 @@
 
                                     </td>
 
+
                                     <td class="px-4 py-2">
-
-                                        {{ $property->total_users }}
-
+                                        <form action="{{ route('updatePermitStatus', $property->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <label class="inline-flex items-center space-x-2">
+                                                <span>Off</span>
+                                                <input
+                                                    class="form-switch h-5 w-10 rounded-full bg-slate-300 before:rounded-full before:bg-slate-50 checked:bg-primary checked:before:bg-white dark:bg-navy-900 dark:before:bg-navy-300 dark:checked:bg-accent dark:checked:before:bg-white"
+                                                    type="checkbox" name="permit_status"
+                                                    value="{{ $property->permit_status === 'active' ? 'inactive' : 'active' }}"
+                                                    {{ $property->permit_status === 'active' ? 'checked' : '' }}
+                                                    onchange="this.form.submit()" />
+                                                <span>On</span>
+                                            </label>
+                                        </form>
                                     </td>
 
 
-
-                                    <td class="px-4 py-2 text-center">
-
-                                        @if ($property->permit_status == 1)
-                                            on
-
-                                            <label class="inline-flex items-center space-x-2">
-
-                                                <input id="permit-status-toggle-{{ $property->id }}"
-                                                    class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
-                                                    type="checkbox" checked
-                                                    onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
-
-
-
-                                            </label>
-                                        @else
-                                            off
-
-                                            <label class="inline-flex items-center space-x-2">
-
-                                                <input id="permit-status-toggle-{{ $property->id }}"
-                                                    class="form-switch is-outline h-5 w-10 rounded-full border border-slate-400/70 bg-transparent before:rounded-full before:bg-slate-300 checked:!border-info checked:before:!bg-info dark:border-navy-400 dark:before:bg-navy-300"
-                                                    type="checkbox"
-                                                    onclick="updatePermitStatus('{{ $property->id }}', this.checked)" />
-
-
-
-                                            </label>
-                                        @endif
-
-
-
-                                    </td>
-
-                                    <!-- Agrega esta etiqueta script en el head o antes de usar la función updatePermitStatus -->
-
-                                    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-
-
-                                    <script>
-                                        function updatePermitStatus(propertyId, isChecked) {
-
-                                            const permitStatus = isChecked ? 1 : 0;
-
-
-
-                                            // Realiza una solicitud al servidor para actualizar el campo permit_status en la base de datos
-
-                                            // Puedes utilizar AJAX o enviar una solicitud HTTP al endpoint correspondiente
-
-
-
-                                            // Ejemplo utilizando Axios
-
-                                            axios.put(`/properties/${propertyId}/update-permit-status`, {
-
-                                                    permitStatus
-
-                                                })
-
-                                                .then(response => {
-
-                                                    console.log(response.data);
-
-                                                })
-
-                                                .catch(error => {
-
-                                                    console.error(error);
-
-                                                });
-
-                                        }
-                                    </script>
 
                                     <td class="px-4 py-2 text-center">
 
@@ -373,9 +307,6 @@
                                                 <i class="fas fa-users"></i>
 
                                             </a>
-
-
-
                                             <a href="{{ route('properties.destroy', $property->id) }}"
                                                 class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                 onclick="event.preventDefault(); showConfirmation('{{ $property->id }}');">
@@ -383,8 +314,6 @@
                                                 <i class="fa fa-trash-alt"></i>
 
                                             </a>
-
-
 
                                             <script>
                                                 function showConfirmation(propertyId) {

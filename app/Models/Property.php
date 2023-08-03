@@ -29,6 +29,8 @@ class Property extends Model
         'places',
         'property_code',
         'logo',
+        'permit_status',
+        'nickname',
     ];
 
     public function Settings()

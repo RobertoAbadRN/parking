@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/properties/excel', [PropertyController::class, 'utiles_excel'])->name('utiles_excel');
     Route::get('properties/vehicles/{property_code}', [PropertyController::class, 'vehicles'])->name('properties.vehicles');
     Route::get('properties/users/{property_code}', [PropertyController::class, 'users'])->name('properties.users');
-    Route::put('/properties/{property}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('properties.updatePermitStatus');
+    Route::put('/properties/{id}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('updatePermitStatus');
     Route::get('/properties/user/{property_code}', [PropertyController::class, 'adduser'])
         ->name('propertiesUser');
 
