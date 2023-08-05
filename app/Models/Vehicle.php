@@ -17,6 +17,12 @@ class Vehicle extends Model
         'year',
         'color',
         'vehicle_type',
+        'property_code',
+        'user_id',
+        'permit_type',
+        'start_date',
+        'end_date',
+        'permit_status',
     ];
 
     public function property()

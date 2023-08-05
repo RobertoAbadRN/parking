@@ -170,19 +170,22 @@
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                        name="property_code">
+                                <select id="properties"
+                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                    name="properties[]" multiple="multiple">
                                     <option value="" disabled>Select property</option>
                                     @foreach ($properties as $propertyCode => $address)
-                                        <option value="{{ $propertyCode }}" {{ $user->property === $propertyCode ? 'selected' : '' }}>{{ $address }}</option>
+                                        <option value="{{ $propertyCode }}"
+                                            {{ isset($userProperties) && in_array($propertyCode, $userProperties) ? 'selected' : '' }}>
+                                            {{ $address }}</option>
                                     @endforeach
                                 </select>
                             </label>
-                            @error('property_code')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
+                            @error('properties')
+                                <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
-
+                        
                         <div class="mb-4">
                             <label class="relative flex">
                                 <select
@@ -190,7 +193,9 @@
                                     name="role">
                                     <option value="" disabled selected>Select role</option>
                                     @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}" {{ in_array($role->id, $userRole) ? 'selected' : '' }}>{{ $role->name }}</option>
+                                        <option value="{{ $role->id }}"
+                                            {{ in_array($role->id, $userRole) ? 'selected' : '' }}>{{ $role->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </label>
@@ -217,5 +222,16 @@
                 </div>
             </div>
         </div>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+        <script>
+            $(window).on('load', function() {
+                $('#properties').select2({
+                    placeholder: "Select properties",
+                    allowClear: true
+                });
+            });
+        </script>
     </main>
 </x-app-layout>

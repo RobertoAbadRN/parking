@@ -35,6 +35,13 @@ class Property extends Model
 
     public function Settings()
     {
-        return $this->hasMany('App\Models\PropertySetting');
-    }
+    return $this->hasMany('App\Models\PropertySetting');
+}
+
+
+public function users()
+{
+    return $this->belongsToMany(User::class, 'user_properties');
+}
+
 }

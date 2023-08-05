@@ -123,6 +123,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/properties/{id}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('updatePermitStatus');
     Route::get('/properties/user/{property_code}', [PropertyController::class, 'adduser'])
         ->name('propertiesUser');
+    Route::get('/search-residents', [PropertyController::class, 'searchResidents'])->name('search.residents');
+
 
     /**
      * ==============================
@@ -166,13 +168,16 @@ Route::middleware('auth')->group(function () {
      */
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
     Route::get('/addvehicle/{property_code}', [VehiclesController::class, 'create'])->name('addvehicle');
-    Route::post('/vehicles', [VehiclesController::class, 'store'])->name('vehicles.store');
+    Route::post('/vehicles.store', [VehiclesController::class, 'store'])->name('vehicles.store');
     Route::get('/vehicles/{id}/edit/{property_code}', [VehiclesController::class, 'edit'])->name('edit.vehicle');
-    Route::post('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');
+    Route::put('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');
+
     Route::delete('/vehicles/{vehicle}/properties/{property_code}', [VehiclesController::class, 'destroy'])->name('vehicles.destroy');
     Route::get('/vehicles/excel/{property_code}', [VehiclesController::class, 'listvehicles_excel'])->name('listvehicles_excel');
     Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
+    Route::post('/suspend-vehicle/{id}', [VehiclesController::class, 'suspendVehicle'])->name('vehicles.suspend');
+
 
     /**
      * ==============================

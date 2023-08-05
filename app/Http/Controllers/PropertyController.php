@@ -27,21 +27,23 @@ class PropertyController extends Controller
 
      */
 
-    public function index()
-    {
-        // Obtén todas las propiedades y calcula el total de autos por cada una usando LEFT JOIN y subconsulta
-        $properties = Property::select('properties.id', 'properties.name', 'properties.nickname','properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
-            ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
-            ->selectSub(function ($query) {
-                $query->from('vehicles')
-                    ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
-                    ->selectRaw('count(*)');
-            }, 'total_cars')
-            ->get();
-
-        // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
-        return view('properties.index', compact('properties'));
-    }
+     public function index()
+     {
+         // Obtén todas las propiedades y calcula el total de autos por cada una usando LEFT JOIN y subconsulta
+         $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
+             ->distinct() // Agregar el método distinct() para eliminar duplicados
+             ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+             ->selectSub(function ($query) {
+                 $query->from('vehicles')
+                     ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
+                     ->selectRaw('count(*)');
+             }, 'total_cars')
+             ->get();
+     
+         // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
+         return view('properties.index', compact('properties'));
+     }
+     
 
     public function create()
     {
@@ -66,10 +68,10 @@ class PropertyController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the max file size as needed
             'nickName' => 'required',
         ]);
-    
+
         // Generate the property code
         $propertyCode = $this->generateUniquePropertyCode();
-    
+
         // Crear una nueva instancia del modelo y asignar los datos validados
         $property = new Property();
         $property->area = $request->input('area');
@@ -82,10 +84,10 @@ class PropertyController extends Controller
         $property->location_type = $request->input('location_type');
         $property->places = $request->input('places');
         $property->nickName = $request->input('nickName');
-    
+
         // Agregar el valor 'active' al campo permit_status
         $property->permit_status = 'active';
-    
+
         // Handle the logo file if it was uploaded
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
@@ -94,15 +96,14 @@ class PropertyController extends Controller
             // Guarda el nombre del archivo en la base de datos
             $property->logo = $filename;
         }
-    
+
         // Guardar el modelo en la base de datos
         $property->save();
-    
+
         // Redireccionar a una página de éxito o mostrar un mensaje de éxito
         // Redireccionar a los detalles de la propiedad actualizada
         return redirect()->route('properties')->with('success_message', 'The data has been updated successfully');
     }
-    
 
     private function generateUniquePropertyCode()
     {
@@ -146,30 +147,28 @@ class PropertyController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Valida que el campo 'logo' sea una imagen válida (opcional)
             'nickname' => 'required', // Agregar la regla de validación para el campo nickName
         ]);
-    
+
         // Actualizar los atributos de la propiedad con los nuevos valores, incluyendo el campo nickname
         $property->update($validatedData);
-    
+
         // Manejar la carga de un nuevo logotipo, si se proporciona
         if ($request->hasFile('logo')) {
             // Eliminar el logotipo anterior, si existe
             if ($property->logo) {
                 Storage::delete($property->logo);
             }
-    
+
             // Subir y guardar el nuevo logotipo
             $logoPath = $request->file('logo')->store('logos');
-    
+
             // Actualizar el atributo "logo" de la propiedad con la ruta del nuevo logotipo
             $property->logo = $logoPath;
             $property->save();
         }
-    
+
         // Redireccionar a los detalles de la propiedad actualizada
         return redirect()->route('properties')->with('success_message', 'The data has been updated successfully');
     }
-    
-    
 
     public function destroy($id)
     {
@@ -283,17 +282,17 @@ class PropertyController extends Controller
     {
         $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
             ->join('departments', 'departments.user_id', '=', 'users.id')
-            ->select('vehicles.*', 'users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space')
+            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space')
             ->where('vehicles.property_code', $property_code)
             ->groupBy('vehicles.id')
             ->get();
-    
+
         // Obtener el atributo 'address' de la propiedad
         $property = Property::where('property_code', $property_code)->select('name as property_name', 'address')->first();
-    
+
         $property_name = $property ? $property->property_name : '';
         $property_address = $property ? $property->address : '';
-    
+
         return view('vehicles.listvehicles', compact('vehicles', 'property_code', 'property_name', 'property_address'));
     }
 
@@ -315,20 +314,20 @@ class PropertyController extends Controller
     }
 
     public function updatePermitStatus(Request $request, $id)
-{
-    $property = Property::findOrFail($id);
+    {
+        $property = Property::findOrFail($id);
 
-    $permitStatus = $request->input('permit_status');
-    if ($permitStatus === 'active') {
-        $property->permit_status = 'active';
-    } else {
-        $property->permit_status = 'inactive';
+        $permitStatus = $request->input('permit_status');
+        if ($permitStatus === 'active') {
+            $property->permit_status = 'active';
+        } else {
+            $property->permit_status = 'inactive';
+        }
+
+        $property->save();
+
+        return redirect()->back(); // Redirige al usuario a la vista anterior después de actualizar el estado del permiso
     }
-
-    $property->save();
-
-    return redirect()->back(); // Redirige al usuario a la vista anterior después de actualizar el estado del permiso
-}
 
     public function adduser(Request $request)
     {
@@ -345,6 +344,17 @@ class PropertyController extends Controller
 
         return view('properties.formadduser', compact('property_code', 'address'));
 
+    }
+
+    public function searchResidents(Request $request)
+    {
+        $searchQuery = $request->input('q');
+
+        $residents = User::where('access_level', 'Resident')
+            ->where('name', 'LIKE', '%' . $searchQuery . '%')
+            ->get(['id', 'name']);
+
+        return response()->json($residents);
     }
 
 }

@@ -6,7 +6,6 @@
                     href="{{ url('/vehicles') }}">
                     <p>LIST OF VEHICLES FOR: {{ $property_name }}</p>
                 </a>
-
             </h4>
             <div class="hidden h-full py-1 sm:flex">
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
@@ -64,8 +63,6 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- Basic Table -->
             <div class="card px-4 pb-4 sm:px-5">
                 <div class="container mx-auto">
@@ -75,11 +72,11 @@
                                 <th class="px-4 py-2">Create at</th>
                                 <th class="px-4 py-2">Resident Name</th>
                                 <th class="px-4 py-2">Aparment/Unit</th>
-                                <th class="px-4 py-2">Language</th>
                                 <th class="px-4 py-2">License/Plate</th>
                                 <th class="px-4 py-2">Make</th>
                                 <th class="px-4 py-2">Model</th>
-                                <th class="px-4 py-2">Reserved Space</th>
+                                <th class="px-4 py-2">Permit Type</th>
+                                <th class="px-4 py-2">#Reserved</th>
                                 <th class="px-4 py-2">Permit Status</th>
                                 <th class="px-4 py-2">E-mail</th>
                                 <th class="px-4 py-2">Phone</th>
@@ -87,7 +84,6 @@
                                 <th class="px-4 py-2">Color</th>
                                 <th class="px-4 py-2">VIN</th>
                                 <th class="px-4 py-2">Actions</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -104,9 +100,6 @@
                                         {{ $vehicle->apart_unit }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $vehicle->preferred_language }}
-                                    </td>
-                                    <td class="px-4 py-2">
                                         {{ $vehicle->license_plate }}
                                     </td>
                                     <td class="px-4 py-2">
@@ -116,25 +109,31 @@
                                         {{ $vehicle->model }}
                                     </td>
                                     <td class="px-4 py-2">
+                                        {{ $vehicle->permit_type }}
+                                    </td>
+                                    <td class="px-4 py-2">
                                         {{ $vehicle->reserved_space }}
                                     </td>
 
+
                                     <td class="px-4 py-2 text-center">
-                                        <?php
+                                        @php
                                         $currentDate = date('Y-m-d');
                                         $endDate = $vehicle->end_date; // End date from the table (format: 'Y-m-d')
                                         $diff = strtotime($endDate) - strtotime($currentDate);
                                         $daysRemaining = round($diff / (60 * 60 * 24));
-                                        
-                                        if ($daysRemaining <= 0) {
-                                            echo '<span class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Aspired</span>';
-                                        } else {
-                                            echo '<span class="btn font-medium text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">Valid for- ' . $daysRemaining . ' days</span>';
-                                        }
-                                        ?>
-
+                                        @endphp
+                                    
+                                        @if ($vehicle->permit_status === 'suspended')
+                                            <span class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Suspended</span>
+                                        @else
+                                            @if ($daysRemaining <= 0)
+                                                <span class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Expired</span>
+                                            @else
+                                                <span class="btn font-medium text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">Valid for- {{ $daysRemaining }} days</span>
+                                            @endif
+                                        @endif
                                     </td>
-
                                     <td class="px-4 py-2">
                                         {{ $vehicle->email }}
                                     </td>
@@ -173,6 +172,17 @@
                                                 onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
+                                            @if ($vehicle->permit_status === 'suspended')
+                                            <a href="#" class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
+                                                onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        @else
+                                            <a href="#" class="btn h-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25"
+                                                onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
+                                                <i class="fa fa-ban"></i>
+                                            </a>
+                                        @endif
 
 
                                             <script>
@@ -219,5 +229,34 @@
                 });
             });
         </script>
+        <script>
+            function sendSuspensionEmail(vehicleId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will suspend the vehicle and send a notification email to parking inspectors!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, suspend it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to suspend the vehicle and send the email
+                        axios.post(`/suspend-vehicle/${vehicleId}`)
+                            .then(response => {
+                                // Handle the response if necessary
+                                Swal.fire('Success', 'Vehicle suspended and email sent.', 'success');
+                                // You can also reload the page if needed: location.reload();
+                            })
+                            .catch(error => {
+                                // Handle the error if necessary
+                                Swal.fire('Error', 'An error occurred while processing the request.', 'error');
+                            });
+                    }
+                });
+            }
+        </script>
+        
     </main>
 </x-app-layout>
