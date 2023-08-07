@@ -250,8 +250,7 @@
             $property_code = request()->segment(4);
         @endphp
         <a href="{{ route('properties.vehicles', ['property_code' => $property_code]) }}" class="px-4 py-2 bg-red-500 text-white rounded-md">Cancel</a>
-        
-
+    
         </div>
         </form>
     </main>

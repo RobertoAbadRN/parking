@@ -10,8 +10,6 @@ use App\Models\Resident;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
@@ -180,80 +178,24 @@ class VehiclesController extends Controller
         // Crear y guardar el registro en la tabla vehicles
         $vehicle = Vehicle::create($data);
 
-        // Verificar qué botón se presionó
-        if ($request->has('savePrintButton')) {
-            // Generar el contenido del PDF
-            $pdfContent = $this->generatePdfContent($vehicle);
-
-            // Devolver la respuesta PDF al navegador
-            $response = new Response($pdfContent);
-            $response->header('Content-Type', 'application/pdf');
-            $response->header('Content-Disposition', 'inline; filename="vehicle_information.pdf"');
-            return $response;
-        }
+         // Buscar la propiedad correspondiente en la base de datos
+         $property = Property::where('property_code', $request->input('property_code'))->first();
+    
+         // Extraer el nombre de la propiedad
+         $property_name = $property->name;
+     
+         // Extraer el campo 'logo' de la propiedad
+         $logo = $property->logo;
+     
+         // Verificar qué botón se presionó
+         if ($request->has('savePrintButton')) {
+             // Si se presionó el botón "Print", enviar los datos del vehículo, el nombre de la propiedad y el campo 'logo' a la vista
+             return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo'));
+         }
 
         $property_code = $request->input('property_code');
 
         return redirect()->route('properties.vehicles', ['property_code' => $property_code])->with('success_message', 'Vehicle saved successfully');
-    }
-
-    private function generatePdfContent($vehicle)
-    {
-
-        // Configuración de Dompdf
-
-        $options = new Options();
-
-        $options->set('defaultFont', 'Arial');
-
-        // Crear una instancia de Dompdf con las opciones configuradas
-
-        $dompdf = new Dompdf($options);
-
-        // Generar el contenido HTML del documento
-
-        $html = '
-
-        <html>
-
-        <head>
-
-            <style>
-
-                /* Estilos CSS para el documento */
-
-            </style>
-
-        </head>
-
-        <body>
-
-            <h1>Vehicle Information</h1>
-
-            <p>Resident Name: ' . $vehicle->name . '</p>
-
-            <p>Email: ' . $vehicle->email . '</p>
-
-            <!-- Agrega aquí los demás campos del formulario -->
-
-        </body>
-
-        </html>
-
-        ';
-
-        // Cargar el contenido HTML en Dompdf
-
-        $dompdf->loadHtml($html);
-
-        // Renderizar el contenido HTML en PDF
-
-        $dompdf->render();
-
-        // Obtener el contenido PDF generado
-
-        return $dompdf->output();
-
     }
 
     public function edit($id, $property_code)
@@ -289,10 +231,14 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-
+    
         // Find the vehicle by its ID
         $vehicle = Vehicle::findOrFail($id);
-
+    
+        // Convert the start_date and end_date to Carbon objects
+        $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+        $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
+    
         // Update the vehicle data with the new values from the form
         $vehicle->update([
             'license_plate' => $request->input('license_plate'),
@@ -304,13 +250,27 @@ class VehiclesController extends Controller
             'vehicle_type' => $request->input('vehicle_type'),
             'permit_status' => $request->input('permit_status'),
             'permit_type' => $request->input('permit_type'),
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+            'start_date' => $start_date, // Guardar como objeto Carbon
+            'end_date' => $end_date, // Guardar como objeto Carbon
             'property_code' => $request->input('property_code'),
         ]);
-
+    
+        // Buscar la propiedad correspondiente en la base de datos
+        $property = Property::where('property_code', $request->input('property_code'))->first();
+    
+        // Extraer el nombre de la propiedad
+        $property_name = $property->name;
+    
+        // Extraer el campo 'logo' de la propiedad
+        $logo = $property->logo;
+    
+        // Verificar qué botón se presionó
+        if ($request->has('savePrintButton')) {
+            // Si se presionó el botón "Print", enviar los datos del vehículo, el nombre de la propiedad y el campo 'logo' a la vista
+            return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo'));
+        }
         $property_code = $request->input('property_code');
-
+    
         return redirect()->route('properties.vehicles', ['property_code' => $property_code])->with('success_message', 'Vehicle updated successfully');
     }
 

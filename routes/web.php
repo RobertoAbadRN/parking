@@ -140,6 +140,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('user.destroy');
     Route::get('/users/excel/{property_code}', [UsersController::class, 'list_users'])->name('list_users');
     Route::get('/users/excelusers', [UsersController::class, 'excel_users'])->name('excel_users');
+    Route::get('/users/{user}', [UsersController::class, 'resetPassword'])->name('user.resetPassword');
+    Route::put('/users/{user}/ban', [UsersController::class, 'banUser'])->name('user.ban');
+    Route::put('/users/{user}/toggleban', [UsersController::class, 'toggleBan'])->name('user.toggleBan');
+
 
     /**
      * ==============================

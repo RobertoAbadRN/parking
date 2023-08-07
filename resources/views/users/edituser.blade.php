@@ -126,7 +126,7 @@
                             @error('email')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
-                        </div>
+                        </div>                 
 
                         <div class="mb-4">
                             <label class="relative flex">
@@ -142,7 +142,7 @@
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select
+                                <select id="access_level"
                                     class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
                                     name="access_level">
                                     <option value="" disabled>Select access level</option>
@@ -163,20 +163,32 @@
                                         Administrator</option>
                                 </select>
                             </label>
-                            @error('access_level')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-4" id="singlePropertySelect">
                             <label class="relative flex">
-                                <select id="properties"
+                                <select id="single_property"
+                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                    name="properties">
+                                    <option value="" disabled>Select property</option>
+                                    @foreach ($properties as $propertyId => $address)
+                                        <option value="{{ $propertyId }}"
+                                            {{ isset($userProperties) && in_array($propertyId, $userProperties) ? 'selected' : '' }}>
+                                            {{ $address }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                        </div>
+                        
+                        <div class="mb-4" id="multiplePropertySelect" style="display: none;">
+                            <label class="relative flex">
+                                <select id="multiple_properties"
                                     class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
                                     name="properties[]" multiple="multiple">
                                     <option value="" disabled>Select property</option>
-                                    @foreach ($properties as $propertyCode => $address)
-                                        <option value="{{ $propertyCode }}"
-                                            {{ isset($userProperties) && in_array($propertyCode, $userProperties) ? 'selected' : '' }}>
+                                    @foreach ($properties as $propertyId => $address)
+                                        <option value="{{ $propertyId }}"
+                                            {{ isset($userProperties) && in_array($propertyId, $userProperties) ? 'selected' : '' }}>
                                             {{ $address }}</option>
                                     @endforeach
                                 </select>
@@ -184,8 +196,8 @@
                             @error('properties')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
-                        </div>
-                        
+                        </div>                        
+
                         <div class="mb-4">
                             <label class="relative flex">
                                 <select
@@ -203,10 +215,6 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
-
-
-
-
                         <div>
                             <button type="button"
                                 class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
@@ -226,10 +234,29 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
         <script>
-            $(window).on('load', function() {
-                $('#properties').select2({
+            $(document).ready(function() {
+                $('#single_property').select2({
+                    tags: true,
+                    placeholder: "Select property",
+                    allowClear: true,
+                    width: '100%', // Ajusta el ancho al 100%
+                });
+
+                $('#multiple_properties').select2({
+                    tags: true,
                     placeholder: "Select properties",
-                    allowClear: true
+                    allowClear: true,
+                    width: '100%', // Ajusta el ancho al 100%
+                });
+
+                $('#access_level').on('change', function() {
+                    if ($(this).val() === 'property_manager') {
+                        $('#singlePropertySelect').hide();
+                        $('#multiplePropertySelect').show();
+                    } else {
+                        $('#multiplePropertySelect').hide();
+                        $('#singlePropertySelect').show();
+                    }
                 });
             });
         </script>

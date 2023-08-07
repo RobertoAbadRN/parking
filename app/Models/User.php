@@ -32,13 +32,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Department::class); // Assuming the foreign key is 'user_id'
     }
-    
+
     public function properties()
-{
-    return $this->belongsToMany(Property::class, 'user_properties');
-}
-
-
+    {
+        return $this->belongsToMany(Property::class, 'user_properties');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
