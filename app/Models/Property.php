@@ -11,7 +11,7 @@ class Property extends Model
     protected static function boot()
     {
         parent::boot();
-    
+
         static::creating(function ($property) {
             $property->property_code = Str::random(5);
         });
@@ -29,5 +29,19 @@ class Property extends Model
         'places',
         'property_code',
         'logo',
+        'permit_status',
+        'nickname',
     ];
+
+    public function Settings()
+    {
+    return $this->hasMany('App\Models\PropertySetting');
+}
+
+
+public function users()
+{
+    return $this->belongsToMany(User::class, 'user_properties');
+}
+
 }

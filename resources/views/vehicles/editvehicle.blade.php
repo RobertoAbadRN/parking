@@ -12,10 +12,7 @@
                 <h2 class="text-lg font-medium text-slate-700 line-clamp-1 dark:text-navy-50">
                     Add Vehicle For:
                 </h2>
-                @foreach ($properties as $propertyCode => $propertyAddress)
-                    <p class="text-lg font-medium text-slate-700 line-clamp-1 dark:text-navy-50">{{ $propertyAddress }}
-                    </p>
-                @endforeach
+                <p class="text-lg font-medium text-slate-700 line-clamp-1 dark:text-navy-50">{{ $property->name }}
                 </p>
 
             </div>
@@ -33,6 +30,7 @@
                             <form id="vehicleForm" action="{{ route('vehicles.update', ['id' => $vehicle->id]) }}"
                                 method="POST">
                                 @csrf
+<<<<<<< HEAD
                                 @error('error_message')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -81,6 +79,11 @@
                                                 English</option>
                                         </select>
                                     </label>
+=======
+                                @method('PUT')
+                                <div class="space-y-5">
+
+>>>>>>> jgle-feature-roles-permisos
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">License Plate</span>
                                         <input
@@ -88,6 +91,7 @@
                                             placeholder="License Plate" type="text" name="license_plate"
                                             value="{{ $vehicle->license_plate }}" required />
                                     </label>
+                                    <input type="hidden" name="id" value="{{ $vehicle->id }}">
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">VIN</span>
                                         <input
@@ -164,26 +168,16 @@
 
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Permit Type</span>
-                        <select name="permit_type"
-                            class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent">
-                            <option value="visitor" {{ $vehicle->permit_type == 'visitor' ? 'selected' : '' }}>Visitor
-                            </option>
-                            <option value="resident" {{ $vehicle->permit_type == 'resident' ? 'selected' : '' }}>
-                                Resident</option>
-                            <option value="temporary" {{ $vehicle->permit_type == 'temporary' ? 'selected' : '' }}>
-                                Temporary</option>
-                            <option value="employee" {{ $vehicle->permit_type == 'employee' ? 'selected' : '' }}>
-                                Employee</option>
-                            <option value="contractor" {{ $vehicle->permit_type == 'contractor' ? 'selected' : '' }}>
-                                Contractor</option>
-                            <option value="vip" {{ $vehicle->permit_type == 'vip' ? 'selected' : '' }}>V.I.P.
-                            </option>
-                            <option value="carport" {{ $vehicle->permit_type == 'carport' ? 'selected' : '' }}>Carport
-                            </option>
-                            <option value="reserved" {{ $vehicle->permit_type == 'reserved' ? 'selected' : '' }}>
-                                Reserved</option>
+                        <select name="permit_type" class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent">
+                            @php
+                                $permitTypes = ['visitor', 'resident', 'temporary', 'employee', 'contractor', 'vip', 'carport', 'reserved', 'handicap', 'fire lane'];
+                            @endphp
+                            @foreach ($permitTypes as $permitType)
+                                <option value="{{ $permitType }}" {{ $vehicle->permit_type == $permitType ? 'selected' : '' }}>{{ ucwords(str_replace('_', ' ', $permitType)) }}</option>
+                            @endforeach
                         </select>
                     </label>
+<<<<<<< HEAD
 
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Reserved Space</span>
@@ -193,6 +187,8 @@
                     </label>
 
 
+=======
+>>>>>>> jgle-feature-roles-permisos
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Start Date</span>
                         <span class="relative mt-1.5 flex">
@@ -245,6 +241,7 @@
 
                     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                     <script>
+<<<<<<< HEAD
                         const startInput = document.getElementById('start_date_input');
                         const endInput = document.getElementById('end_date_input');
 
@@ -265,6 +262,54 @@
                             return `${year}-${month}-${day}`;
                         }
 
+=======
+                        const startInput = document.querySelector('input[name="start_date"]');
+                        const endInput = document.querySelector('input[name="end_date"]');
+
+                        function setDateRange(days) {
+                            const currentDate = new Date();
+                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+                            const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + days);
+
+                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
+                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
+                        }
+
+                        function setWeekendRange() {
+                            const currentDate = new Date();
+                            const startDay = currentDate.getDate();
+                            const endDay = startDay + (6 - currentDate.getDay()); // Obtener el próximo sábado
+                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), startDay);
+                            const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), endDay);
+
+                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
+                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
+                        }
+
+                        function setEndOfMonthRange() {
+                            const currentDate = new Date();
+                            const startDay = 1;
+                            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), startDay);
+                            const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), lastDay);
+
+                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
+                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
+                        }
+
+                        function setEndOfYearRange() {
+                            const currentDate = new Date();
+                            const startDay = 1;
+                            const lastMonth = 11; // Diciembre
+                            const lastDay = new Date(currentDate.getFullYear() + 1, 0, 0).getDate();
+                            const startDate = new Date(currentDate.getFullYear(), lastMonth, startDay);
+                            const endDate = new Date(currentDate.getFullYear(), lastMonth, lastDay);
+
+                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
+                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
+                        }
+
+>>>>>>> jgle-feature-roles-permisos
                         document.addEventListener('DOMContentLoaded', function() {
                             flatpickr('.datepicker-input', {
                                 enableTime: false,
@@ -274,8 +319,11 @@
                             });
                         });
                     </script>
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> jgle-feature-roles-permisos
                 </div>
             </div>
         </div>
@@ -290,11 +338,10 @@
                 Edit & Print
             </button>
             @php
-                $property_code = request()->segment(2);
-            @endphp
-            <a href="{{ route('properties.vehicles', ['property_code' => $property_code]) }}"
-                class="px-4 py-2 bg-red-500 text-white rounded-md">Cancel</a>
-
+            $property_code = request()->segment(4);
+        @endphp
+        <a href="{{ route('properties.vehicles', ['property_code' => $property_code]) }}" class="px-4 py-2 bg-red-500 text-white rounded-md">Cancel</a>
+    
         </div>
         </form>
     </main>

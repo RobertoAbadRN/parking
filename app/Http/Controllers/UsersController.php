@@ -4,18 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Mail\NewUserNotification;
-use App\Mail\UpdateUserNotification;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Yajra\DataTables\DataTables;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
+<<<<<<< HEAD
     /**
      * Display a listing of the resource.
      *
@@ -33,6 +34,21 @@ class UsersController extends Controller
      }
 
 
+=======
+
+    public function index()
+    {
+        $users = DB::table('users')
+        ->leftJoin('user_properties', 'users.id', '=', 'user_properties.user_id')
+        ->leftJoin('properties', 'user_properties.property_id', '=', 'properties.id')
+        ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
+        ->groupBy('users.id')
+        ->get();
+    
+
+        return view('users.index', ['users' => $users]);
+    }
+>>>>>>> jgle-feature-roles-permisos
 
     /**
      * Show the form for creating a new resource.
@@ -43,8 +59,8 @@ class UsersController extends Controller
     {
 
         $properties = Property::all();
-
-        return view('users.adduser', compact('properties'));
+        $roles = Role::all();
+        return view('users.adduser', compact('properties', 'roles'));
     }
 
     public function verificarCorreo(Request $request)
@@ -72,6 +88,7 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
+        //dd($request->all());
         // Validar los datos del formulario
         $validatedData = $request->validate([
             'user' => 'required',
@@ -80,7 +97,8 @@ class UsersController extends Controller
             'email' => 'required|email|unique:users,email', // Added unique validation rule
             'password' => 'required',
             'access_level' => 'required',
-            'property_code' => 'required',
+            'properties' => 'required|array',
+            'role' => 'required',
         ]);
         //dd($validatedData);
 
@@ -104,12 +122,22 @@ class UsersController extends Controller
             'name' => $validatedData['name'],
             'phone' => $validatedData['phone'],
             'email' => $validatedData['email'],
-            'password' => $validatedData['password'],
+            'password' => bcrypt($validatedData['password']), // Asegúrate de encriptar la contraseña
             'access_level' => $validatedData['access_level'],
-            'property_code' => $validatedData['property_code'],
-            'banned' => 'NO',
+            'properties' => $validatedData['properties'],
+            'banned' => '1',
         ]);
+        // Asignación del rol
+        $user->assignRole($request->role);
 
+        // The 'property_codes' you get from the form
+        $propertyCodes = $request->get('properties');
+
+        // Look up the property IDs in the 'properties' table
+        $propertyIds = Property::whereIn('property_code', $propertyCodes)->pluck('id')->toArray();
+
+        // Attach the properties to the user
+        $user->properties()->attach($propertyIds);
         // Redireccionar a una página de éxito o mostrar un mensaje de éxito
         return redirect()->route('users')->with('success_message', 'User created successfully!');
     }
@@ -132,17 +160,25 @@ class UsersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-{
-    $user = User::find($id);
-    $properties = Property::pluck('address', 'property_code');
+    {
+        $user = User::find($id);
+        $properties = Property::pluck('address', 'id');
 
-    if (!$user) {
-        return redirect()->route('users')->with('error', 'User not found.');
+        // Obteniendo los 'property_codes' desde la tabla intermedia 'user_properties'
+        $userProperties = DB::table('user_properties')
+            ->join('properties', 'user_properties.property_id', '=', 'properties.id')
+            ->where('user_properties.user_id', '=', $id)
+            ->pluck('properties.property_code')
+            ->toArray();
+
+        $userRole = DB::table('model_has_roles')->select('role_id')->where('model_id', $id)->pluck('role_id')->toArray();
+        $roles = Role::all();
+        if (!$user) {
+            return redirect()->route('users')->with('error', 'User not found.');
+        }
+
+        return view('users.edituser', compact('user', 'properties', 'userRole', 'roles', 'userProperties'));
     }
-
-    return view('users.edituser', compact('user', 'properties'));
-}
-
 
     /**
      * Update the specified resource in storage.
@@ -151,14 +187,8 @@ class UsersController extends Controller
      * @param  \App\Models\Property  $property
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return redirect()->route('users')->with('error', 'User not found.');
-        }
-
         $validatedData = $request->validate([
             'user' => 'required',
             'name' => 'required',
@@ -166,23 +196,28 @@ class UsersController extends Controller
             'email' => 'required|email',
             'password' => 'nullable|min:8',
             'access_level' => 'required',
-            'property_code' => 'required',
+            'properties' => 'required',
+            'role' => 'required',
 
         ]);
 
-        $user = User::find($id);
         $user->user = $validatedData['user'];
         $user->name = $validatedData['name'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
         $user->access_level = $validatedData['access_level'];
+<<<<<<< HEAD
         $user->property_code = $validatedData['property_code'];
+=======
+>>>>>>> jgle-feature-roles-permisos
 
         if ($request->filled('password')) {
-            $user->password = Hash::make($validatedData['password']);
+            $user->password = bcrypt($validatedData['password']);
         }
 
         $user->save();
+        $user->properties()->sync($request->properties); // Actualizar las propiedades del usuario.
+        $user->syncRoles($request->role);
 
         return redirect()->route('users')->with('success_message', 'User updated successfully.');
     }
@@ -209,10 +244,10 @@ class UsersController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $datos = User::join('properties', 'users.property_code', '=', 'properties.property_code')
-        ->where('users.property_code', $propertyCode)
-        ->select('users.*', 'properties.address')
-        ->distinct()
-        ->get();
+            ->where('users.property_code', $propertyCode)
+            ->select('users.*', 'properties.address')
+            ->distinct()
+            ->get();
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A1', 'User Name')
@@ -259,8 +294,8 @@ class UsersController extends Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $datos = User::join('properties', 'users.property_code', '=', 'properties.property_code')
-        ->select('users.*', 'properties.name')
-        ->get();
+            ->select('users.*', 'properties.name')
+            ->get();
 
         $spreadsheet->setActiveSheetIndex(0)
             ->setCellValue('A1', 'User Name')
@@ -298,4 +333,34 @@ class UsersController extends Controller
 
         return $response;
     }
+
+    public function resetPassword(User $user)
+    {
+        $token = Password::broker()->createToken($user);
+
+        $user->sendPasswordResetNotification($token);
+
+        return redirect()->route('users')->with('success_message', 'Reset password link sent to user.');
+    }
+
+    // Método en UsersController.php
+    public function banUser(User $user)
+    {
+        $user->update(['banned' => 0]);
+        return redirect()->route('users')->with('success_message', 'User banned successfully');
+    }
+
+    // Método en UsersController.php para alternar el estado de banned
+public function toggleBan(User $user)
+{
+    // Toggles the ban status
+    $user->banned = !$user->banned;
+    $user->save();
+
+    $message = $user->banned ? 'User banned successfully' : 'User unbanned successfully';
+    
+    return redirect()->route('users')->with('success_message', $message);
+}
+
+
 }
