@@ -24,8 +24,8 @@
                             <p class="mt-1 text-xs+">Autos</p>
                         </div>
                     </a>
-                    
-                    
+
+
 
 
                     <a href="{{ route('recidents') }}">
@@ -39,8 +39,8 @@
                             <p class="mt-1 text-xs+">Recidents</p>
                         </div>
                     </a>
-                    
-                    
+
+
 
 
                     <a href="{{ route('properties') }}">
@@ -54,8 +54,8 @@
                             <p class="mt-1 text-xs+">Properties</p>
                         </div>
                     </a>
-                    
-                    
+
+
 
 
                     <a href="{{ route('visitors_pass') }}">
@@ -69,8 +69,8 @@
                             <p class="mt-1 text-xs+">Visitors Pass</p>
                         </div>
                     </a>
-                    
-                    
+
+
 
                     <a href="{{ route('recidents') }}">
                         <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
@@ -83,8 +83,8 @@
                             <p class="mt-1 text-xs+">Recidents</p>
                         </div>
                     </a>
-                    
-                    
+
+
 
                 </div>
 

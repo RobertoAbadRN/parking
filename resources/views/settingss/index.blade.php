@@ -30,7 +30,7 @@
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
-                    
+
                 </div>
             </div>
 
@@ -95,7 +95,7 @@
                                         <div class="flex space-x-10">
                                             <a href="{{ route('properties.vehicles', $property->property_code) }}"
                                                 class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-                                                <i class="fas fa-car mr-2"></i> 
+                                                <i class="fas fa-car mr-2"></i>
                                             </a>
                                             <a href="{{ route('properties.users', $property->property_code) }}"
                                                 class="btn bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90">
@@ -103,7 +103,7 @@
                                             </a>
                                         </div>
                                     </td>
-                                    
+
                                 </tr>
                             @endforeach
                         </tbody>

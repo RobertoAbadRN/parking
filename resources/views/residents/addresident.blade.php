@@ -79,7 +79,7 @@
             <div class="col-span-12 sm:col-span-10">
                 <div class="card p-4 sm:p-5">
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100 mb-5">
-                        Add New Resident 
+                        Add New Resident
                     </p>
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
@@ -93,7 +93,7 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
-                        
+
                         <div class="mb-4">
                             <label class="relative flex">
                                 <input
@@ -147,7 +147,7 @@
                             @error('access_level')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
-                        </div>                        
+                        </div>
                         <div class="mb-4">
                             <label class="relative flex">
                                 <select

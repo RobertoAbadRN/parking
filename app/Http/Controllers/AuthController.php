@@ -25,19 +25,19 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'exists:users'],
             'password' => ['required'],
         ]);
-    
+
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-    
+
         $validated = $validator->validated();
-    
+
         if (\Auth::attempt(array('email' => $validated['email'], 'password' => $validated['password']))) {
             // Usuario autenticado correctamente
             $user = \Auth::user();
             $user->last_login = now();
             $user->save();
-    
+
             return redirect()->route('index');
         } else {
             $validator->errors()->add(
@@ -46,14 +46,14 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
     }
-    
+
 
     public function registerView(){
         return view('register');
     }
 
     public function register(Request $request){
-        
+
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string'],
             'email' => ['required', 'email','unique:users'],
@@ -77,5 +77,5 @@ class AuthController extends Controller
     {
         auth()->logout();
         return redirect()->route('login');
-    }  
+    }
 }

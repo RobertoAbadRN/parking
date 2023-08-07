@@ -207,7 +207,7 @@ class PropertyController extends Controller
         ->where('vehicles.property_code', $property_code)
         ->groupBy('vehicles.id')
         ->get();
-        
+
     $property = Property::where('property_code', $property_code)->select('name as property_name')->first();
     $property_name = $property ? $property->property_name : '';
 

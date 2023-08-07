@@ -14,17 +14,17 @@ class HomeController extends Controller
 {
     public function dashboardsCrmAnalytics()
     {
-        
+
              // Calculate the total count of vehicles
           $totalVehicles = Vehicle::count();
           $recidentsCount = User::where('access_level', 'Recidents')->count();
           $propertiesCount = Property::count();
           $visitorPassesCount = VisitorPass::count();
           $usersCount = User::where('access_level', 'Recidents')->count();
-       
+
 
         return view('home.dashboards-crm-analytics', compact( 'totalVehicles','recidentsCount', 'propertiesCount','visitorPassesCount', 'usersCount'));
-    
+
     }
     public function elementsAvatar()
     {
@@ -570,7 +570,7 @@ class HomeController extends Controller
         return view('pages/apps-travel');
     }
 
-   
+
 
     public function dashboardsOrders()
     {

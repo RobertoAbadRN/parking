@@ -63,6 +63,14 @@
                             style="width: auto; height: 40px;">
                             <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Visitor
                         </a>
+                        <a href="{{ route('residents.import') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                            <i class="fa-solid fa-file-import"></i>
+                            &nbsp; Importar
+                        </a>
+                        <a href="{{ route('residents.import.uploaded') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                            <i class="fa-solid fa-upload"></i>
+                            &nbsp; Archivos cargados
+                        </a>
                     </div>
                 </div>
             </div>
@@ -74,17 +82,23 @@
                     <table id="residents" class="table-auto min-w-full">
                         <thead>
                             <tr>
+                                <!-- <th class="px-4 py-2">Create at</th> -->
                                 <th class="px-4 py-2">Resident Name</th>
                                 <th class="px-4 py-2">Aparment / Unit</th>
                                 <th class="px-4 py-2">E-mail</th>
-                                <th class="px-4 py-2">License Plate</th>
-                                <th class="px-4 py-2">Make</th>
-                                <th class="px-4 py-2">Model</th>
-                                <th class="px-4 py-2">Permit Type</th>
-                                <th class="px-4 py-2">Reserved</th>
-                                <th class="px-4 py-2">Permit Status</th>
+                                <th class="px-4 py-2">Phone</th>
+                                <th class="px-4 py-2">Lease Expiration</th>
+                                <th class="px-4 py-2">Vehicles Per Apartment</th>
+                                <th class="px-4 py-2">Visitors Per Apartment</th>
+                                <!-- <th class="px-4 py-2">Make</th> -->
+                                <!-- <th class="px-4 py-2">Model</th> -->
+                                <!-- <th class="px-4 py-2">Permit Type</th> -->
+                                <th class="px-4 py-2">Reserved Space</th>
+                                <!-- <th class="px-4 py-2">Permit Status</th> -->
+                                <th class="px-4 py-2">Resident Status</th>
+                                <th class="px-4 py-2">Resident Status</th>
                                 <th class="px-4 py-2">Actions</th>
-                                <th class="px-4 py-2">Residents Code</th>
+                                <th class="px-4 py-2">Permit Agreement Signed</th>
 
                             </tr>
                         </thead>
@@ -104,22 +118,49 @@
                                         {{ $resident->email }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->license_plate }}
+                                        {{ $resident->phone }}
                                     </td>
                                     <td class="px-4 py-2">
+                                        {{ $resident->lease_expiration }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        @php
+                                            $vehicles_per_department = DB::table('departments')
+                                                ->leftJoin('vehicles', 'vehicles.user_id', '=', 'departments.user_id')
+                                                ->where('departments.user_id', $resident->user_id)
+                                                ->count();
+                                            echo $vehicles_per_department;
+                                        @endphp
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        @php
+                                            $visitors_per_department = DB::table('visitorpasses')
+                                                ->leftJoin('departments', 'departments.property_code', '=', 'visitorpasses.property_code')
+                                                ->where('departments.property_code', $resident->property_code)
+                                                ->count();
+                                            echo $visitors_per_department;
+                                        @endphp
+                                    </td>
+                                    <!-- <td class="px-4 py-2">
                                         {{ $resident->make }}
-                                    </td>
-                                    <td class="px-4 py-2">
+                                    </td> -->
+                                    <!-- <td class="px-4 py-2">
                                         {{ $resident->model }}
-                                    </td>
-                                    <td class="px-4 py-2">
+                                    </td> -->
+                                    <!-- <td class="px-4 py-2">
                                         {{ $resident->permit_type }}
-                                    </td>
+                                    </td> -->
                                     <td class="px-4 py-2">
                                         {{ $resident->reserved_space }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <!-- <td class="px-4 py-2">
                                         {{ $resident->permit_status }}
+                                    </td> -->
+                                    <td class="px-4 py-2">
+                                        <!-- Resident Status -->
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        <!-- Resident Status Button -->
                                     </td>
                                     <td class="px-4 py-2">
                                         <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
@@ -136,7 +177,11 @@
                                         </a>
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->property_code }}
+                                        <a href="{{ route('connect.docusign') }}"
+                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                            <i class="fas fa-edit mr-2"></i>
+                                            Sign document
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

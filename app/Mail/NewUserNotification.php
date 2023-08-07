@@ -20,7 +20,7 @@ class NewUserNotification extends Mailable
         $this->user = $user;
         $this->plainPassword = $plainPassword;
     }
-    
+
 
     public function build()
     {
