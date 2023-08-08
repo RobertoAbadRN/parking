@@ -30,60 +30,9 @@
                             <form id="vehicleForm" action="{{ route('vehicles.update', ['id' => $vehicle->id]) }}"
                                 method="POST">
                                 @csrf
-<<<<<<< HEAD
-                                @error('error_message')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-                                <div class="space-y-5">
-                                    <label class="block">
-                                        <span class="font-medium text-slate-600 dark:text-navy-100">Resident Name</span>
-                                        <input
-                                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            placeholder="Resident Name" type="text" name="name"
-                                            value="{{ old('resident_name', $user->name ?? '') }}" required />
-                                    </label>
-
-                                    <label class="block">
-                                        <span class="font-medium text-slate-600 dark:text-navy-100">Email</span>
-                                        <input
-                                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            placeholder="Email" type="email" name="email"
-                                            value="{{ $user->email }}" required />
-                                    </label>
-                                    <label class="block">
-                                        <span class="font-medium text-slate-600 dark:text-navy-100">Phone</span>
-                                        <input
-                                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            placeholder="Phone" type="tel" name="phone"
-                                            value="{{ $user->phone }}" required />
-                                    </label>
-                                    <label class="block">
-                                        <span class="font-medium text-slate-600 dark:text-navy-100">Apartment
-                                            Unit</span>
-                                        <input
-                                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            placeholder="Apartment Unit" type="text" name="apart_unit"
-                                            value="{{ $departament->apart_unit }}" required />
-                                    </label>
-                                    <label class="block">
-                                        <span class="font-medium text-slate-600 dark:text-navy-100">Preferred
-                                            Language</span>
-                                        <select
-                                            class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                            name="preferred_language" required>
-                                            <option value="spanish"
-                                                {{ $user->preferred_language === 'spanish' ? 'selected' : '' }}>
-                                                Spanish</option>
-                                            <option value="english"
-                                                {{ $user->preferred_language === 'english' ? 'selected' : '' }}>
-                                                English</option>
-                                        </select>
-                                    </label>
-=======
                                 @method('PUT')
                                 <div class="space-y-5">
 
->>>>>>> jgle-feature-roles-permisos
                                     <label class="block">
                                         <span class="font-medium text-slate-600 dark:text-navy-100">License Plate</span>
                                         <input
@@ -177,18 +126,6 @@
                             @endforeach
                         </select>
                     </label>
-<<<<<<< HEAD
-
-                    <label class="block pt-4">
-                        <span class="font-medium text-slate-600 dark:text-navy-100">Reserved Space</span>
-                        <input name="reserved_space" value="{{ $departament->reserved_space }}"
-                            class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                            placeholder="Reserved Space" type="text" />
-                    </label>
-
-
-=======
->>>>>>> jgle-feature-roles-permisos
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Start Date</span>
                         <span class="relative mt-1.5 flex">
@@ -241,28 +178,6 @@
 
                     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                     <script>
-<<<<<<< HEAD
-                        const startInput = document.getElementById('start_date_input');
-                        const endInput = document.getElementById('end_date_input');
-
-                        function setDateRange(months) {
-                            const currentDate = new Date();
-                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-                            const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, startDate.getDate() - 1);
-
-                            startInput.value = formatDate(startDate);
-                            endInput.value = formatDate(endDate);
-                        }
-
-                        function formatDate(date) {
-                            const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(2, '0');
-                            const day = String(date.getDate()).padStart(2, '0');
-
-                            return `${year}-${month}-${day}`;
-                        }
-
-=======
                         const startInput = document.querySelector('input[name="start_date"]');
                         const endInput = document.querySelector('input[name="end_date"]');
 
@@ -309,7 +224,6 @@
                             endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
                         }
 
->>>>>>> jgle-feature-roles-permisos
                         document.addEventListener('DOMContentLoaded', function() {
                             flatpickr('.datepicker-input', {
                                 enableTime: false,
@@ -319,11 +233,6 @@
                             });
                         });
                     </script>
-<<<<<<< HEAD
-
-
-=======
->>>>>>> jgle-feature-roles-permisos
                 </div>
             </div>
         </div>

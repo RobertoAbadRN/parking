@@ -1,24 +1,11 @@
 <x-app-layout title="List of vehicles" is-sidebar-open="true" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
-<<<<<<< HEAD
-            <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                href="{{ url('/vehicles') }}">
-                @if ($vehicles->count() > 0)
-                    <p>LIST OF VEHICLES FOR: {{ $property_name }}</p>
-                @else
-                    <p>LIST OF VEHICLES FOR: {{ $property_name !== '' ? $property_name : 'N/A' }}</p>
-                @endif
-            </a>
-
-
-=======
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
                 <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
                     href="{{ url('/vehicles') }}">
                     <p>LIST OF VEHICLES FOR: {{ $property_name }}</p>
                 </a>
->>>>>>> jgle-feature-roles-permisos
             </h4>
             <div class="hidden h-full py-1 sm:flex">
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
@@ -148,17 +135,6 @@
                                             @endif
                                         @endif
                                     </td>
-<<<<<<< HEAD
-                                    <td class="px-4 py-2 text-center">
-                                        @if ($vehicle->status === 'approved')
-                                            Approved
-                                        @else
-                                            Not Approved
-                                        @endif
-                                    </td>
-                                    
-=======
->>>>>>> jgle-feature-roles-permisos
                                     <td class="px-4 py-2">
                                         {{ $vehicle->email }}
                                     </td>
@@ -180,13 +156,9 @@
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-<<<<<<< HEAD
-                                            <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-=======
 
                                             <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
->>>>>>> jgle-feature-roles-permisos
                                                 <i class="fa fa-print"></i>
                                             </a>
                                             <a href="{{ route('send.email', ['id' => $vehicle->id, 'property_code' => $property_code, 'email' => $vehicle->email]) }}"
@@ -199,13 +171,6 @@
                                                 onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
-<<<<<<< HEAD
-                                            <a href="#" onclick="updateStatus({{ $vehicle->id }})"
-                                                class="btn h-8 w-auto px-3 py-1 bg-green-500 text-white hover:bg-green-600 focus:bg-green-700 active:bg-green-800 rounded">
-                                                Approve
-                                             </a>
-                                            
-=======
                                             @if ($vehicle->permit_status === 'suspended')
                                             <a href="#" class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                 onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
@@ -218,7 +183,6 @@
                                             </a>
                                         @endif
 
->>>>>>> jgle-feature-roles-permisos
 
                                             <script>
                                                 function showConfirmation(vehicleId) {

@@ -158,21 +158,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');
     Route::post('/residents/{resident}/delete', [RecidentsController::class, 'destroy'])->name('residents.destroy');
     Route::post('import-csv', [RecidentsController::class, 'importCSV'])->name('importCSV');
-<<<<<<< HEAD
     Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
     Route::get('/recidents/import', [RecidentsController::class, 'import'])->name('residents.import');
     Route::get('/recidents/import/uploaded', [RecidentsController::class, 'import_uploaded'])->name('residents.import.uploaded');
     Route::get('/recidents/import/uploaded-files/{upload_id}', [RecidentsController::class, 'import_uploaded_files'])->name('residents.import.uploaded.files');
     Route::get('/recidents/import/uploaded-files/{upload_id}/{file_id}', [RecidentsController::class, 'import_uploaded_files_id'])->name('residents.import.uploaded.files.id');
     Route::post('/recidents/import/upload', [RecidentsController::class, 'import_upload'])->name('residents.import.upload');
-=======
-    Route::post('/updatestatus', [RecidentsController::class, 'updateStatus'])->name('updateStatus');
-
-
-
-
-
->>>>>>> jgle-feature-roles-permisos
 
     /**
      * ==============================
@@ -189,12 +180,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/excel/{property_code}', [VehiclesController::class, 'listvehicles_excel'])->name('listvehicles_excel');
     Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
-<<<<<<< HEAD
-    Route::post('/vehicles/update-status/{vehicle}', [VehiclesController::class, 'updateStatus'])->name('update_status');
-=======
     Route::post('/suspend-vehicle/{id}', [VehiclesController::class, 'suspendVehicle'])->name('vehicles.suspend');
 
->>>>>>> jgle-feature-roles-permisos
 
     /**
      * ==============================

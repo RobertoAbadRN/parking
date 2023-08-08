@@ -136,13 +136,9 @@
             <!-- Basic Table -->
 
             <div class="card px-4 pb-4 sm:px-5">
-<<<<<<< HEAD
-                <div class="container mx-auto  pt-5">
-=======
 
                 <div class="container mx-auto  pt-5">
 
->>>>>>> jgle-feature-roles-permisos
                     <table id="properties" class="table-auto min-w-full">
 
                         <thead>
@@ -236,14 +232,10 @@
                                                         ) !!}
 
                                                     </div>
-<<<<<<< HEAD
-                                                    <p class="my-2">Scan me to return to the original page.</p>
-=======
 
                                                     <p class="my-2">Scan me to return to the original page.</p>
 
 
->>>>>>> jgle-feature-roles-permisos
 
                                                     <button id="cerrar-modal-modelo-{{ $property->id }}"
                                                         class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center">
@@ -252,11 +244,8 @@
 
                                                     </button>
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> jgle-feature-roles-permisos
                                                 </div>
 
                                             </div>

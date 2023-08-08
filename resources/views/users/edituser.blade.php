@@ -179,9 +179,6 @@
                                 </select>
                             </label>
                         </div>
-<<<<<<< HEAD
-
-=======
                         
                         <div class="mb-4" id="multiplePropertySelect" style="display: none;">
                             <label class="relative flex">
@@ -200,7 +197,6 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>                        
->>>>>>> jgle-feature-roles-permisos
 
                         <div class="mb-4">
                             <label class="relative flex">

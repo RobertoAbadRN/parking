@@ -16,25 +16,6 @@ use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
-<<<<<<< HEAD
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-
-     public function index()
-     {
-         $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
-                      ->select('users.*', 'properties.name as property_name')
-                      ->get();
-
-         return view('users.index', ['users' => $users]);
-     }
-
-
-=======
 
     public function index()
     {
@@ -48,7 +29,6 @@ class UsersController extends Controller
 
         return view('users.index', ['users' => $users]);
     }
->>>>>>> jgle-feature-roles-permisos
 
     /**
      * Show the form for creating a new resource.
@@ -206,10 +186,6 @@ class UsersController extends Controller
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
         $user->access_level = $validatedData['access_level'];
-<<<<<<< HEAD
-        $user->property_code = $validatedData['property_code'];
-=======
->>>>>>> jgle-feature-roles-permisos
 
         if ($request->filled('password')) {
             $user->password = bcrypt($validatedData['password']);

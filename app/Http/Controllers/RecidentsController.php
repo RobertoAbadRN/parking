@@ -4,13 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use App\Models\Property;
-<<<<<<< HEAD
 use App\Http\Controllers\Controller;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
-=======
-use App\Models\User;
->>>>>>> jgle-feature-roles-permisos
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -29,28 +25,27 @@ class RecidentsController extends Controller
 
     public function index()
     {
-<<<<<<< HEAD
-        // $loggued_user = auth()->user();
-        // if($loggued_user->access_level == "property_manager") {
+        $loggued_user = auth()->user();
+        if($loggued_user->access_level == "property_manager") {
             $residents = DB::table('users')
-                ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*')
+                ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
                 ->join('departments', 'users.id', '=', 'departments.user_id')
                 ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
                 ->orderBy('users.id')
                 ->distinct()
                 ->get();
             return view('residents.index-admin', compact('residents'));
-        // } else {
-        //     $residents = DB::table('users')
-        //         ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*')
-        //         ->join('departments', 'users.id', '=', 'departments.user_id')
-        //         ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
-        //         ->orderBy('users.id')
-        //         ->where("users.id", $loggued_user->id)
-        //         ->distinct()
-        //         ->get();
-        //     return view('residents.index', compact('residents'));
-        // }
+        } else {
+            $residents = DB::table('users')
+            ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
+                ->join('departments', 'users.id', '=', 'departments.user_id')
+                ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
+                ->orderBy('users.id')
+                ->where("users.id", $loggued_user->id)
+                ->distinct()
+                ->get();
+            return view('residents.index', compact('residents'));
+        }
 
     }
 
@@ -137,16 +132,6 @@ class RecidentsController extends Controller
         if(sizeof($resident_upload_file) > 0)
             $resident_upload_file = $resident_upload_file[0];
         return view('residents.import-uploaded-files-id', compact('resident_upload_file'));
-=======
-        $residents = User::join('departments', 'users.id', '=', 'departments.user_id')
-            ->where('users.access_level', 'Resident')
-            ->select('users.*', 'departments.apart_unit', 'departments.lease_expiration', 'departments.reserved_space', 'departments.permit_status')
-            ->get();
-
-        //dd($residents); // Agregamos dd() para ver los datos antes de pasarlos a la vista
-
-        return view('residents.index', compact('residents'));
->>>>>>> jgle-feature-roles-permisos
     }
 
     /**
@@ -164,10 +149,6 @@ class RecidentsController extends Controller
 
         $properties = Property::all();
         return view('residents.addresident', compact('properties'));
-<<<<<<< HEAD
-=======
-
->>>>>>> jgle-feature-roles-permisos
     }
 
     /**

@@ -19,17 +19,12 @@ class Vehicle extends Model
         'year',
         'color',
         'vehicle_type',
-<<<<<<< HEAD
-        'start_date',
-        'end_date'
-=======
         'property_code',
         'user_id',
         'permit_type',
         'start_date',
         'end_date',
         'permit_status',
->>>>>>> jgle-feature-roles-permisos
     ];
 
     public function property()

@@ -159,13 +159,7 @@
                 <div class="card p-4 sm:p-5">
 
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100 mb-5">
-<<<<<<< HEAD
                         Add New Resident
-=======
-
-                        Add New Resident 
-
->>>>>>> jgle-feature-roles-permisos
                     </p>
                     <form action="{{ route('resident.store') }}" method="POST">
                         @csrf
@@ -336,13 +330,7 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
 
                             @enderror
-<<<<<<< HEAD
                         </div>
-=======
-
-                        </div>                        
-
->>>>>>> jgle-feature-roles-permisos
                         <div class="mb-4">
 
                             <label class="relative flex">

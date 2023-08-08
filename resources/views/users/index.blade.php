@@ -127,11 +127,7 @@
                                         {{ $user->access_level }}
                                     </td>
                                     <td class="px-4 py-2">
-<<<<<<< HEAD
-                                        {{ $user->property_name }}
-=======
                                         {{ $user->property_name}}
->>>>>>> jgle-feature-roles-permisos
                                     </td>
                                     <td class="px-4 py-2">
                                         @if ($user->banned == 1)
