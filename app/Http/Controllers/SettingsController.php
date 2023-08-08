@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\PropertySetting;
 use App\Models\visitorSetting;
+use App\Models\Registration;
 
 class SettingsController extends Controller
 {
@@ -65,89 +66,201 @@ class SettingsController extends Controller
 
     public function visitorSettingStore(Request $request)
     {
-       /* [
-  "_token" => "z6J2umh58IVrVFk5Lc1b0PcuBBzsDc4syXYHFSiV"
-  "visitor_name" => "on"
-  "visitor_email" => "on"
-  "visitor_phone" => "on"
-  "visitor_language" => "on"
-  "vin" => "on"
-  "license_plate" => "on"
-  "year" => "on"
-  "make" => "on"
-  "model" => "on"
-  "color" => "on"
-  "vehicle_type" => "on"
-  "resident_name" => "on"
-  "resident_unit_number" => "on"
-  "resident_email" => "on"
-  "resident_phone" => "on"
-  "resident_registration" => "on"
-  "valid_form" => "on"
-  "required_visitor_name" => "on"
-  "required_visitor_email" => "on"
-  "required_visitor_phone" => "on"
-  "required_visitor_language" => "on"
-  "required_vin" => "on"
-  "required_license_plate" => "on"
-  "required_year" => "on"
-  "required_make" => "on"
-  "required_model" => "on"
-  "required_color" => "on"
-  "required_vehicle_type" => "on"
-  "required_resident_name" => "on"
-  "required_resident_unit_number" => "on"
-  "required_resident_email" => "on"
-  "required_resident_phone" => "on"
-  "required_resident_registration" => "on"
-  "required_valid_form" => "on"
-  "validation_resident_name" => "on"
-  "validation_resident_unit_number" => "on"
-  "validation_resident_email" => "on"
-  "validation_resident_phone" => "on"
-  "validation_resident_registration" => "on"
-]*/
+        if(isset($request->type) && $request->type) {
+            if($request->type == 'form') {
+                $setting = visitorSetting::where('property_id', $request->property_id)->where('type','form')->get();
+            }
+            if($request->type == 'setting') {
+                $setting = visitorSetting::where('property_id', $request->property_id)->where('type','setting')->get();
+            }
+            return $setting ?
+                response()->json([
+                    'success' => true,
+                    'form' => $setting,
+                    'message' => $request->type
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'form' => false,
+                    'message' => 'configured error, try again'
+                ], 200);
+        }
+        if($request->action == 'form') {
+            $fields = [
+                "visitor_name",
+                "visitor_email",
+                "visitor_phone",
+                "visitor_language",
+                "vin",
+                "license_plate",
+                "year",
+                "make",
+                "model",
+                "color",
+                "vehicle_type",
+                "resident_name",
+                "resident_unit_number",
+                "resident_email",
+                "resident_phone",
+                "resident_registration",
+                "valid_form",
+                "required_visitor_name",
+                "required_visitor_email",
+                "required_visitor_phone",
+                "required_visitor_language",
+                "required_vin",
+                "required_license_plate",
+                "required_year",
+                "required_make",
+                "required_model",
+                "required_color",
+                "required_vehicle_type",
+                "required_resident_name",
+                "required_resident_unit_number",
+                "required_resident_email",
+                "required_resident_phone",
+                "required_resident_registration",
+                "required_valid_form",
+                "validation_resident_name",
+                "validation_resident_unit_number",
+                "validation_resident_email",
+                "validation_resident_phone",
+                "validation_resident_registration"
+            ];
+            $data = [];
+            foreach ($fields as $key => $field) {
+                array_push($data, [
+                    'name' => $field,
+                    'valor' => key_exists($field, $request->all()),
+                    'type' => 'form',
+                    'property_id' =>  $request->property_id
+                ]);
+            }
+            $setting = visitorSetting::where('property_id', $request->property_id)->where('type','form')->count();
+            if($setting>0) {
+                visitorSetting::where('property_id', $request->property_id)->where('type','form')->delete();
+                $setting = visitorSetting::insert($data);
+            } else {
+                $setting = visitorSetting::insert($data);
+            }
+        }
+        if($request->action == 'setting') {
+            $fields = [
+                "total",
+                "hours",
+                "limit",
+                "days",
+            ];
 
-$data = [];
-foreach ($request->except(['_token']) as $key => $value) {
-    $field_required = 'required_'.$key;
-    $field_validation_ = 'validation_'.$key;
-    if($key != 'property_id') {
-        array_push($data, [
-            'field' =>  $key,
-            'value_field' => $value,
-            'required' => $field_required,
-            'value_required' => $value,
-            'validation' => $field_validation_,
-            'property_id' => $request->property_id
-        ]);
+            $data = [];
+            foreach ($fields as $key => $field) {
+                array_push($data, [
+                    'name' => $field,
+                    'valor' => key_exists($field, $request->all()) ? $request->$field : null,
+                    'type' => 'setting',
+                    'property_id' =>  $request->property_id
+                ]);
+            }
+
+            $setting = visitorSetting::where('property_id', $request->property_id)->where('type','setting')->count();
+            if($setting>0) {
+                visitorSetting::where('property_id', $request->property_id)->where('type','setting')->delete();
+                $setting = visitorSetting::insert($data);
+            } else {
+                $setting = visitorSetting::insert($data);
+            }
+        }
+
+
+        return $setting ?
+                response()->json([
+                    'success' => true,
+                    'form' => $setting,
+                    'message' => 'configured successfully'
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'form' => false,
+                    'message' => 'configured not set, try again'
+                ], 200);
     }
-}
 
-/*foreach ($data as $key => $value) {
-    print_r( $request[$value['field']]);
-    //$value['field'] == $request->
-}*/
-
-dd($data);
-        /*$data = [
-            [
-                'field' => 'yytyty',
-                'required' => 1,
-                'validation' => 1,
-                'property_id' => 6
-            ],
-            [
-                'field' => 'test',
-                'required' => 1,
-                'validation' => 0,
-                'property_id' => 6
-            ]
+    public function registrationSettingStore(Request $request)
+    {
+        if(isset($request->type) && $request->type) {
+            if($request->type == 'form') {
+                $setting = Registration::where('property_id', $request->property_id)->where('type','form')->get();
+            }
+            return $setting ?
+                response()->json([
+                    'success' => true,
+                    'form' => $setting,
+                    'message' => $request->type
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'form' => false,
+                    'message' => 'configured error, try again'
+                ], 200);
+        }
+        $fields = [
+            "pre_name",
+            "pre_email",
+            "pre_phone",
+            "pre_unit",
+            "pre_language",
+            "pre_license_plate",
+            "pre_vin",
+            "pre_make",
+            "pre_model",
+            "pre_year",
+            "pre_color",
+            "pre_vehicle_type",
+            "required_name",
+            "required_email",
+            "required_phone",
+            "required_unit",
+            "required_language",
+            "required_license_plate",
+            "required_vin",
+            "required_make",
+            "required_model",
+            "required_year",
+            "required_color",
+            "required_vehicle_type",
+            "validation_license_plate"
         ];
-        $visitor_email = $request->visitor_email == 'on' ? 'visitor_email' : null;
-        $visitor_email_active = $visitor_email ? true : false;
-        //$test = visitorSetting::insert($data);
-        dd($visitor_email);*/
+
+
+        $data = [];
+        foreach ($fields as $key => $field) {
+            array_push($data, [
+                'name' => $field,
+                'valor' => key_exists($field, $request->all()),
+                'type' => 'form',
+                'property_id' =>  $request->property_id
+            ]);
+        }
+        $setting = Registration::where('property_id', $request->property_id)->where('type','form')->count();
+        if($setting>0) {
+            Registration::where('property_id', $request->property_id)->where('type','form')->delete();
+            $setting = Registration::insert($data);
+        } else {
+            $setting = Registration::insert($data);
+        }
+
+
+        return $setting ?
+                response()->json([
+                    'success' => true,
+                    'form' => $setting,
+                    'message' => 'configured successfully'
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'form' => false,
+                    'message' => 'configured not set, try again'
+                ], 200);
     }
 
     public function registration($property)
