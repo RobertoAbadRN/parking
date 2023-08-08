@@ -15,25 +15,40 @@
             <div class="mb-4 border-b">
                 <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
                     <li class="w-80" @click="openTab = 1" :class="openTab === 1 ? activeClasses : inactiveClasses">
-                        <button class="inline-block p-4 rounded-t-lg">Permit Text  (Agreement & Instructions)</button>
-                    </li>
-                    <li class="w-80" @click="openTab = 2" :class="openTab === 2 ? activeClasses : inactiveClasses">
-                        <button class="inline-block p-4 rounded-t-lg">Permit Layout & Paper Format</button>
-                    </li>
-                    <li class="w-80" @click="openTab = 3" :class="openTab === 3 ? activeClasses : inactiveClasses">
-                        <button class="inline-block p-4 rounded-t-lg">Print Preview</button>
+                        <button class="inline-block p-4 rounded-t-lg">Permit Types</button>
                     </li>
                 </ul>
             </div>
             <div>
                 <div x-show="openTab ===  1" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Profile tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
-                </div>
-                <div x-show="openTab ===  2" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
-                </div>
-                <div x-show="openTab ===  3" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Settings tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="inline-block p-4 rounded-t-lg text-gray-900">
+                            <p class="mb-2"> YOUR SELECTED PERMIT TYPE </p>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Resident</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Visitor</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Sub-contractor</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Carport</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Temporary</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Reserved</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">V.I.P.</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Contractor</div>
+                            <div class="w-80 p-2 border-2 rounded-lg bg-orange-400 text-white px-2">Employee</div>
+                        </div>
+                        <div class="inline-block p-4 rounded-t-lg text-gray-900">
+                            <p class="mb-2"> YAVAILABLE PERMIT TYPE </p>
+                        </div>
+                    </div>
+                    <div class=" mt-3 text-center">
+                        <button type="submit"
+                            class="btn btn-submit bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                            Submit
+                        </button>
+                        <button type="button"
+                            class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
+                            onclick="window.location.href='{{ route('settings') }}'">
+                            Cancel
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

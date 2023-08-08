@@ -56,7 +56,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2023_06_02_161844_create_properties_table',2),(6,'2023_06_05_193637_create_vehicles_table',3),(7,'2023_06_05_200313_create_visitorpasses_table',4),(8,'2023_06_30_101426_create_user_properties_table',5),(9,'2023_07_12_120500_create_residents_table',6),(10,'2023_07_12_124158_add_password_to_residents_table',7),(11,'2023_07_12_170306_create_profiles_table',8),(12,'2023_07_18_095731_create_permission_tables',8),(13,'2023_07_27_061338_create_property_settings_table',9),(14,'2023_07_27_062552_create_permit_settings_table',9),(17,'2023_07_27_063238_create_visitor_settings_table',10);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2023_06_02_161844_create_properties_table',2),(6,'2023_06_05_193637_create_vehicles_table',3),(7,'2023_06_05_200313_create_visitorpasses_table',4),(8,'2023_06_30_101426_create_user_properties_table',5),(9,'2023_07_12_120500_create_residents_table',6),(10,'2023_07_12_124158_add_password_to_residents_table',7),(11,'2023_07_12_170306_create_profiles_table',8),(12,'2023_07_18_095731_create_permission_tables',8),(13,'2023_07_27_061338_create_property_settings_table',9),(14,'2023_07_27_062552_create_permit_settings_table',9),(18,'2023_07_27_063238_create_visitor_settings_table',10),(19,'2023_08_08_124603_create_registrations_table',11);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,6 +383,35 @@ INSERT INTO `property_settings` VALUES (14,'Limpie el área donde se colocará e
 UNLOCK TABLES;
 
 --
+-- Table structure for table `registrations`
+--
+
+DROP TABLE IF EXISTS `registrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `registrations` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `valor` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `property_id` bigint DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `registrations`
+--
+
+LOCK TABLES `registrations` WRITE;
+/*!40000 ALTER TABLE `registrations` DISABLE KEYS */;
+INSERT INTO `registrations` VALUES (3,'pre_phone','1','form',6,NULL,NULL),(4,'pre_unit','1','form',6,NULL,NULL),(5,'pre_language','1','form',6,NULL,NULL),(6,'pre_license_plate','1','form',6,NULL,NULL),(7,'pre_vin','1','form',6,NULL,NULL),(8,'pre_make','1','form',6,NULL,NULL),(9,'pre_model','1','form',6,NULL,NULL),(10,'pre_year','1','form',6,NULL,NULL),(11,'pre_color','1','form',6,NULL,NULL),(12,'pre_vehicle_type','1','form',6,NULL,NULL),(13,'required_name','1','form',6,NULL,NULL),(14,'required_email','1','form',6,NULL,NULL),(15,'required_phone','1','form',6,NULL,NULL),(16,'required_unit','1','form',6,NULL,NULL),(17,'required_language','1','form',6,NULL,NULL),(18,'required_license_plate','1','form',6,NULL,NULL),(19,'required_vin','1','form',6,NULL,NULL),(20,'required_make','1','form',6,NULL,NULL),(21,'required_model','1','form',6,NULL,NULL),(22,'required_year','1','form',6,NULL,NULL),(23,'required_color','1','form',6,NULL,NULL),(24,'required_vehicle_type','1','form',6,NULL,NULL),(25,'validation_license_plate','1','form',6,NULL,NULL),(26,'pre_name','1','form',6,NULL,NULL),(27,'pre_email','1','form',6,NULL,NULL),(28,'pre_phone','1','form',6,NULL,NULL),(29,'pre_unit','1','form',6,NULL,NULL),(30,'pre_language','1','form',6,NULL,NULL),(31,'pre_license_plate','0','form',6,NULL,NULL),(32,'pre_vin','1','form',6,NULL,NULL),(33,'pre_make','1','form',6,NULL,NULL),(34,'pre_model','0','form',6,NULL,NULL),(35,'pre_year','1','form',6,NULL,NULL),(36,'pre_color','0','form',6,NULL,NULL),(37,'pre_vehicle_type','1','form',6,NULL,NULL),(38,'required_name','1','form',6,NULL,NULL),(39,'required_email','0','form',6,NULL,NULL),(40,'required_phone','0','form',6,NULL,NULL),(41,'required_unit','1','form',6,NULL,NULL),(42,'required_language','0','form',6,NULL,NULL),(43,'required_license_plate','0','form',6,NULL,NULL),(44,'required_vin','1','form',6,NULL,NULL),(45,'required_make','0','form',6,NULL,NULL),(46,'required_model','1','form',6,NULL,NULL),(47,'required_year','1','form',6,NULL,NULL),(48,'required_color','0','form',6,NULL,NULL),(49,'required_vehicle_type','1','form',6,NULL,NULL),(50,'validation_license_plate','1','form',6,NULL,NULL),(51,'pre_name','1','form',6,NULL,NULL),(52,'pre_email','1','form',6,NULL,NULL),(53,'pre_phone','1','form',6,NULL,NULL),(54,'pre_unit','1','form',6,NULL,NULL),(55,'pre_language','1','form',6,NULL,NULL),(56,'pre_license_plate','0','form',6,NULL,NULL),(57,'pre_vin','1','form',6,NULL,NULL),(58,'pre_make','1','form',6,NULL,NULL),(59,'pre_model','0','form',6,NULL,NULL),(60,'pre_year','1','form',6,NULL,NULL),(61,'pre_color','0','form',6,NULL,NULL),(62,'pre_vehicle_type','1','form',6,NULL,NULL),(63,'required_name','1','form',6,NULL,NULL),(64,'required_email','0','form',6,NULL,NULL),(65,'required_phone','0','form',6,NULL,NULL),(66,'required_unit','1','form',6,NULL,NULL),(67,'required_language','0','form',6,NULL,NULL),(68,'required_license_plate','0','form',6,NULL,NULL),(69,'required_vin','1','form',6,NULL,NULL),(70,'required_make','0','form',6,NULL,NULL),(71,'required_model','1','form',6,NULL,NULL),(72,'required_year','1','form',6,NULL,NULL),(73,'required_color','0','form',6,NULL,NULL),(74,'required_vehicle_type','1','form',6,NULL,NULL),(75,'validation_license_plate','0','form',6,NULL,NULL);
+/*!40000 ALTER TABLE `registrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `residents`
 --
 
@@ -534,7 +563,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'martin','martin.amador.tic@gmail.com',NULL,'mar','2101616','Property Manager','QyQxc','NO','2023-07-14 12:10:21','$2y$10$oYRV.EII7.lW99y47XfwYuIaywnnSsgRzANhHrpBVdTqhFZHzOS92','',NULL,'2023-06-01 23:41:18','2023-07-14 18:10:21'),(2,'admin','admin@gmail.com',NULL,'admin123','546456565','property_leasion_agent','QyQxc','NO','2023-07-31 16:41:22','$2y$10$oWKm2Nvg4CKGTFza4iBMY.8PL.auUKkEq26YJPj5sdxf.5cD18Loa','',NULL,'2023-06-05 21:34:08','2023-07-31 20:41:22'),(46,'martin','martin.reyes.qro@gmail.com',NULL,'hola','4428168746','property_leasion_agent','QyQx4','NO','','$2y$10$iVtZ3RO4O9R1WJjWEjBtse19fFpde3tZxNpQONptRgTzYBodQGGza','',NULL,'2023-07-02 02:41:55','2023-07-02 02:42:40'),(47,'tetst','test@test.cpm',NULL,'test','4354545','property_leasion_agent','QyQxc','NO','','$2y$10$K36qoceLoLFc7eJB2v1kdurhMw002JaE.kQVWydOo686GPzJNQz0K','',NULL,'2023-07-18 18:24:15','2023-07-18 18:24:15'),(48,'test','concerje@test.com',NULL,'concerje','87789879978','property_leasion_agent','QyQxc','NO','2023-07-18 15:17:56','$2y$10$XEsSaKhYMYZBEPtX0FjMhOgBCPUjs4DA0bmKVmbIm31paLiAMpCwe','',NULL,'2023-07-18 19:17:31','2023-07-18 19:17:56');
+INSERT INTO `users` VALUES (1,'martin','martin.amador.tic@gmail.com',NULL,'mar','2101616','Property Manager','QyQxc','NO','2023-07-14 12:10:21','$2y$10$oYRV.EII7.lW99y47XfwYuIaywnnSsgRzANhHrpBVdTqhFZHzOS92','',NULL,'2023-06-01 23:41:18','2023-07-14 18:10:21'),(2,'admin','admin@gmail.com',NULL,'admin123','546456565','property_leasion_agent','QyQxc','NO','2023-08-08 07:28:17','$2y$10$oWKm2Nvg4CKGTFza4iBMY.8PL.auUKkEq26YJPj5sdxf.5cD18Loa','',NULL,'2023-06-05 21:34:08','2023-08-08 11:28:17'),(46,'martin','martin.reyes.qro@gmail.com',NULL,'hola','4428168746','property_leasion_agent','QyQx4','NO','','$2y$10$iVtZ3RO4O9R1WJjWEjBtse19fFpde3tZxNpQONptRgTzYBodQGGza','',NULL,'2023-07-02 02:41:55','2023-07-02 02:42:40'),(47,'tetst','test@test.cpm',NULL,'test','4354545','property_leasion_agent','QyQxc','NO','','$2y$10$K36qoceLoLFc7eJB2v1kdurhMw002JaE.kQVWydOo686GPzJNQz0K','',NULL,'2023-07-18 18:24:15','2023-07-18 18:24:15'),(48,'test','concerje@test.com',NULL,'concerje','87789879978','property_leasion_agent','QyQxc','NO','2023-07-18 15:17:56','$2y$10$XEsSaKhYMYZBEPtX0FjMhOgBCPUjs4DA0bmKVmbIm31paLiAMpCwe','',NULL,'2023-07-18 19:17:31','2023-07-18 19:17:56');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -583,18 +612,14 @@ DROP TABLE IF EXISTS `visitor_settings`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `visitor_settings` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `field` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `required` tinyint(1) DEFAULT NULL,
-  `validation` tinyint(1) DEFAULT NULL,
-  `active` tinyint(1) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `valor` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'form',
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `property_id` bigint DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -603,6 +628,7 @@ CREATE TABLE `visitor_settings` (
 
 LOCK TABLES `visitor_settings` WRITE;
 /*!40000 ALTER TABLE `visitor_settings` DISABLE KEYS */;
+INSERT INTO `visitor_settings` VALUES (79,'visitor_name','1','form',6,NULL,NULL),(80,'visitor_email','1','form',6,NULL,NULL),(81,'visitor_phone','0','form',6,NULL,NULL),(82,'visitor_language','1','form',6,NULL,NULL),(83,'vin','0','form',6,NULL,NULL),(84,'license_plate','1','form',6,NULL,NULL),(85,'year','1','form',6,NULL,NULL),(86,'make','0','form',6,NULL,NULL),(87,'model','0','form',6,NULL,NULL),(88,'color','0','form',6,NULL,NULL),(89,'vehicle_type','0','form',6,NULL,NULL),(90,'resident_name','0','form',6,NULL,NULL),(91,'resident_unit_number','1','form',6,NULL,NULL),(92,'resident_email','1','form',6,NULL,NULL),(93,'resident_phone','0','form',6,NULL,NULL),(94,'resident_registration','0','form',6,NULL,NULL),(95,'valid_form','0','form',6,NULL,NULL),(96,'required_visitor_name','1','form',6,NULL,NULL),(97,'required_visitor_email','1','form',6,NULL,NULL),(98,'required_visitor_phone','0','form',6,NULL,NULL),(99,'required_visitor_language','1','form',6,NULL,NULL),(100,'required_vin','0','form',6,NULL,NULL),(101,'required_license_plate','1','form',6,NULL,NULL),(102,'required_year','1','form',6,NULL,NULL),(103,'required_make','0','form',6,NULL,NULL),(104,'required_model','0','form',6,NULL,NULL),(105,'required_color','0','form',6,NULL,NULL),(106,'required_vehicle_type','0','form',6,NULL,NULL),(107,'required_resident_name','0','form',6,NULL,NULL),(108,'required_resident_unit_number','1','form',6,NULL,NULL),(109,'required_resident_email','1','form',6,NULL,NULL),(110,'required_resident_phone','0','form',6,NULL,NULL),(111,'required_resident_registration','0','form',6,NULL,NULL),(112,'required_valid_form','0','form',6,NULL,NULL),(113,'validation_resident_name','0','form',6,NULL,NULL),(114,'validation_resident_unit_number','1','form',6,NULL,NULL),(115,'validation_resident_email','1','form',6,NULL,NULL),(116,'validation_resident_phone','0','form',6,NULL,NULL),(117,'validation_resident_registration','0','form',6,NULL,NULL);
 /*!40000 ALTER TABLE `visitor_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -654,4 +680,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-01  4:16:48
+-- Dump completed on 2023-08-08 16:05:03

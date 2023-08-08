@@ -27,6 +27,7 @@
             </div>
             <div>
                 <div x-show="openTab ===  1" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                    <div id="message_form" class="hidden text-white px-4 py-2 mb-4 rounded-md"></div>
                     <div class="grid grid-cols-3 gap-4">
                         <div class="text-gray-900 text-base">Fields to show on the form <br> <span class="text-gray-500 text-xs"> Selected fields will be shown on the form </span></div>
                         <div class="text-gray-900 text-base">Field is mandatory/required <br> <span class="text-gray-500 text-xs"> Selected field will need to be filled to submit the form  </span></div>
@@ -34,6 +35,7 @@
                     </div>
                     <form method="POST" action="{{ route('settings.visitor.store') }}" name="form-visitor" id="form-visitor">
                         <input type="hidden" name="property_id" value="{{$property->id}}">
+                        <input type="hidden" name="action" value="form">
                         @csrf
                         <div class="grid grid-cols-3 gap-4">
                             <div class="text-gray-900 text-sm" style="padding: 0px 0px 0px 45px;">
@@ -348,32 +350,34 @@
                 </div>
                 <div x-show="openTab ===  2" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                     <p class="text-center mb-6 mt-2 text-blue-500 text-lg">Visitors Pass Limit Settings</p>
-                    <form method="POST" action="" name="form-visitor-setting" id="form-visitor-setting">
+                    <div id="message_setting" class="hidden text-white px-4 py-2 mb-4 rounded-md"></div>
+                    <form method="POST" action="{{ route('settings.visitor.store') }}" name="form-visitor-setting" id="form-visitor-setting">
                         <input type="hidden" name="property_id" value="{{$property->id}}">
+                        <input type="hidden" name="action" value="setting">
                         @csrf
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Total Visitor's Pass Available:</div>
                             <div><input
                                 class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Name" type="text" name="name" value="10" /></div>
+                                placeholder="20" type="text" name="total" id="total" required /></div>
                         </div>
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Duration (Hrs):</div>
                             <div><input
                                 class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Name" type="text" name="name" value="24" /></div>
+                                placeholder="15" type="text" name="hours" id="hours" required /></div>
                         </div>
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Limit per Vehicle:</div>
                             <div><input
                                 class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Name" type="text" name="name" value="3" /></div>
+                                placeholder="12" type="text" name="limit" id="limit" required /></div>
                         </div>
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Registration limit (days):</div>
                             <div><input
                                 class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Name" type="text" name="name" value="14" /></div>
+                                placeholder="10" type="text" name="days" id="days" required /></div>
                         </div>
                         <div class=" mt-3 text-center">
                             <button type="submit"
@@ -395,22 +399,101 @@
     </div>
 </main>
 <script>
-function check_checked(obj){
-    var child_id = $(obj).children(':input').prop('id');
-            var is_checked = $(obj).children(':input').prop('checked');
-            var div_id = '.div_field_'+ child_id ;
-            console.log(child_id);
-            console.log(is_checked);
-            console.log(div_id);
-            if(is_checked === true){
-                $('#required_'+ child_id).prop('checked', true);
-                $('#validation_'+ child_id).prop('checked', true);
-            } else {
-                $('#required_'+ child_id).prop('checked', false);
-                $('#validation_'+ child_id).prop('checked', false);
-            }
+    $(document).ready(function() {
+        settingsVisitor('form');
+        settingsVisitor('setting');
+        $("#form-visitor-setting").validate({
+            errorClass:'border-red-500 text-red-500',
+            validClass:'border-green-500 text-green-500'
+        });
 
-}
-</script>
+        $("#form-visitor").submit(function( event ) {
+            event.preventDefault();
+            $('.btn-submit').prop("disabled", true);
+            axios.post('{{ route('settings.visitor.store') }}', $(this).serialize(),{
+            }).then(response => {
+                if(response.data.success) {
+                    settingsVisitor('form')
+                    $('#message_form').removeClass('hidden').addClass('bg-green-500').text(`${response.data.message}`);
+                    setTimeout(function() {
+                        $('#message_form').addClass('hidden').text('');
+                    }, 5000);
+                }
+                if(!response.data.success) {
+                    $('#message_form').removeClass('hidden').addClass('bg-red-500').text(`${response.data.message}`);
+                    setTimeout(function() {
+                        $('#message_form').addClass('hidden').text('');
+                    }, 5000);
+                }
+                $('.btn-submit').prop("disabled", false);
+
+            }).catch(error => {
+                console.log(error.response);
+                $('.btn-submit').prop("disabled", false);
+            });
+        });
+        $("#form-visitor-setting").submit(function( event ) {
+            event.preventDefault();
+            $('.btn-submit').prop("disabled", true);
+            axios.post('{{ route('settings.visitor.store') }}', $(this).serialize(),{
+            }).then(response => {
+                if(response.data.success) {
+                    settingsVisitor('setting')
+                    $('#message_setting').removeClass('hidden').addClass('bg-green-500').text(`${response.data.message}`);
+                    setTimeout(function() {
+                        $('#message_setting').addClass('hidden').text('');
+                    }, 5000);
+                }
+                if(!response.data.success) {
+                    $('#message_setting').removeClass('hidden').addClass('bg-red-500').text(`${response.data.message}`);
+                    setTimeout(function() {
+                        $('#message_setting').addClass('hidden').text('');
+                    }, 5000);
+                }
+                $('.btn-submit').prop("disabled", false);
+
+            }).catch(error => {
+                console.log(error.response);
+                $('.btn-submit').prop("disabled", false);
+            });
+        });
+    });
+
+    function  settingsVisitor(type) {
+        axios.post('{{ route('settings.visitor.store') }}',{
+                property_id:   '{{$property->id}}',
+                type:   'form'
+            }).then(response => {
+                if(response.data.success) {
+                    $.each(response.data.form, function (index, field) {
+                        if(type == 'form') {
+                            $('#'+field.name).prop('checked', field.valor == 1 ? true : false);
+                        }
+                        if(type == 'setting') {
+                            $('#'+field.name).prop('checked', field.valor == 1 ? true : false);
+                        }
+                    });
+                }
+            }).catch(error => {
+                console.log(error.response);
+            });
+    }
+
+    function check_checked(obj){
+        var child_id = $(obj).children(':input').prop('id');
+                var is_checked = $(obj).children(':input').prop('checked');
+                var div_id = '.div_field_'+ child_id ;
+                console.log(child_id);
+                console.log(is_checked);
+                console.log(div_id);
+                if(is_checked === true){
+                    $('#required_'+ child_id).prop('checked', true);
+                    $('#validation_'+ child_id).prop('checked', true);
+                } else {
+                    $('#required_'+ child_id).prop('checked', false);
+                    $('#validation_'+ child_id).prop('checked', false);
+                }
+    }
+    </script>
 </x-app-layout>
 
