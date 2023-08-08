@@ -127,7 +127,7 @@
                                         {{ $user->access_level }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $user->property_name}}
+                                        {{ $user->property_name }}
                                     </td>
                                     <td class="px-4 py-2">
                                         @if ($user->banned == 1)
@@ -136,7 +136,7 @@
                                             <span class="text-red-500">Yes</span>
                                         @endif
                                     </td>
-                                    
+
 
                                     <td class="px-4 py-2">
                                         {{ $user->last_login }}
@@ -154,12 +154,13 @@
                                             <form method="POST" action="{{ route('user.toggleBan', $user->id) }}">
                                                 @csrf
                                                 @method('PUT')
-                                                <button type="submit" class="btn h-8 w-8 p-0 {{ $user->banned ? 'text-red-500' : 'text-green-500' }} hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <button type="submit"
+                                                    class="btn h-8 w-8 p-0 {{ $user->banned ? 'text-red-500' : 'text-green-500' }} hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                     <i class="fa {{ $user->banned ? 'fa-check' : 'fa-ban' }}"></i>
                                                 </button>
                                             </form>
-                                            
-                                            
+
+
                                             <a href="{{ route('user.destroy', $user->id) }}"
                                                 class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                 onclick="event.preventDefault(); showConfirmation('{{ $user->id }}');">
@@ -185,12 +186,12 @@
                                                 }
                                             </script>
 
-<form id="delete-user-form-{{ $user->id }}"
-    action="{{ route('user.destroy', $user->id) }}" method="POST"
-    style="display: none;">
-    @csrf
-    @method('DELETE')
-</form>
+                                            <form id="delete-user-form-{{ $user->id }}"
+                                                action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
 
                                         </div>
                                     </td>

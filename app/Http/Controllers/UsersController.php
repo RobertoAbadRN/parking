@@ -174,7 +174,6 @@ class UsersController extends Controller
             'name' => 'required',
             'phone' => 'required',
             'email' => 'required|email',
-            'password' => 'nullable|min:8',
             'access_level' => 'required',
             'properties' => 'required',
             'role' => 'required',
@@ -186,10 +185,6 @@ class UsersController extends Controller
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
         $user->access_level = $validatedData['access_level'];
-
-        if ($request->filled('password')) {
-            $user->password = bcrypt($validatedData['password']);
-        }
 
         $user->save();
         $user->properties()->sync($request->properties); // Actualizar las propiedades del usuario.

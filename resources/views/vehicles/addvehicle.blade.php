@@ -187,19 +187,7 @@
                             of Year</button>
                     </div>
 
-                                startInput._x_flatpickr.setDate(startDate, false, 'Y-m-d');
-                                endInput._x_flatpickr.setDate(endDate, false, 'Y-m-d');
-                            }
 
-                            document.addEventListener('DOMContentLoaded', function() {
-                                flatpickr('.datepicker-input', {
-                                    enableTime: false,
-                                    dateFormat: 'Y-m-d',
-                                    minDate: 'today',
-                                    clickOpens: true
-                                });
-                            });
-                        </script>
                 </div>
 
                 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

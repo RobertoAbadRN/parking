@@ -64,9 +64,9 @@
                 </div>
             </div>
             <!-- Basic Table -->
-            <div class="card px-4 pb-4 sm:px-5 pt-5">
+            <div class="card px-4 pb-4 sm:px-5">
                 <div class="container mx-auto">
-                    <table id="example" class="table-auto min-w-full pt-5">
+                    <table id="example" class="table-auto min-w-full">
                         <thead>
                             <tr>
                                 <th class="px-4 py-2">Create at</th>
@@ -78,7 +78,6 @@
                                 <th class="px-4 py-2">Permit Type</th>
                                 <th class="px-4 py-2">#Reserved</th>
                                 <th class="px-4 py-2">Permit Status</th>
-                                <th class="px-4 py-2">Status</th>
                                 <th class="px-4 py-2">E-mail</th>
                                 <th class="px-4 py-2">Phone</th>
                                 <th class="px-4 py-2">Type</th>
@@ -95,7 +94,7 @@
 
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $vehicle->name }}
+                                        {{ $vehicle->resident_name }}
                                     </td>
                                     <td class="px-4 py-2">
                                         {{ $vehicle->apart_unit }}
@@ -161,10 +160,12 @@
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-print"></i>
                                             </a>
+
                                             <a href="{{ route('send.email', ['id' => $vehicle->id, 'property_code' => $property_code, 'email' => $vehicle->email]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-envelope"></i>
                                             </a>
+
 
                                             <a href="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id, 'property_code' => $property_code]) }}"
                                                 class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
@@ -220,31 +221,6 @@
                 </div>
             </div>
         </div>
-        <script>
-            function updateStatus(vehicleId) {
-              // Realizar la solicitud POST utilizando AJAX
-              fetch(`/vehicles/update-status/${vehicleId}`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                  status: 'approved'
-                })
-              })
-              .then(response => response.json())
-              .then(data => {
-                // Manejar la respuesta del servidor si es necesario
-                console.log(data);
-                // Opcional: redireccionar o actualizar la página si es necesario
-                // window.location.reload();
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-            }
-          </script>          
 
         <script>
             $(document).ready(function() {

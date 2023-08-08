@@ -75,7 +75,6 @@
                 </div>
             </div>
         </template>
-
         <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
             <div class="col-span-12 sm:col-span-10">
                 <div class="card p-4 sm:p-5">
@@ -127,19 +126,6 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>                 
-
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <input
-                                    class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    placeholder="Password" type="password" name="password">
-                            </label>
-                            @error('password')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-
                         <div class="mb-4">
                             <label class="relative flex">
                                 <select id="access_level"

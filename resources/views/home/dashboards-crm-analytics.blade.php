@@ -52,12 +52,6 @@
 
                     
 
-                    
-
-
-
-
-
                     <a href="{{ route('recidents') }}">
 
                         <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
@@ -80,13 +74,7 @@
 
                     </a>
 
-                    
-
-                    
-
-
-
-
+                  
 
                     <a href="{{ route('properties') }}">
 
@@ -114,10 +102,6 @@
 
                     
 
-
-
-
-
                     <a href="{{ route('visitors_pass') }}">
 
                         <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
@@ -141,11 +125,6 @@
                     </a>
 
                     
-
-                    
-
-
-
                     <a href="{{ route('recidents') }}">
 
                         <div class="rounded-lg bg-slate-150 p-4 dark:bg-navy-700">
@@ -154,7 +133,7 @@
 
                                 <p class="text-xl font-semibold text-slate-700 dark:text-navy-100">
 
-                                    {{ $usersCount }}
+                                    {{  $usersCount }}
 
                                 </p>
 
@@ -162,22 +141,13 @@
 
                             </div>
 
-                            <p class="mt-1 text-xs+">Recidents</p>
+                            <p class="mt-1 text-xs+">Users</p>
 
                         </div>
 
-                    </a>
-
-                    
-
-                    
-
-
+                    </a>                 
 
                 </div>
-
-
-
                 <script>
 
                     document.addEventListener('DOMContentLoaded', function() {

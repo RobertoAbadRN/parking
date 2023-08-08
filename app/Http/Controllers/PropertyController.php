@@ -27,23 +27,22 @@ class PropertyController extends Controller
 
      */
 
-     public function index()
-     {
-         // Obtén todas las propiedades y calcula el total de autos por cada una usando LEFT JOIN y subconsulta
-         $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
-             ->distinct() // Agregar el método distinct() para eliminar duplicados
-             ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
-             ->selectSub(function ($query) {
-                 $query->from('vehicles')
-                     ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
-                     ->selectRaw('count(*)');
-             }, 'total_cars')
-             ->get();
-     
-         // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
-         return view('properties.index', compact('properties'));
-     }
-     
+    public function index()
+    {
+        // Obtén todas las propiedades y calcula el total de autos por cada una usando LEFT JOIN y subconsulta
+        $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
+            ->distinct() // Agregar el método distinct() para eliminar duplicados
+            ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+            ->selectSub(function ($query) {
+                $query->from('vehicles')
+                    ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
+                    ->selectRaw('count(*)');
+            }, 'total_cars')
+            ->get();
+
+        // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
+        return view('properties.index', compact('properties'));
+    }
 
     public function create()
     {
@@ -278,7 +277,6 @@ class PropertyController extends Controller
 
     }
 
-
     public function vehicles($property_code)
     {
         $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
@@ -299,20 +297,17 @@ class PropertyController extends Controller
 
     public function users($propertyCode)
     {
-
         $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
-
-            ->where('users.property_code', $propertyCode)
-
-            ->select('users.*', 'properties.address')
-
-            ->distinct()
-
-            ->get();
-
-        return view('properties.users', compact('users'));
-
+                ->where('users.property_code', $propertyCode)
+                ->select('properties.name as property_name', 'users.*', 'properties.address')
+                ->distinct()
+                ->get();
+    
+        $propertyName = $users->isNotEmpty() ? $users->first()->property_name : null;
+    
+        return view('properties.users', compact('users', 'propertyName'));
     }
+    
 
     public function updatePermitStatus(Request $request, $id)
     {

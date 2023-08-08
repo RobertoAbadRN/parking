@@ -20,8 +20,7 @@ class HomeController extends Controller
           $recidentsCount = User::where('access_level', 'Resident')->count();
           $propertiesCount = Property::count();
           $visitorPassesCount = VisitorPass::count();
-          $usersCount = User::where('access_level', 'Recidents')->count();
-       
+          $usersCount = User::count();
 
         return view('home.dashboards-crm-analytics', compact( 'totalVehicles','recidentsCount', 'propertiesCount','visitorPassesCount', 'usersCount'));
     
