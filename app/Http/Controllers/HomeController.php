@@ -1,12 +1,30 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use App\Models\Vehicle;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Property;
+use App\Models\VisitorPass;
+
+
 
 class HomeController extends Controller
 {
     public function dashboardsCrmAnalytics()
     {
-        return view('pages/dashboards-crm-analytics');
+        
+             // Calculate the total count of vehicles
+          $totalVehicles = Vehicle::count();
+          $recidentsCount = User::where('access_level', 'Resident')->count();
+          $propertiesCount = Property::count();
+          $visitorPassesCount = VisitorPass::count();
+          $usersCount = User::where('access_level', 'Recidents')->count();
+       
+
+        return view('home.dashboards-crm-analytics', compact( 'totalVehicles','recidentsCount', 'propertiesCount','visitorPassesCount', 'usersCount'));
+    
     }
     public function elementsAvatar()
     {

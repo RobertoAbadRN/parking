@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\DocusignController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
@@ -119,9 +120,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/properties/excel', [PropertyController::class, 'utiles_excel'])->name('utiles_excel');
     Route::get('properties/vehicles/{property_code}', [PropertyController::class, 'vehicles'])->name('properties.vehicles');
     Route::get('properties/users/{property_code}', [PropertyController::class, 'users'])->name('properties.users');
-    Route::put('/properties/{property}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('properties.updatePermitStatus');
+    Route::put('/properties/{id}/update-permit-status', [PropertyController::class, 'updatePermitStatus'])->name('updatePermitStatus');
     Route::get('/properties/user/{property_code}', [PropertyController::class, 'adduser'])
         ->name('propertiesUser');
+    Route::get('/search-residents', [PropertyController::class, 'searchResidents'])->name('search.residents');
+
 
     /**
      * ==============================
@@ -137,6 +140,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/users/{user}', [UsersController::class, 'destroy'])->name('user.destroy');
     Route::get('/users/excel/{property_code}', [UsersController::class, 'list_users'])->name('list_users');
     Route::get('/users/excelusers', [UsersController::class, 'excel_users'])->name('excel_users');
+    Route::get('/users/{user}', [UsersController::class, 'resetPassword'])->name('user.resetPassword');
+    Route::put('/users/{user}/ban', [UsersController::class, 'banUser'])->name('user.ban');
+    Route::put('/users/{user}/toggleban', [UsersController::class, 'toggleBan'])->name('user.toggleBan');
+
 
     /**
      * ==============================
@@ -144,12 +151,19 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
+    Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
+    Route::post('/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
     Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
     Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
     Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');
     Route::post('/residents/{resident}/delete', [RecidentsController::class, 'destroy'])->name('residents.destroy');
     Route::post('import-csv', [RecidentsController::class, 'importCSV'])->name('importCSV');
-    Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
+    Route::post('/updatestatus', [RecidentsController::class, 'updateStatus'])->name('updateStatus');
+
+
+
+
+
 
     /**
      * ==============================
@@ -158,13 +172,16 @@ Route::middleware('auth')->group(function () {
      */
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
     Route::get('/addvehicle/{property_code}', [VehiclesController::class, 'create'])->name('addvehicle');
-    Route::post('/vehicles', [VehiclesController::class, 'store'])->name('vehicles.store');
+    Route::post('/vehicles.store', [VehiclesController::class, 'store'])->name('vehicles.store');
     Route::get('/vehicles/{id}/edit/{property_code}', [VehiclesController::class, 'edit'])->name('edit.vehicle');
-    Route::post('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');
+    Route::put('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');
+
     Route::delete('/vehicles/{vehicle}/properties/{property_code}', [VehiclesController::class, 'destroy'])->name('vehicles.destroy');
     Route::get('/vehicles/excel/{property_code}', [VehiclesController::class, 'listvehicles_excel'])->name('listvehicles_excel');
     Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
+    Route::post('/suspend-vehicle/{id}', [VehiclesController::class, 'suspendVehicle'])->name('vehicles.suspend');
+
 
     /**
      * ==============================
@@ -178,12 +195,33 @@ Route::middleware('auth')->group(function () {
     Route::get('/excelvisitors', [VisitorsController::class, 'excel_visitorspases'])->name('excel_visitorspases');
     Route::get('/excelvisitorsid/{property_code}', [VisitorsController::class, 'excel_visitorforid'])->name('excel_visitorforid');
 
-    /**
+     /**
+
      * ==============================
+
      *       @Router - documents/
+
      * ==============================
+
      */
+
     Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
+
+    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
+
+    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
+
+    // Ruta para mostrar el formulario de edición
+
+    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
+
+    // Ruta para enviar los datos del formulario y actualizar el documento
+
+    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
+
+    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+
+
 
     /**
      * ==============================
@@ -216,3 +254,20 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');
+ /**
+
+     * ==============================
+
+     *       @Router - Docusign
+
+     * ==============================
+
+     */
+
+    Route::get('docusign', [DocusignController::class, 'index'])->name('docusign');
+
+    Route::get('connect-docusign', [DocusignController::class, 'connectDocusign'])->name('connect.docusign');
+
+    Route::get('docusign/callback', [DocusignController::class, 'callback'])->name('docusign.callback');
+
+    Route::get('sign-document', [DocusignController::class, 'signDocument'])->name('docusign.sign');

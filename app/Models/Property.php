@@ -29,10 +29,19 @@ class Property extends Model
         'places',
         'property_code',
         'logo',
+        'permit_status',
+        'nickname',
     ];
 
     public function Settings()
     {
-        return $this->hasMany('App\Models\PropertySetting');
-    }
+    return $this->hasMany('App\Models\PropertySetting');
+}
+
+
+public function users()
+{
+    return $this->belongsToMany(User::class, 'user_properties');
+}
+
 }

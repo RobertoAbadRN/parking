@@ -22,7 +22,6 @@ class SettingsController extends Controller
         }
         return view('settingss/index', ['properties' => $properties] );
     }
-
     public function language(Request $request)
     {
         $propertySetting = PropertySetting::where('property_id', $request->property)->first();
