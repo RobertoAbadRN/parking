@@ -163,7 +163,6 @@
                     </p>
                     <form action="{{ route('resident.store') }}" method="POST">
                         @csrf
-
                         <div class="mb-4 pt-5">
 
                             <label class="relative flex">
@@ -203,7 +202,7 @@
 
                         </div>
 
-                        
+
 
                         <div class="mb-4">
 

@@ -222,7 +222,7 @@ class RecidentsController extends Controller
         $department->permit_status = 'pending';
         $department->save();
 
-        Mail::to($user->email)->send(new NewUserNotification(User::make($request), "testing-password?"));
+        Mail::to($user->email)->send(new NewUserNotification($user, "testing-password?"));
         return redirect()->route('recidents')->with('success', 'Resident registered successfully!');
     }
 
