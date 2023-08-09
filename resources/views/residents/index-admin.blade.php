@@ -181,7 +181,6 @@
                                         @if($resident->property_code)
                                             <a href="{{ route('addvehicle', ['property_code' => $resident->property_code] ) }}" class="text-blue-500 hover:text-blue-700 mr-2">
                                                 <i class="fa fa-car" aria-hidden="true"></i>
-                                                {{ $resident->property_code }}
                                             </a>
                                             <a href="{{ route('temporary.visitors.pass', ['property_code' => $resident->property_code]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
                                                 <i class="fa fa-user" aria-hidden="true"></i>
