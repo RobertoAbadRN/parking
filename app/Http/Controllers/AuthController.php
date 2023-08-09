@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
@@ -26,23 +27,25 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
             return redirect()->back()->withErrors($validator)->withInput();
-        }
-
         $validated = $validator->validated();
 
-        if (\Auth::attempt(array('email' => $validated['email'], 'password' => $validated['password']))) {
-            // Usuario autenticado correctamente
-            $user = \Auth::user();
-            $user->last_login = now();
-            $user->save();
+        if (Auth::attempt(array('email' => $validated['email'], 'password' => $validated['password']))) {
+            $user = Auth::user();
 
-            return redirect()->route('index');
+            if($user->status === "Pending" || $user->status === "Rejected") {
+                $validator->errors()->add('email', 'No access yet');
+                $validator->errors()->add('password', 'No access yet');
+                auth()->logout();
+                return redirect()->back()->withErrors($validator)->withInput();
+            } else {
+                $user->last_login = now();
+                $user->save();
+                return redirect()->route('index');
+            }
         } else {
-            $validator->errors()->add(
-                'password', 'The password does not match with username'
-            );
+            $validator->errors()->add('password', 'The password does not match with username');
             return redirect()->back()->withErrors($validator)->withInput();
         }
     }

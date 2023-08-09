@@ -151,8 +151,10 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
-    Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
-    Route::post('/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
+    Route::get('/recidents/approve/{id}', [RecidentsController::class, 'approve'])->name('residents.approve');
+    Route::get('/recidents/decline/{id}', [RecidentsController::class, 'decline'])->name('residents.decline');
+    Route::get('/residents/addresident', [RecidentsController::class, 'addResident'])->name('resident.addresident');
+    Route::post('/residents/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
     Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
     Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
     Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');

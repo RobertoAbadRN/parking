@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Property;
 use App\Http\Controllers\Controller;
+use App\Mail\NewUserNotification;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class RecidentsController extends Controller
 {
@@ -25,28 +28,36 @@ class RecidentsController extends Controller
 
     public function index()
     {
-        $loggued_user = auth()->user();
-        if($loggued_user->access_level == "property_manager") {
-            $residents = DB::table('users')
-                ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
-                ->join('departments', 'users.id', '=', 'departments.user_id')
-                ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
-                ->orderBy('users.id')
-                ->distinct()
-                ->get();
-            return view('residents.index-admin', compact('residents'));
-        } else {
-            $residents = DB::table('users')
-            ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
-                ->join('departments', 'users.id', '=', 'departments.user_id')
-                ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
-                ->orderBy('users.id')
-                ->where("users.id", $loggued_user->id)
-                ->distinct()
-                ->get();
-            return view('residents.index', compact('residents'));
-        }
+        $residents = DB::table('users')
+            ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id', 'users.status')
+            ->join('departments', 'users.id', '=', 'departments.user_id')
+            ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
+            ->orderBy('users.id')
+            ->distinct()
+            ->get();
+        return view('residents.index-admin', compact('residents'));
 
+        // $loggued_user = auth()->user();
+        // if($loggued_user->access_level == "property_manager") {
+        //     $residents = DB::table('users')
+        //         ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
+        //         ->join('departments', 'users.id', '=', 'departments.user_id')
+        //         ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
+        //         ->orderBy('users.id')
+        //         ->distinct()
+        //         ->get();
+        //     return view('residents.index-admin', compact('residents'));
+        // } else {
+        //     $residents = DB::table('users')
+        //     ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
+        //         ->join('departments', 'users.id', '=', 'departments.user_id')
+        //         ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
+        //         ->orderBy('users.id')
+        //         ->where("users.id", $loggued_user->id)
+        //         ->distinct()
+        //         ->get();
+        //     return view('residents.index', compact('residents'));
+        // }
     }
 
     public function import() {
@@ -144,11 +155,26 @@ class RecidentsController extends Controller
 
      */
 
-    public function addResident()
-    {
-
+    public function addResident() {
         $properties = Property::all();
         return view('residents.addresident', compact('properties'));
+    }
+
+    public function approve(Request $request, $id) {
+        $resident = User::find($id);
+        if($resident) {
+            $resident->status = "Approve";
+            $resident->save();
+        }
+        return redirect()->route('recidents')->with('success', 'Resident approved successfully!');
+    }
+    public function decline(Request $request, $id) {
+        $resident = User::find($id);
+        if($resident) {
+            $resident->status = "Decline";
+            $resident->save();
+        }
+        return redirect()->route('recidents')->with('success', 'Resident rejected successfully!');
     }
 
     /**
@@ -184,7 +210,7 @@ class RecidentsController extends Controller
         $user->access_level = 'Resident';
         $user->property_code = $request->input('property_code');
         $user->banned = false;
-        $user->status = 'active';
+        $user->status = 'Pending'; // Pending - Approved - Declined
         $user->save();
 
         // Create a new department record and associate it with the user
@@ -194,11 +220,9 @@ class RecidentsController extends Controller
         $department->reserved_space = $request->input('reserved_space');
         $department->property_code = $request->input('property_code');
         $department->permit_status = 'pending';
-
-        // Use the save() method to insert the data into the departments table
         $department->save();
 
-        // Redirect to a specific route after successful form submission
+        Mail::to($user->email)->send(new NewUserNotification(User::make($request), "testing-password?"));
         return redirect()->route('recidents')->with('success', 'Resident registered successfully!');
     }
 

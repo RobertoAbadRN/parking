@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "757e7866305a974c586d57625af77892",
-=======
     "content-hash": "4f91f1688ea3b84c68050fedba2a79f9",
->>>>>>> jgle-feature-roles-permisos
     "packages": [
         {
             "name": "bacon/bacon-qr-code",

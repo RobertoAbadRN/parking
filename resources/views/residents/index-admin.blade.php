@@ -53,15 +53,17 @@
                                     fill="white" />
                             </svg>
                         </a>
-                        <a href="#"
-                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
-                            style="width: auto; height: 40px;">
-                            <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
+                        <a href="{{ route('resident.addresident') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                            <i class="fa-solid fa-users"></i>
+                            &nbsp; Add Resident
                         </a>
-                        <a href="#"
-                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
-                            style="width: auto; height: 40px;">
-                            <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Visitor
+                        <a href="#" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                            <i class="fa fa-car" aria-hidden="true"></i>
+                            &nbsp; Add Vehicle
+                        </a>
+                        <a href="#" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                            <i class="fa fa-car" aria-hidden="true"></i>
+                            &nbsp; Add Visitor
                         </a>
                         <a href="{{ route('residents.import') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
                             <i class="fa-solid fa-file-import"></i>
@@ -157,10 +159,15 @@
                                         {{ $resident->permit_status }}
                                     </td> -->
                                     <td class="px-4 py-2">
-                                        <!-- Resident Status -->
+                                        {{ $resident->status }}
                                     </td>
-                                    <td class="px-4 py-2">
-                                        <!-- Resident Status Button -->
+                                    <td class="px-4 py-2 text-center">
+                                        <a href="{{ route('residents.approve', ['id' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+                                            Approve
+                                        </a>
+                                        <a href="{{ route('residents.decline', ['id' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+                                            Decline
+                                        </a>
                                     </td>
                                     <td class="px-4 py-2">
                                         <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
