@@ -38,7 +38,8 @@ class RecidentsController extends Controller
                 $department = Department::select("*")->where("user_id", $user->id)->get();
                 $user->vehicles = $vehicle;
                 $user->departments = $department;
-                array_push($residents, $user);
+                if(sizeof($vehicle) > 0 && sizeof($department) > 0)
+                    array_push($residents, $user);
             }
             return view('residents.index-admin', compact('residents'));
         } else {
