@@ -32,7 +32,7 @@ class RecidentsController extends Controller
         $loggued_user = auth()->user();
         if($loggued_user->access_level == "property_manager") {
             $residents = [];
-            $users = User::all();
+            $users = User::select("*")->where("access_level", "Resident")->get();
             foreach($users as $user) {
                 $vehicle = Vehicle::select("*")->where("user_id", $user->id)->get();
                 $department = Department::select("*")->where("user_id", $user->id)->get();
@@ -43,8 +43,13 @@ class RecidentsController extends Controller
             return view('residents.index-admin', compact('residents'));
         } else {
             $resident = null;
-            $loggued_user->id = 80;
-            $user = User::find($loggued_user->id);
+            $user = User::select("*")->where([
+                ["access_level", "Resident"],
+                ["id", $loggued_user->id]
+            ])->get();
+            if(sizeof($user) > 0)
+                $user = $user[0];
+
             $vehicle = Vehicle::select("*")->where("user_id", $loggued_user->id)->get();
             $department = Department::select("*")->where("user_id", $loggued_user->id)->get();
             $user->vehicles = $vehicle;
