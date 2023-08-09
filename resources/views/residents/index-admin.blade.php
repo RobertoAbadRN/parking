@@ -57,14 +57,6 @@
                             <i class="fa-solid fa-users"></i>
                             &nbsp; Add Resident
                         </a>
-                        <a href="#" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
-                            <i class="fa fa-car" aria-hidden="true"></i>
-                            &nbsp; Add Vehicle
-                        </a>
-                        <a href="#" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
-                            <i class="fa fa-car" aria-hidden="true"></i>
-                            &nbsp; Add Visitor
-                        </a>
                         <a href="{{ route('residents.import') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
                             <i class="fa-solid fa-file-import"></i>
                             &nbsp; Importar
@@ -173,6 +165,14 @@
                                         <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @if($resident->property_code)
+                                            <a href="{{ route('addvehicle', ['property_code' => $resident->property_code] ) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+                                                <i class="fa fa-car" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{{ route('temporary.visitors.pass', ['property_code' => $resident->property_code]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                            </a>
+                                        @endif
                                         <a href="#" class="text-green-500 hover:text-green-700 mr-2" onclick="window.print()">
                                             <i class="fas fa-print"></i>
                                         </a>
