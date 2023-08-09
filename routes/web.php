@@ -166,6 +166,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents/import/uploaded-files/{upload_id}', [RecidentsController::class, 'import_uploaded_files'])->name('residents.import.uploaded.files');
     Route::get('/recidents/import/uploaded-files/{upload_id}/{file_id}', [RecidentsController::class, 'import_uploaded_files_id'])->name('residents.import.uploaded.files.id');
     Route::post('/recidents/import/upload', [RecidentsController::class, 'import_upload'])->name('residents.import.upload');
+    Route::post('/department/update-space/{id}', [RecidentsController::class, 'department_update_space'])->name('department.update.space');
 
     /**
      * ==============================

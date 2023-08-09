@@ -144,7 +144,21 @@
                                         {{ $resident->permit_type }}
                                     </td> -->
                                     <td class="px-4 py-2">
-                                        {{ $resident->reserved_space }}
+                                        @foreach($resident->departments as $department)
+                                            <p>
+                                                <span>Department: {{ $department->apart_unit }}</span>
+                                                <span style="display: flex; flex-direction: row; align-items: center;">
+                                                    <span style="margin-right: 0.6rem;">Reserved:</span>
+                                                    <input
+                                                        type="text"
+                                                        value="{{ $department->reserved_space }}"
+                                                        data-id="{{ $department->id }}"
+                                                        class="department-space-input"
+                                                        style="border-radius: 0.2rem; border: 1px solid #ccc; text-align: right; padding: 0.2rem 0.6rem; width: 5rem;"
+                                                    >
+                                                </span>
+                                            </p>
+                                        @endforeach
                                     </td>
                                     <!-- <td class="px-4 py-2">
                                         {{ $resident->permit_status }}
@@ -203,6 +217,33 @@
                 $('#residents').DataTable({
                     responsive: true
                 });
+            });
+
+            $(".department-space-input").on("keyup", function(e) {
+                const id_department = this.getAttribute("data-id");
+                let new_value = parseInt(this.value);
+                if(isNaN(new_value)) {
+                    new_value = 0;
+                    this.value = 0;
+                }
+
+                if (e.key === "Enter" || e.keyCode === 13) {
+                    console.log("id_department", id_department);
+                    console.log("new_value", new_value);
+                    $.ajax({
+                        url: `department/update-space/${ id_department }`,
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                        },
+                        data: {
+                            new_value: new_value
+                        },
+                        type: "POST"
+                        // success:  function (response) {
+                        //     console.log("response", response);
+                        // }
+                    });
+                }
             });
         </script>
     </main>

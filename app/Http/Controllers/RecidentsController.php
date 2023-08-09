@@ -139,6 +139,24 @@ class RecidentsController extends Controller
         return view('residents.import-uploaded-files-id', compact('resident_upload_file'));
     }
 
+    public function department_update_space(Request $request, $id) {
+        $department = Department::find($id);
+        if($department) {
+            $new_value = $request->input("new_value");
+            $department->reserved_space = $new_value;
+            $department->save();
+            return response()->json([
+                'success' => true,
+                'error' => ''
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Department not found'
+            ]);
+        }
+    }
+
     /**
 
      * Show the form for creating a new resource.
