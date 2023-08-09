@@ -9,6 +9,7 @@ use App\Mail\NewUserNotification;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -28,36 +29,29 @@ class RecidentsController extends Controller
 
     public function index()
     {
-        $residents = DB::table('users')
-            ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id', 'users.status')
-            ->join('departments', 'users.id', '=', 'departments.user_id')
-            ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
-            ->orderBy('users.id')
-            ->distinct()
-            ->get();
-        return view('residents.index-admin', compact('residents'));
-
-        // $loggued_user = auth()->user();
-        // if($loggued_user->access_level == "property_manager") {
-        //     $residents = DB::table('users')
-        //         ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
-        //         ->join('departments', 'users.id', '=', 'departments.user_id')
-        //         ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
-        //         ->orderBy('users.id')
-        //         ->distinct()
-        //         ->get();
-        //     return view('residents.index-admin', compact('residents'));
-        // } else {
-        //     $residents = DB::table('users')
-        //     ->select('users.name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.permit_status', 'departments.lease_expiration', 'vehicles.*', 'users.id')
-        //         ->join('departments', 'users.id', '=', 'departments.user_id')
-        //         ->leftJoin('vehicles', 'users.id', '=', 'vehicles.user_id')
-        //         ->orderBy('users.id')
-        //         ->where("users.id", $loggued_user->id)
-        //         ->distinct()
-        //         ->get();
-        //     return view('residents.index', compact('residents'));
-        // }
+        $loggued_user = auth()->user();
+        if($loggued_user->access_level == "property_manager") {
+            $residents = [];
+            $users = User::all();
+            foreach($users as $user) {
+                $vehicle = Vehicle::select("*")->where("user_id", $user->id)->get();
+                $department = Department::select("*")->where("user_id", $user->id)->get();
+                $user->vehicles = $vehicle;
+                $user->departments = $department;
+                array_push($residents, $user);
+            }
+            return view('residents.index-admin', compact('residents'));
+        } else {
+            $resident = null;
+            $loggued_user->id = 80;
+            $user = User::find($loggued_user->id);
+            $vehicle = Vehicle::select("*")->where("user_id", $loggued_user->id)->get();
+            $department = Department::select("*")->where("user_id", $loggued_user->id)->get();
+            $user->vehicles = $vehicle;
+            $user->departments = $department;
+            $resident = $user;
+            return view('residents.index', compact('resident'));
+        }
     }
 
     public function import() {

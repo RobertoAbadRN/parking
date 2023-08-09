@@ -89,7 +89,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($residents as $resident)
+                            @foreach($resident->vehicles as $vehicle)
                                 <tr>
                                     <!-- <td class="px-4 py-2">
                                         {{$resident->created_at}}
@@ -104,22 +104,27 @@
                                         {{ $resident->email }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->license_plate }}
+                                        {{ $vehicle->license_plate }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->make }}
+                                        {{ $vehicle->make }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->model }}
+                                        {{ $vehicle->model }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->permit_type }}
+                                        {{ $vehicle->permit_type }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->reserved_space }}
+                                        @foreach($resident->departments as $department)
+                                            <p>
+                                                Department: {{ $department->apart_unit }}
+                                                Reserved: {{ $department->reserved_space }}
+                                            </p>
+                                        @endforeach
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->permit_status }}
+                                        {{ $vehicle->permit_status }}
                                     </td>
                                     <td class="px-4 py-2">
                                         <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
