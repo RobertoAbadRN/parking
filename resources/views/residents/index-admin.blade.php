@@ -92,8 +92,7 @@
                                 <th class="px-4 py-2">Resident Status</th>
                                 <th class="px-4 py-2">Resident Status</th>
                                 <th class="px-4 py-2">Actions</th>
-                                <th class="px-4 py-2">Permit Agreement Signed</th>
-
+                                <!-- <th class="px-4 py-2">Permit Agreement Signed</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -184,13 +183,13 @@
                                             <i class="fas fa-envelope"></i>
                                         </a>
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <!-- <td class="px-4 py-2">
                                         <a href="{{ route('connect.docusign') }}"
                                             class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
                                             <i class="fas fa-edit mr-2"></i>
                                             Sign document
                                         </a>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             @endforeach
                         </tbody>

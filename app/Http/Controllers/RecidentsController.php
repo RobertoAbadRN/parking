@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Property;
 use App\Http\Controllers\Controller;
-use App\Mail\NewUserNotification;
+use App\Mail\SignAgreement;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
 use App\Models\User;
@@ -216,7 +216,7 @@ class RecidentsController extends Controller
         $department->permit_status = 'pending';
         $department->save();
 
-        Mail::to($user->email)->send(new NewUserNotification($user, "testing-password?"));
+        Mail::to($user->email)->send(new SignAgreement($user));
         return redirect()->route('recidents')->with('success', 'Resident registered successfully!');
     }
 
