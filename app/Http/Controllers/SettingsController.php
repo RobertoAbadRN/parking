@@ -22,6 +22,7 @@ class SettingsController extends Controller
         }
         return view('settingss/index', ['properties' => $properties] );
     }
+
     public function language(Request $request)
     {
         $propertySetting = PropertySetting::where('property_id', $request->property)->first();
@@ -69,6 +70,11 @@ class SettingsController extends Controller
         if(isset($request->type) && $request->type) {
             if($request->type == 'form') {
                 $setting = visitorSetting::where('property_id', $request->property_id)->where('type','form')->get();
+                $view_form = visitorSetting::where('property_id', $request->property_id)
+                ->where('type','form')
+                ->where('name', 'not like', '%required%')
+                ->where('name', 'not like', '%validation%')
+                ->get();
             }
             if($request->type == 'setting') {
                 $setting = visitorSetting::where('property_id', $request->property_id)->where('type','setting')->get();
@@ -77,11 +83,13 @@ class SettingsController extends Controller
                 response()->json([
                     'success' => true,
                     'form' => $setting,
+                    'view_form' => $view_form ?? null,
                     'message' => $request->type
                 ], 200)
                 : response()->json([
                     'success' => false,
                     'form' => false,
+                    'view_form' => false,
                     'message' => 'configured error, try again'
                 ], 200);
         }
@@ -190,16 +198,23 @@ class SettingsController extends Controller
         if(isset($request->type) && $request->type) {
             if($request->type == 'form') {
                 $setting = Registration::where('property_id', $request->property_id)->where('type','form')->get();
+                $view_form = Registration::where('property_id', $request->property_id)
+                ->where('type','form')
+                ->where('name', 'not like', '%required%')
+                ->where('name', 'not like', '%validation%')
+                ->get();
             }
             return $setting ?
                 response()->json([
                     'success' => true,
                     'form' => $setting,
+                    'view_form' => $view_form ?? null,
                     'message' => $request->type
                 ], 200)
                 : response()->json([
                     'success' => false,
                     'form' => false,
+                    'view_form' => false,
                     'message' => 'configured error, try again'
                 ], 200);
         }
@@ -216,19 +231,19 @@ class SettingsController extends Controller
             "pre_year",
             "pre_color",
             "pre_vehicle_type",
-            "required_name",
-            "required_email",
-            "required_phone",
-            "required_unit",
-            "required_language",
-            "required_license_plate",
-            "required_vin",
-            "required_make",
-            "required_model",
-            "required_year",
-            "required_color",
-            "required_vehicle_type",
-            "validation_license_plate"
+            "required_pre_name",
+            "required_pre_email",
+            "required_pre_phone",
+            "required_pre_unit",
+            "required_pre_language",
+            "required_pre_license_plate",
+            "required_pre_vin",
+            "required_pre_make",
+            "required_pre_model",
+            "required_pre_year",
+            "required_pre_color",
+            "required_pre_vehicle_type",
+            "validation_pre__license_plate"
         ];
 
 
