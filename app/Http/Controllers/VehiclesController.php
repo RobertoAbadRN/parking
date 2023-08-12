@@ -419,6 +419,7 @@ class VehiclesController extends Controller
             ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate')
 
             ->find($id);
+            //dd($vehicle);
 
         $start_date = Carbon::parse($vehicle->start_date);
 

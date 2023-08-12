@@ -28,12 +28,10 @@ return [
     |
      */
 
-    'disks' => [
-
+     'disks' => [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-            'throw' => false,
         ],
 
         // config/filesystems.php

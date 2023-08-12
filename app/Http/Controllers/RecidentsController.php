@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
-use App\Models\Property;
 use App\Http\Controllers\Controller;
 use App\Mail\SignAgreement;
+use App\Models\Department;
+use App\Models\Property;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
 use App\Models\User;
-use App\Models\Vehicle;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class RecidentsController extends Controller
 {
@@ -26,45 +25,36 @@ class RecidentsController extends Controller
      * @return \Illuminate\Http\Response
 
      */
-
     public function index()
     {
-        $loggued_user = auth()->user();
-        if($loggued_user->access_level == "property_manager") {
-            $residents = [];
-            $users = User::select("*")->where("access_level", "Resident")->get();
-            foreach($users as $user) {
-                $vehicle = Vehicle::select("*")->where("user_id", $user->id)->get();
-                $department = Department::select("*")->where("user_id", $user->id)->get();
-                $user->vehicles = $vehicle;
-                $user->departments = $department;
-                if(sizeof($vehicle) > 0 && sizeof($department) > 0)
-                    array_push($residents, $user);
-            }
-            return view('residents.index-admin', compact('residents'));
-        } else {
-            $resident = null;
-            $user = User::select("*")->where([
-                ["access_level", "Resident"],
-                ["id", $loggued_user->id]
-            ])->get();
-            if(sizeof($user) > 0)
-                $user = $user[0];
-
-            $vehicle = Vehicle::select("*")->where("user_id", $loggued_user->id)->get();
-            $department = Department::select("*")->where("user_id", $loggued_user->id)->get();
-            $user->vehicles = $vehicle;
-            $user->departments = $department;
-            $resident = $user;
-            return view('residents.index', compact('resident'));
-        }
+        $residents = User::select(
+                'users.*',
+                'departments.apart_unit',
+                'departments.lease_expiration',
+                'departments.reserved_space',
+                'departments.property_code',
+                'departments.permit_status',
+                'departments.terms_agreement_status',
+                'departments.agreement_token',
+                'departments.id as department_id',
+                'departments.date_status'
+            )
+            ->join('departments', 'users.id', '=', 'departments.user_id')
+            ->where('users.access_level', 'Resident')
+            ->get();
+    
+        return view('residents.index-admin', compact('residents'));
     }
-
-    public function import() {
+    
+    
+     
+    public function import()
+    {
         return view('residents.import');
     }
 
-    public function import_upload(Request $request) {
+    public function import_upload(Request $request)
+    {
         $file_uloaded = $request->file('file');
         $file_info = $file_uloaded->getClientOriginalName();
         $filename = pathinfo($file_info, PATHINFO_FILENAME);
@@ -82,21 +72,21 @@ class RecidentsController extends Controller
         $new_resident_upload->full_path = $full_path;
         $new_resident_upload->save();
 
-        if($file_extension === "xlsx") {
+        if ($file_extension === "xlsx") {
             try {
                 $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
                 $spreadsheet = $reader->load($file_path);
                 $sheet = $spreadsheet->getSheet($spreadsheet->getFirstSheetIndex());
                 $sheet_data = $sheet->toArray();
 
-                foreach($sheet_data as $tmp_data) {
+                foreach ($sheet_data as $tmp_data) {
                     $new_resident_uploa_file = new ResidentUploadFile();
                     $new_resident_uploa_file->file_data = json_encode([
                         "resident_name" => $tmp_data[0],
                         "apartment" => $tmp_data[1],
                         "email" => $tmp_data[2],
                         "phone" => $tmp_data[3],
-                        "lease_expiration" => $tmp_data[4]
+                        "lease_expiration" => $tmp_data[4],
                     ]);
                     $new_resident_uploa_file->upload_id = $new_resident_upload->id;
                     $new_resident_uploa_file->save();
@@ -106,62 +96,56 @@ class RecidentsController extends Controller
                 return response()->json([
                     'success' => false,
                     'error' => 'Processing error',
-                    'exception' => $e
+                    'exception' => $e,
                 ]);
             }
             return response()->json([
                 'success' => true,
-                'error' => ''
+                'error' => '',
             ]);
         } else {
             return response()->json([
                 'success' => false,
-                'error' => 'Wrong file type'
+                'error' => 'Wrong file type',
             ]);
         }
     }
 
-    public function import_uploaded() {
+    public function import_uploaded()
+    {
         $resident_uploads = ResidentUpload::all();
         return view('residents.import-uploaded', compact('resident_uploads'));
     }
 
-    public function import_uploaded_files(Request $request, $upload_id) {
-        if(!$upload_id)
+    public function import_uploaded_files(Request $request, $upload_id)
+    {
+        if (!$upload_id) {
             return redirect('residents.import.uploaded')->with('error', 'Uploaded file not found');
+        }
+
         $resident_upload_files = ResidentUploadFile::select("*")->where("upload_id", $upload_id)->get();
         return view('residents.import-uploaded-files', compact('resident_upload_files', 'upload_id'));
     }
 
-    public function import_uploaded_files_id(Request $request, $upload_id, $file_id) {
-        if(!$upload_id)
+    public function import_uploaded_files_id(Request $request, $upload_id, $file_id)
+    {
+        if (!$upload_id) {
             return redirect('residents.import.uploaded')->with('error', 'File not found');
+        }
+
         $resident_upload_file = ResidentUploadFile::select("*")->where([
             ["upload_id", $upload_id],
-            ["id", $file_id]
+            ["id", $file_id],
         ])->get();
-        if(sizeof($resident_upload_file) > 0)
+        if (sizeof($resident_upload_file) > 0) {
             $resident_upload_file = $resident_upload_file[0];
+        }
+
         return view('residents.import-uploaded-files-id', compact('resident_upload_file'));
     }
 
-    public function department_update_space(Request $request, $id) {
-        $department = Department::find($id);
-        if($department) {
-            $new_value = $request->input("new_value");
-            $department->reserved_space = $new_value;
-            $department->save();
-            return response()->json([
-                'success' => true,
-                'error' => ''
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'error' => 'Department not found'
-            ]);
-        }
-    }
+
+    
 
     /**
 
@@ -173,22 +157,25 @@ class RecidentsController extends Controller
 
      */
 
-    public function addResident() {
+    public function addResident()
+    {
         $properties = Property::all();
         return view('residents.addresident', compact('properties'));
     }
 
-    public function approve(Request $request, $id) {
+    public function approve(Request $request, $id)
+    {
         $resident = User::find($id);
-        if($resident) {
+        if ($resident) {
             $resident->status = "Approve";
             $resident->save();
         }
         return redirect()->route('recidents')->with('success', 'Resident approved successfully!');
     }
-    public function decline(Request $request, $id) {
+    public function decline(Request $request, $id)
+    {
         $resident = User::find($id);
-        if($resident) {
+        if ($resident) {
             $resident->status = "Decline";
             $resident->save();
         }
@@ -206,20 +193,22 @@ class RecidentsController extends Controller
      * @return \Illuminate\Http\Response
 
      */
+
     public function residentStore(Request $request)
     {
-        // Validate the incoming form data
+        // Validar los datos del formulario
         $request->validate([
+            'user' => 'required|string',
             'name' => 'required|string',
             'phone' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
-            'property_code' => 'required|string',
+            'property_id' => 'required', // Asegúrate de que el name del select sea "property_id"
             'apart_unit' => 'required|string',
             'reserved_space' => 'required|string',
         ]);
 
-        // Create a new user record
+        // Crear un nuevo registro de usuario
         $user = new User();
         $user->name = $request->input('name');
         $user->phone = $request->input('phone');
@@ -228,19 +217,33 @@ class RecidentsController extends Controller
         $user->access_level = 'Resident';
         $user->property_code = $request->input('property_code');
         $user->banned = false;
-        $user->status = 'Pending'; // Pending - Approved - Declined
+        $user->status = 'Pending';
         $user->save();
 
-        // Create a new department record and associate it with the user
+        // Crear un nuevo registro de departamento y asociarlo al usuario
         $department = new Department();
-        $department->user_id = $user->id; // Set the user_id foreign key here
+        $department->user_id = $user->id;
         $department->apart_unit = $request->input('apart_unit');
         $department->reserved_space = $request->input('reserved_space');
         $department->property_code = $request->input('property_code');
-        $department->permit_status = 'pending';
+        $department->terms_agreement_status = 'pending';
         $department->save();
 
-        Mail::to($user->email)->send(new SignAgreement($user));
+        // Relacionar el usuario con la propiedad en la tabla intermedia user_properties
+        $property = Property::find($request->input('property_id'));
+        $user->properties()->attach($property);
+
+        // Generar y almacenar el token único
+        $token = Str::random(40);
+        $department->agreement_token = $token;
+        $department->save();
+
+        // Generar el enlace para los términos y condiciones
+        $link = route('terms-and-conditions', ['token' => $token]);
+
+        // Enviar un correo electrónico
+        Mail::to($user->email)->send(new SignAgreement($user, $link));
+
         return redirect()->route('recidents')->with('success', 'Resident registered successfully!');
     }
 
@@ -315,12 +318,22 @@ class RecidentsController extends Controller
 
      */
 
-    public function destroy(Property $property)
-    {
-
-        //
-
-    }
+     public function destroy(User $resident)
+     {
+         // Obtener el departamento asociado al residente
+         $department = Department::where('user_id', $resident->id)->first();
+     
+         if ($department) {
+             // Eliminar el departamento
+             $department->delete();
+         }
+     
+         // Eliminar al residente (usuario)
+         $resident->delete();
+     
+         return redirect()->route('recidents')
+             ->with('success-message', 'Resident and associated department deleted successfully.');
+     }
 
     public function updateStatus(Request $request)
     {
@@ -337,6 +350,23 @@ class RecidentsController extends Controller
         } else {
             return redirect()->back()->with('error', 'Resident not found with ID: ' . $residentId);
         }
+    }
+
+
+    public function updateReservedSpace(Request $request, $departmentId)
+    {
+        $request->validate([
+            'reserved_space' => 'required|numeric|min:0',
+        ]);
+
+        // Actualiza el valor en la tabla de departamentos
+        $department = Department::findOrFail($departmentId);
+        //dd($department);
+        $department->update([
+            'reserved_space' => $request->reserved_space,
+        ]);
+
+        return redirect()->route('recidents')->with('success-message', 'Valor reservado actualizado correctamente.');
     }
 
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VisitorsController;
+use App\Http\Controllers\TermsAndConditionsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,7 +40,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
     Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
-
+   
     /**
      * ==============================
      *       @Router - ForgotPassword
@@ -153,8 +154,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
     Route::get('/recidents/approve/{id}', [RecidentsController::class, 'approve'])->name('residents.approve');
     Route::get('/recidents/decline/{id}', [RecidentsController::class, 'decline'])->name('residents.decline');
+
     Route::get('/residents/addresident', [RecidentsController::class, 'addResident'])->name('resident.addresident');
+
     Route::post('/residents/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
+
     Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
     Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
     Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');
@@ -166,7 +170,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents/import/uploaded-files/{upload_id}', [RecidentsController::class, 'import_uploaded_files'])->name('residents.import.uploaded.files');
     Route::get('/recidents/import/uploaded-files/{upload_id}/{file_id}', [RecidentsController::class, 'import_uploaded_files_id'])->name('residents.import.uploaded.files.id');
     Route::post('/recidents/import/upload', [RecidentsController::class, 'import_upload'])->name('residents.import.upload');
-    Route::post('/department/update-space/{id}', [RecidentsController::class, 'department_update_space'])->name('department.update.space');
+
+    Route::post('/update-reserved-space/{departmentId}', [RecidentsController::class, 'updateReservedSpace'])->name('update_reserved_space');
+
+
+
+
+
+
+
 
     /**
      * ==============================
@@ -274,6 +286,21 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');
+Route::get('/terms-and-conditions/{token}', [TermsAndConditionsController::class, 'openTermsAndConditions'])
+    ->name('terms-and-conditions');
+
+Route::get('/show-terms/{token}', [TermsAndConditionsController::class, 'showTermsAndConditions'])
+    ->name('show-terms');
+
+Route::post('/accept-terms/{token}', [TermsAndConditionsController::class, 'acceptTermsAndConditions'])
+    ->name('accept-terms');
+
+    Route::get('/error', function () {
+        return view('error')->with('message', 'Invalid token'); // Puedes personalizar el mensaje de acuerdo a tus necesidades
+    })->name('error-route');
+    
+
+
  /**
 
      * ==============================

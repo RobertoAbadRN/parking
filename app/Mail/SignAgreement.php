@@ -12,16 +12,18 @@ class SignAgreement extends Mailable {
     public $user;
     public $plainPassword;
 
-    public function __construct(User $user) {
+    public function __construct($user, $link) {
         $this->user = $user;
+        $this->link = $link;
     }
 
-    public function build() {
+    public function build()
+    {
         return $this->view('emails.sign-agreement')
-            ->subject('Welcome to YourWebsite')
-            ->attach(public_path(("pdfs") . "\\permiso.pdf"))
-            ->with([
-                'user' => $this->user,
-            ]);
+                    ->with([
+                        'user' => $this->user,
+                        'link' => $this->link,
+                    ]);
     }
+    
 }

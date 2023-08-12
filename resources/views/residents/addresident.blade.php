@@ -175,7 +175,7 @@
 
                             </label>
 
-                            @error('resident_name')
+                            @error('name')
 
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
 
@@ -190,11 +190,11 @@
 
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
 
-                                    placeholder="UserName" type="text" name="user" value="{{ old('username') }}" />
+                                    placeholder="UserName" type="text" name="user" value="{{ old('user') }}" />
 
                             </label>
 
-                            @error('resident_name')
+                            @error('user')
 
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
 
@@ -333,32 +333,34 @@
                         <div class="mb-4">
 
                             <label class="relative flex">
-
                                 <select
-
                                     class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-
-                                    name="property_code">
-
+                                    id="propertySelect" name="property_id"> <!-- Cambia el name a "property_id" para enviar el ID -->
                                     <option value="" disabled selected>Select property</option>
-
                                     @foreach ($properties as $property)
-
-                                        <option value="{{ $property->property_code }}">{{ $property->address }}
-
-                                        </option>
-
+                                        <option value="{{ $property->id }}" data-property-code="{{ $property->property_code }}">{{ $property->address }}</option>
                                     @endforeach
-
                                 </select>
-
                             </label>
-
-                            @error('property_code')
-
+                            
+                            <input type="hidden" id="hiddenPropertyCode" name="property_code" value="">
+                            @error('property_id')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
-
                             @enderror
+                            
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function () {
+                                    const propertySelect = document.getElementById('propertySelect');
+                                    const hiddenPropertyCode = document.getElementById('hiddenPropertyCode');
+                            
+                                    propertySelect.addEventListener('change', function () {
+                                        const selectedOption = propertySelect.options[propertySelect.selectedIndex];
+                                        const propertyCode = selectedOption.getAttribute('data-property-code');
+                                        hiddenPropertyCode.value = propertyCode;
+                                    });
+                                });
+                            </script>
+                            
 
                         </div>
 

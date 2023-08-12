@@ -1,5 +1,3 @@
-<h1>Welcome to our platform</h1>
-<p>Dear {{ $user->name }},</p>
-<p>We are sending you the document for terms and conditions to be provided our service:</p>
-<p>Please keep this information safe and secure.</p>
-<p>Thank you for joining us!</p>
+<p>Hola {{ $user->name }},</p>
+<p>Por favor, haz clic en el siguiente enlace para revisar y aceptar nuestros términos y condiciones:</p>
+<a href="{{ $link }}">Leer Términos y Condiciones</a>

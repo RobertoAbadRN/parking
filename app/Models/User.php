@@ -64,4 +64,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Departament::class);
     }
+
+  
+
+public function departments()
+{
+    return $this->hasMany(Department::class);
+}
+
 }

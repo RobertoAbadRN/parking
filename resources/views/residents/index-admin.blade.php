@@ -76,31 +76,23 @@
                     <table id="residents" class="table-auto min-w-full">
                         <thead>
                             <tr>
-                                <!-- <th class="px-4 py-2">Create at</th> -->
                                 <th class="px-4 py-2">Resident Name</th>
-                                <th class="px-4 py-2">Aparment / Unit</th>
-                                <th class="px-4 py-2">E-mail</th>
+                                <th class="px-4 py-2">Apart/Unit</th>
+                                <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
+                                <th class="px-4 py-2">Qr-code</th>
                                 <th class="px-4 py-2">Lease Expiration</th>
                                 <th class="px-4 py-2">Vehicles Per Apartment</th>
                                 <th class="px-4 py-2">Visitors Per Apartment</th>
-                                <!-- <th class="px-4 py-2">Make</th> -->
-                                <!-- <th class="px-4 py-2">Model</th> -->
-                                <!-- <th class="px-4 py-2">Permit Type</th> -->
                                 <th class="px-4 py-2">Reserved Space</th>
-                                <!-- <th class="px-4 py-2">Permit Status</th> -->
-                                <th class="px-4 py-2">Resident Status</th>
                                 <th class="px-4 py-2">Resident Status</th>
                                 <th class="px-4 py-2">Actions</th>
-                                <!-- <th class="px-4 py-2">Permit Agreement Signed</th> -->
+                                <th class="px-4 py-2">Confirmation</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($residents as $resident)
                                 <tr>
-                                    <!-- <td class="px-4 py-2">
-                                        {{$resident->created_at}}
-                                    </td> -->
                                     <td class="px-4 py-2">
                                         {{ $resident->name }}
                                     </td>
@@ -114,95 +106,135 @@
                                         {{ $resident->phone }}
                                     </td>
                                     <td class="px-4 py-2">
+                                        <button id="boton-modelo-{{ $resident->id }}"
+                                            class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
+                                            style="background-color: #0EA5E9;"
+                                            onclick="toggleModal({{ $resident->id }})">
+                                    
+                                            {{ $resident->id }}
+                                    
+                                        </button>
+                                    
+                                        <!-- Ventana modal -->
+                                    
+                                        <div id="modal-modelo-{{ $resident->id }}"
+                                            class="fixed z-10 inset-0 overflow-y-auto hidden">
+                                    
+                                            <div class="flex items-center justify-center min-h-screen px-4">
+                                    
+                                                <div class="fixed inset-0 bg-black opacity-50"></div>
+                                    
+                                                <!-- Capa de fondo semitransparente -->
+                                    
+                                                <div class="bg-white rounded-lg max-w-lg mx-auto p-6 relative">
+                                    
+                                                    <h2
+                                                        class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
+                                    
+                                                        {{ $resident->name }}
+                                    
+                                                    </h2>
+                                    
+                                                    <h4
+                                                        class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
+                                    
+                                                        QR code: {{ $resident->apart_unit }}
+                                    
+                                                    </h4>
+                                    
+                                                    <div class="visible-print flex justify-center items-center">
+                                                        {!! QrCode::size(200)->generate(
+                                                            'https://amartineztowingop.com/visitors/addvisitors?department_id=' . $resident->department_id,
+                                                        ) !!}
+                                                    </div>
+                                                    
+                                    
+                                                    <p class="my-2">Scan me to return to the original page.</p>
+                                    
+                                                    <button id="cerrar-modal-modelo-{{ $resident->id }}"
+                                                        class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center"
+                                                        onclick="toggleModal({{ $resident->id }})">
+                                    
+                                                        Cerrar
+                                    
+                                                    </button>
+                                    
+                                                </div>
+                                    
+                                            </div>
+                                    
+                                        </div>
+                                    </td>
+                                    
+                                    <script>
+                                        function toggleModal(residentId) {
+                                            const modal = document.getElementById(`modal-modelo-${residentId}`);
+                                            modal.classList.toggle('hidden');
+                                        }
+                                    </script>
+                                    
+                                    
+                                    <td class="px-4 py-2">
                                         {{ $resident->lease_expiration }}
                                     </td>
-                                    <td class="px-4 py-2">
-                                        @php
-                                            $vehicles_per_department = DB::table('departments')
-                                                ->leftJoin('vehicles', 'vehicles.user_id', '=', 'departments.user_id')
-                                                ->where('departments.user_id', $resident->user_id)
-                                                ->count();
-                                            echo $vehicles_per_department;
-                                        @endphp
+                                    <td class="py-2">
+                                        <form method="POST" action="{{ route('update_reserved_space', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">
+                                            @csrf
+                                            <div class="flex items-center">
+                                                <input type="text" name="reserved_space" value="{{ $resident->reserved_space }}"
+                                                       class="w-10 h-8 border border-gray-300 text-black {{ strlen($resident->reserved_space) === 3 ? 'text-black' : 'text-red-500' }}">
+                                                <button type="submit" class="ml-1">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </div>
+                                        </form>  
                                     </td>
+                                    
                                     <td class="px-4 py-2">
-                                        @php
-                                            $visitors_per_department = DB::table('visitorpasses')
-                                                ->leftJoin('departments', 'departments.property_code', '=', 'visitorpasses.property_code')
-                                                ->where('departments.property_code', $resident->property_code)
-                                                ->count();
-                                            echo $visitors_per_department;
-                                        @endphp
+                                        num visitores
                                     </td>
-                                    <!-- <td class="px-4 py-2">
-                                        {{ $resident->make }}
-                                    </td> -->
-                                    <!-- <td class="px-4 py-2">
-                                        {{ $resident->model }}
-                                    </td> -->
-                                    <!-- <td class="px-4 py-2">
-                                        {{ $resident->permit_type }}
-                                    </td> -->
+                                   
                                     <td class="px-4 py-2">
-                                        @foreach($resident->departments as $department)
-                                            <p>
-                                                <span>Department: {{ $department->apart_unit }}</span>
-                                                <span style="display: flex; flex-direction: row; align-items: center;">
-                                                    <span style="margin-right: 0.6rem;">Reserved:</span>
-                                                    <input
-                                                        type="text"
-                                                        value="{{ $department->reserved_space }}"
-                                                        data-id="{{ $department->id }}"
-                                                        class="department-space-input"
-                                                        style="border-radius: 0.2rem; border: 1px solid #ccc; text-align: right; padding: 0.2rem 0.6rem; width: 5rem;"
-                                                    >
-                                                </span>
-                                            </p>
-                                        @endforeach
+                                        {{ $resident->reserved_space }}
                                     </td>
-                                    <!-- <td class="px-4 py-2">
-                                        {{ $resident->permit_status }}
-                                    </td> -->
+                                   
                                     <td class="px-4 py-2">
-                                        {{ $resident->status }}
-                                    </td>
-                                    <td class="px-4 py-2 text-center">
-                                        <a href="{{ route('residents.approve', ['id' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
-                                            Approve
-                                        </a>
-                                        <a href="{{ route('residents.decline', ['id' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
-                                            Decline
-                                        </a>
+                                        {{ $resident->terms_agreement_status }}
                                     </td>
                                     <td class="px-4 py-2">
                                         <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        @if($resident->property_code)
-                                            <a href="{{ route('addvehicle', ['property_code' => $resident->property_code] ) }}" class="text-blue-500 hover:text-blue-700 mr-2">
-                                                <i class="fa fa-car" aria-hidden="true"></i>
-                                            </a>
-                                            <a href="{{ route('temporary.visitors.pass', ['property_code' => $resident->property_code]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
-                                                <i class="fa fa-user" aria-hidden="true"></i>
-                                            </a>
-                                        @endif
-                                        <a href="#" class="text-green-500 hover:text-green-700 mr-2" onclick="window.print()">
-                                            <i class="fas fa-print"></i>
+                                        <a href="{{ route('user.resetPassword', $resident->id) }}"
+                                            class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                            <i class="fa fa-key"></i>
                                         </a>
-                                        <a class="text-red-500 hover:text-red-700 mr-2" onclick="confirmDelete('{{ $resident->id }}')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                        <a href="mailto:correo@example.com" class="text-blue-500 hover:text-blue-700">
-                                            <i class="fas fa-envelope"></i>
-                                        </a>
+                                        
+                                        <form id="delete-form-{{ $resident->id }}"
+                                            action="{{ route('residents.destroy', $resident->id) }}"
+                                            method="POST">
+                                          @csrf
+                                          <a href="#" class="text-red-500 hover:text-red-700 mr-2" onclick="confirmDelete('{{ $resident->id }}')">
+                                              <i class="fas fa-trash"></i>
+                                          </a>
+                                      </form>
+                                      
+                                      <script>
+                                          function confirmDelete(residentId) {
+                                              if (confirm('Are you sure you want to delete this resident?')) {
+                                                  // Enviar el formulario de eliminación
+                                                  document.getElementById('delete-form-' + residentId).submit();
+                                              }
+                                          }
+                                      </script>
+                                      
+                                         
+                                        
+                                        
                                     </td>
-                                    <!-- <td class="px-4 py-2">
-                                        <a href="{{ route('connect.docusign') }}"
-                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-                                            <i class="fas fa-edit mr-2"></i>
-                                            Sign document
-                                        </a>
-                                    </td> -->
+                                    <td class="px-4 py-2">
+                                        {{ $resident->date_status }}
+                                    </td> 
                                 </tr>
                             @endforeach
                         </tbody>
@@ -218,32 +250,6 @@
                 });
             });
 
-            $(".department-space-input").on("keyup", function(e) {
-                const id_department = this.getAttribute("data-id");
-                let new_value = parseInt(this.value);
-                if(isNaN(new_value)) {
-                    new_value = 0;
-                    this.value = 0;
-                }
-
-                if (e.key === "Enter" || e.keyCode === 13) {
-                    console.log("id_department", id_department);
-                    console.log("new_value", new_value);
-                    $.ajax({
-                        url: `department/update-space/${ id_department }`,
-                        headers: {
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                        },
-                        data: {
-                            new_value: new_value
-                        },
-                        type: "POST"
-                        // success:  function (response) {
-                        //     console.log("response", response);
-                        // }
-                    });
-                }
-            });
         </script>
     </main>
 </x-app-layout>

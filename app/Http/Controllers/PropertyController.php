@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\User;
@@ -91,9 +90,13 @@ class PropertyController extends Controller
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
             $filename = time() . '.' . $logo->getClientOriginalExtension();
-            Storage::disk('public')->put($filename, File::get($logo));
+
+            $path = 'images/logo'; // Ruta relativa desde la carpeta 'public'
+
+            $storedPath = $logo->store($path, 'public'); // Almacena la imagen
+
             // Guarda el nombre del archivo en la base de datos
-            $property->logo = $filename;
+            $property->logo = $storedPath;
         }
 
         // Guardar el modelo en la base de datos
@@ -150,20 +153,24 @@ class PropertyController extends Controller
         // Actualizar los atributos de la propiedad con los nuevos valores, incluyendo el campo nickname
         $property->update($validatedData);
 
-        // Manejar la carga de un nuevo logotipo, si se proporciona
         if ($request->hasFile('logo')) {
-            // Eliminar el logotipo anterior, si existe
+            $logo = $request->file('logo');
+            $filename = time() . '.' . $logo->getClientOriginalExtension();
+
+            $path = 'images/logo'; // Ruta relativa desde la carpeta 'public'
+
+            $storedPath = $logo->store($path, 'public'); // Almacena la imagen
+
+            // Elimina la imagen anterior si existe
             if ($property->logo) {
-                Storage::delete($property->logo);
+                Storage::delete('public/' . $property->logo);
             }
 
-            // Subir y guardar el nuevo logotipo
-            $logoPath = $request->file('logo')->store('logos');
-
-            // Actualizar el atributo "logo" de la propiedad con la ruta del nuevo logotipo
-            $property->logo = $logoPath;
-            $property->save();
+            // Actualiza la ruta del logo en la base de datos
+            $property->logo = $storedPath;
         }
+
+        $property->save();
 
         // Redireccionar a los detalles de la propiedad actualizada
         return redirect()->route('properties')->with('success_message', 'The data has been updated successfully');
@@ -285,6 +292,7 @@ class PropertyController extends Controller
             ->where('vehicles.property_code', $property_code)
             ->groupBy('vehicles.id')
             ->get();
+        //dd($vehicles);
 
         // Obtener el atributo 'address' de la propiedad
         $property = Property::where('property_code', $property_code)->select('name as property_name', 'address')->first();
@@ -298,16 +306,15 @@ class PropertyController extends Controller
     public function users($propertyCode)
     {
         $users = User::join('properties', 'users.property_code', '=', 'properties.property_code')
-                ->where('users.property_code', $propertyCode)
-                ->select('properties.name as property_name', 'users.*', 'properties.address')
-                ->distinct()
-                ->get();
-    
+            ->where('users.property_code', $propertyCode)
+            ->select('properties.name as property_name', 'users.*', 'properties.address')
+            ->distinct()
+            ->get();
+
         $propertyName = $users->isNotEmpty() ? $users->first()->property_name : null;
-    
+
         return view('properties.users', compact('users', 'propertyName'));
     }
-    
 
     public function updatePermitStatus(Request $request, $id)
     {

@@ -54,11 +54,6 @@
                                     fill="white" />
                             </svg>
                         </a>
-                        <a href="{{ route('addvehicle', ['property_code' => request()->route('property_code')]) }}"
-                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
-                            style="width: auto; height: 40px;">
-                            <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
-                        </a>
 
                     </div>
                 </div>
@@ -150,11 +145,8 @@
                                         {{ $vehicle->vin }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        <div class="flex justify-center space-x-2">
-                                            <a href="{{ route('edit.vehicle', ['id' => $vehicle->id, 'property_code' => $property_code]) }}"
-                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
+                                        <div class="flex justify-center space-x-2">                                           
+                                           
 
                                             <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
