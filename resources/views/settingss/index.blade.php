@@ -62,14 +62,10 @@
 
                 <div class="inline-flex space-x-4">
 
-                    
 
                 </div>
 
             </div>
-
-
-
 
 
             <!-- Basic Table -->
@@ -116,7 +112,7 @@
 
                                     <td class="px-4 py-2">
 
-                                        <button
+                                        <a href="{{ route('settings.permit',['property' => $property->id]) }}"
 
                                             class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
 
@@ -124,13 +120,13 @@
 
                                             2 languages
 
-                                        </button>
+                                        </a>
 
                                     </td>
 
                                     <td class="px-4 py-2">
 
-                                        <button
+                                        <a href="{{ route('settings.permit.type',['property' => $property->id]) }}"
 
                                             class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
 
@@ -138,13 +134,13 @@
 
                                             Edit
 
-                                        </button>
+                                        </a>
 
                                     </td>
 
                                     <td class="px-4 py-2">
 
-                                        <button
+                                        <a href="{{ route('settings.permit.visitor',['property' => $property->id]) }}"
 
                                             class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
 
@@ -152,13 +148,13 @@
 
                                             Edit
 
-                                        </button>
+                                        </a>
 
                                     </td>
 
                                     <td class="px-4 py-2">
 
-                                        <button
+                                        <a href="{{ route('settings.permit.registration',['property' => $property->id]) }}"
 
                                             class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
 
@@ -166,7 +162,7 @@
 
                                             Edit
 
-                                        </button>
+                                        </a>
 
                                     </td>
 
@@ -192,7 +188,7 @@
 
                                                 class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
 
-                                                <i class="fas fa-car mr-2"></i> 
+                                                <i class="fas fa-car mr-2"></i>
 
                                             </a>
 
@@ -208,7 +204,6 @@
 
                                     </td>
 
-                                    
 
                                 </tr>
 

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\PropertySetting;
 use App\Models\visitorSetting;
-use App\Models\Registration;
+use App\Models\PermitSetting;
 
 class SettingsController extends Controller
 {
@@ -22,6 +22,7 @@ class SettingsController extends Controller
         }
         return view('settingss/index', ['properties' => $properties] );
     }
+
     public function language(Request $request)
     {
         $propertySetting = PropertySetting::where('property_id', $request->property)->first();
@@ -56,7 +57,8 @@ class SettingsController extends Controller
 
     public function permit_type($property)
     {
-        return view('settingss/permit_type', ['property' => Property::find($property)] );
+        $types = PermitSetting::types();
+        return view('settingss/permit_type', ['property' => Property::find($property), 'types' =>  $types]);
     }
 
     public function visitor($property)
@@ -69,6 +71,11 @@ class SettingsController extends Controller
         if(isset($request->type) && $request->type) {
             if($request->type == 'form') {
                 $setting = visitorSetting::where('property_id', $request->property_id)->where('type','form')->get();
+                $view_form = visitorSetting::where('property_id', $request->property_id)
+                ->where('type','form')
+                ->where('name', 'not like', '%required%')
+                ->where('name', 'not like', '%validation%')
+                ->get();
             }
             if($request->type == 'setting') {
                 $setting = visitorSetting::where('property_id', $request->property_id)->where('type','setting')->get();
@@ -77,11 +84,13 @@ class SettingsController extends Controller
                 response()->json([
                     'success' => true,
                     'form' => $setting,
+                    'view_form' => $view_form ?? null,
                     'message' => $request->type
                 ], 200)
                 : response()->json([
                     'success' => false,
                     'form' => false,
+                    'view_form' => false,
                     'message' => 'configured error, try again'
                 ], 200);
         }
@@ -190,16 +199,23 @@ class SettingsController extends Controller
         if(isset($request->type) && $request->type) {
             if($request->type == 'form') {
                 $setting = Registration::where('property_id', $request->property_id)->where('type','form')->get();
+                $view_form = Registration::where('property_id', $request->property_id)
+                ->where('type','form')
+                ->where('name', 'not like', '%required%')
+                ->where('name', 'not like', '%validation%')
+                ->get();
             }
             return $setting ?
                 response()->json([
                     'success' => true,
                     'form' => $setting,
+                    'view_form' => $view_form ?? null,
                     'message' => $request->type
                 ], 200)
                 : response()->json([
                     'success' => false,
                     'form' => false,
+                    'view_form' => false,
                     'message' => 'configured error, try again'
                 ], 200);
         }
@@ -216,19 +232,19 @@ class SettingsController extends Controller
             "pre_year",
             "pre_color",
             "pre_vehicle_type",
-            "required_name",
-            "required_email",
-            "required_phone",
-            "required_unit",
-            "required_language",
-            "required_license_plate",
-            "required_vin",
-            "required_make",
-            "required_model",
-            "required_year",
-            "required_color",
-            "required_vehicle_type",
-            "validation_license_plate"
+            "required_pre_name",
+            "required_pre_email",
+            "required_pre_phone",
+            "required_pre_unit",
+            "required_pre_language",
+            "required_pre_license_plate",
+            "required_pre_vin",
+            "required_pre_make",
+            "required_pre_model",
+            "required_pre_year",
+            "required_pre_color",
+            "required_pre_vehicle_type",
+            "validation_pre__license_plate"
         ];
 
 
@@ -260,6 +276,99 @@ class SettingsController extends Controller
                     'success' => false,
                     'form' => false,
                     'message' => 'configured not set, try again'
+                ], 200);
+    }
+
+    public function permitTypeSettingStore(Request $request)
+    {
+        if(isset($request->type) && $request->type) {
+            if($request->type == 'get') {
+                $setting = PermitSetting::where('property_id', $request->property_id)->first();
+                if($setting) {
+                    $data = [
+                        [
+                            "name"        => 'resident',
+                            "valor"       => $setting->resident == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'visitor',
+                            "valor"       => $setting->visitor == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'sub_contractor',
+                            "valor"       => $setting->sub_contractor == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'carport',
+                            "valor"       => $setting->carport == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'temporary',
+                            "valor"       => $setting->temporary == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'reserved',
+                            "valor"       => $setting->reserved == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'vip',
+                            "valor"       => $setting->vip == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'contractor',
+                            "valor"       => $setting->contractor == 1 ? true :  false,
+                        ],
+                        [
+                            "name"        => 'employee',
+                            "valor"       => $setting->employee == 1 ? true :  false,
+                        ],
+                    ];
+                }
+            }
+            return $setting ?
+                response()->json([
+                    'success' => true,
+                    'form' => $data ?? null,
+                    'types' => PermitSetting::types(),
+                    'message' => $request->type
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'form' => false,
+                    'types' => false,
+                    'message' => 'configured error, try again'
+                ], 200);
+        }
+        //dd($request->all());
+        $data = [
+            "resident"       => $request->resident == 'on' ? true :  false,
+            "visitor"        => $request->visitor == 'on' ? true :  false,
+            "sub_contractor" => $request->sub_contractor == 'on' ? true :  false,
+            "carport"        => $request->carport == 'on' ? true :  false,
+            "temporary"      => $request->temporary == 'on' ? true :  false,
+            "reserved"       => $request->reserved == 'on' ? true :  false,
+            "vip"            => $request->vip == 'on' ? true :  false,
+            "contractor"     => $request->contractor == 'on' ? true :  false,
+            "employee"       => $request->employee == 'on' ? true :  false,
+            "property_id"    => $request->property_id
+        ];
+
+        $setting = PermitSetting::where('property_id', $request->property_id)->count();
+        if($setting>0) {
+            $setting = PermitSetting::where("property_id", $request->property_id)->update($data);
+        } else {
+            $setting = PermitSetting::insert($data);
+        }
+        return $setting ?
+                response()->json([
+                    'success' => true,
+                    'form' => $setting,
+                    'message' => 'configured permit types successfully'
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'form' => false,
+                    'message' => 'configured permit types not set, try again'
                 ], 200);
     }
 

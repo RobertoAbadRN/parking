@@ -146,103 +146,103 @@
 
                             <div class="text-gray-900 text-sm" style="padding: 0px 0px 0px 45px;">
                                 <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_name" name="required_visitor_name"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_email" name="required_visitor_email"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_phone" name="required_visitor_phone"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_language" name="required_visitor_language"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_vin" name="required_vin"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_license_plate" name="required_license_plate"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_year" name="required_year"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_make" name="required_make"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_model" name="required_model"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_color" name="required_color"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_vehicle_type" name="required_vehicle_type"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_resident_name" name="required_resident_name"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_resident_unit_number" name="required_resident_unit_number"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_resident_email" name="required_resident_email"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_resident_phone" name="required_resident_phone"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_resident_registration" name="required_resident_registration"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_valid_form" name="required_valid_form"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
@@ -304,31 +304,31 @@
 
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_validation(this)">
                                         <input type="checkbox" id="validation_resident_name" name="validation_resident_name"  class="form-control-sm display-me ">
                                         Use for Validation
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_validation(this)">
                                         <input type="checkbox" id="validation_resident_unit_number" name="validation_resident_unit_number"  class="form-control-sm display-me ">
                                         Use for Validation
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_validation(this)">
                                         <input type="checkbox" id="validation_resident_email" name="validation_resident_email"  class="form-control-sm display-me ">
                                         Use for Validation
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_validation(this)">
                                         <input type="checkbox" id="validation_resident_phone" name="validation_resident_phone"  class="form-control-sm display-me ">
                                         Use for Validation
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    <label onchange="check_checked(this)">
+                                    <label onchange="check_validation(this)">
                                         <input type="checkbox" id="validation_resident_registration" name="validation_resident_registration"  class="form-control-sm display-me ">
                                         Use for Validation
                                     </label>
@@ -358,25 +358,25 @@
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Total Visitor's Pass Available:</div>
                             <div><input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                class="form-input peer w-full rounded-lg px-3 py-2 border border-gray-80"
                                 placeholder="20" type="text" name="total" id="total" required /></div>
                         </div>
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Duration (Hrs):</div>
                             <div><input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                class="form-input peer w-full rounded-lg px-3 py-2 border border-gray-80"
                                 placeholder="15" type="text" name="hours" id="hours" required /></div>
                         </div>
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Limit per Vehicle:</div>
                             <div><input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                class="form-input peer w-full rounded-lg px-3 py-2 border border-gray-80"
                                 placeholder="12" type="text" name="limit" id="limit" required /></div>
                         </div>
                         <div class="grid grid-cols-3 mt-2 gap-4 sm:gap-5 lg:gap-6">
                             <div colspan="2">Registration limit (days):</div>
                             <div><input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                class="form-input peer w-full rounded-lg px-3 py-2 border border-gray-80"
                                 placeholder="10" type="text" name="days" id="days" required /></div>
                         </div>
                         <div class=" mt-3 text-center">
@@ -393,6 +393,9 @@
                     </form>
                 </div>
                 <div x-show="openTab ===  3" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                    <p class="text-center mb-6 mt-2 text-blue-500 text-lg">Visitors Pass <br>Fields<span class="text-red-500 text-lg"> in RED will require to be filled to submit the form</span></p>
+                    <div id="form-div">
+                    </div>
                 </div>
             </div>
         </div>
@@ -414,6 +417,7 @@
             }).then(response => {
                 if(response.data.success) {
                     settingsVisitor('form')
+                    $('#form-div').html('');
                     $('#message_form').removeClass('hidden').addClass('bg-green-500').text(`${response.data.message}`);
                     setTimeout(function() {
                         $('#message_form').addClass('hidden').text('');
@@ -462,15 +466,48 @@
     function  settingsVisitor(type) {
         axios.post('{{ route('settings.visitor.store') }}',{
                 property_id:   '{{$property->id}}',
-                type:   'form'
+                type:  type
             }).then(response => {
                 if(response.data.success) {
                     $.each(response.data.form, function (index, field) {
-                        if(type == 'form') {
+                        if(field.type == type) {
                             $('#'+field.name).prop('checked', field.valor == 1 ? true : false);
                         }
-                        if(type == 'setting') {
+                        if(field.type == type) {
+                            $('#'+field.name).val(field.valor);
+                        }
+                    });
+                    $.each(response.data.view_form, function (index, field) {
+                        if(field.type == type) {
                             $('#'+field.name).prop('checked', field.valor == 1 ? true : false);
+                            var class_child = '';
+                            var message = '';
+                            if (field.name == field.name && field.valor == 1){
+                                var label = $('#'+field.name).parent().text();
+                                var child_id = field.name;
+                                var valid = $('#validation_'+ child_id).prop('checked');
+                                var req = $('#required_'+ child_id).prop('checked');
+
+                                if(req){
+                                    class_child = 'text-red-500 ';
+                                    message = 'Field is Required';
+                                }
+                                if(req && valid) {
+                                    class_child +=' validation_'+child_id;
+                                    message = 'Field is required and use for validation';
+                                }
+
+                                $('#form-div').append(function(){
+                                    var html = `<div class="grid grid-cols-3 gap-4 ${child_id}">
+                                                    <div class="form-input peer w-full rounded-lg px-3 py-2 text-gray-900">${label}</div>
+                                                    <div class="">
+                                                        <input class="form-input peer w-full rounded-lg px-3 py-2 border border-gray-80" type="text"/>
+                                                        <small class="text-left px-1 small_${child_id} ${class_child}">${message}</small>
+                                                    </div>
+                                                </div>`;
+                                    return html;
+                                });
+                            }
                         }
                     });
                 }
@@ -481,18 +518,89 @@
 
     function check_checked(obj){
         var child_id = $(obj).children(':input').prop('id');
-                var is_checked = $(obj).children(':input').prop('checked');
-                var div_id = '.div_field_'+ child_id ;
-                console.log(child_id);
-                console.log(is_checked);
-                console.log(div_id);
-                if(is_checked === true){
-                    $('#required_'+ child_id).prop('checked', true);
-                    $('#validation_'+ child_id).prop('checked', true);
-                } else {
-                    $('#required_'+ child_id).prop('checked', false);
-                    $('#validation_'+ child_id).prop('checked', false);
-                }
+        var is_checked = $(obj).children(':input').prop('checked');
+        var label = $(obj).text();
+        if(is_checked === true){
+            $('#required_'+ child_id).prop('checked', true);
+            $('#validation_'+ child_id).prop('checked', true);
+
+            var class_child = 'text-red-500 ';
+            var message = '';
+            var valid = $('#validation_'+ child_id).prop('checked');
+            var req = $('#required_'+ child_id).prop('checked');
+
+            if(req) {
+                class_child +='required_'+child_id;
+                message = 'Field is Required';
+            }
+            if(req && valid) {
+                class_child +=' validation_'+child_id;
+                message = 'Field is required and use for validation';
+            }
+            $('#form-div').append(function(){
+                var html = `<div class="grid grid-cols-3 gap-4 ${child_id}">
+                                <div class="form-input peer w-full rounded-lg px-3 py-2 text-gray-900">${label}</div>
+                                <div class="">
+                                    <input class="form-input peer w-full rounded-lg px-3 py-2 border border-gray-80" type="text"/>
+                                    <small class="text-left px-1 small_${child_id} ${class_child}">${message}</small>
+                                </div>
+                            </div>`;
+                return html;
+            });
+        } else {
+            $('.'+child_id).remove();
+            $('#required_'+ child_id).prop('checked', false);
+            $('#validation_'+ child_id).prop('checked', false);
+        }
+    }
+
+    function check_required(obj){
+        var child_id = $(obj).children(':input').prop('id');
+        var is_checked = $(obj).children(':input').prop('checked');
+        class_child = child_id.split('required_').join('.small_');
+
+        if(is_checked === true){
+            class_child_check = child_id.split('required_').join('#validation_');
+            var valid = $(class_child_check).prop('checked');
+            message = 'Field is required';
+            if(valid) {
+                message = 'Field is required and use for validation';
+            }
+            $(class_child).addClass('text-red-500').addClass(child_id).removeClass('text-gray-500').text(message);
+        } else {
+            class_child_check = child_id.split('required_').join('#validation_');
+            var valid = $(class_child_check).prop('checked');
+            message = 'Field not required';
+            if(valid) {
+                message = 'Field not required and use for validation';
+                $(class_child).removeClass(child_id).text(message);
+                return;
+            }
+            $(class_child).removeClass('text-red-500').removeClass(child_id).addClass('text-gray-500').text(message);
+        }
+    }
+
+    function check_validation(obj){
+        var child_id = $(obj).children(':input').prop('id');
+        var is_checked = $(obj).children(':input').prop('checked');
+        class_child = child_id.split('validation_').join('.small_');
+        if(is_checked === true){
+            class_child_check = child_id.split('validation_').join('#required_');
+            var req = $(class_child_check).prop('checked');
+            message = 'Use for validation';
+            if(req) {
+                message = 'Field is required and use for validation';
+            }
+            $(class_child).addClass('text-red-500').addClass(child_id).text(message);
+        } else {
+            class_child_check = child_id.split('validation_').join('#required_');
+            var req = $(class_child_check).prop('checked');
+            message = 'Field not required';
+            if(req) {
+                message = 'Field is required';
+            }
+            $(class_child).removeClass(child_id).text(message);
+        }
     }
     </script>
 </x-app-layout>
