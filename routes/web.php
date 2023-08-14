@@ -237,6 +237,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/languages/store', [SettingsController::class, 'store'])->name('settings.language.store');
     Route::post('/settings/visitors/store', [SettingsController::class, 'visitorSettingStore'])->name('settings.visitor.store');
     Route::post('/settings/registration/store', [SettingsController::class, 'registrationSettingStore'])->name('settings.registration.store');
+    Route::post('/settings/permit/types', [SettingsController::class, 'permitTypeSettingStore'])->name('settings.permit.type.store');
     /**
      * ==============================
      *       @Router - roles/
