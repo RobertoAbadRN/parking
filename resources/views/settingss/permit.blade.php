@@ -135,7 +135,92 @@
                     </form>
                </div>
                 <div x-show="openTab ===  2" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p class="text-sm text-gray-500 dark:text-gray-400"><strong class="font-medium text-gray-800 dark:text-white">En desarrollo</strong>.</p>
+                    <form method="POST" action="{{ route('settings.permit.type.store') }}" name="form-permit-type" id="form-permit-type">
+                        <input type="hidden" name="property_id" value="{{$property->id}}">
+                        @csrf
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="border-4 border-dashed border-gray-900">
+                                    <span id="name">Property name</span>
+                                    <small id="type">Permit type</small>
+                                    <span id="reserved">Space or RSVD: ##</span>
+                                    <span id="license">License</span>
+                                    <span id="number">Unit #</span>
+                                    <span id="start_date">From start date <span id="end_date">To end date</span></span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">Property name</div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">Permit Type</div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">Reserved Space</div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">License/Plate</div>
+                                    </div>
+                                    <div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">Unit Number</div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">Start Date</div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">End Date</div>
+                                        <div class="p-2 px-2 text-xs bg-blue-400 text-white border-b cursor-pointer hover:bg-blue-500">Logo</div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 gap-4 text-blue-500 text-xs">The layout may differs from the actual print.</div>
+                                <div class="grid grid-cols-1 gap-4">
+                                    <span class="text-xs">
+                                        These <span class="bg-blue-400 text-white" >ITEMS</span>  will be printed on the permit.
+                                        <br>
+                                        These <span class="bg-red-400 text-white" >ITEMS</span>  will NOT be printed on the permit.
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="flex items-center pl-4 dark:border-gray-700">
+                                    <label for="bordered-radio-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        <img src="{{asset('images/imgSetting/property.png')}}" width="50px" height="50px">
+                                    </label>
+                                    <input id="bordered-radio-1" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="bordered-radio-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Property</label>
+                                </div>
+                                <div class="flex items-center pl-4 dark:border-gray-700">
+                                    <label for="bordered-radio-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        <img src="{{asset('images/imgSetting/service.png')}}" width="50px" height="50px">
+                                    </label>
+                                    <input checked id="bordered-radio-2" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="bordered-radio-2" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Service provider</label>
+                                </div>
+                                <div class="flex items-center pl-4 dark:border-gray-700">
+                                    <label for="bordered-radio-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        <img src="{{asset('images/imgSetting/default.png')}}" width="50px" height="50px">
+                                    </label>
+                                    <input checked id="bordered-radio-2" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="bordered-radio-2" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Default</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4 text-gray-900 text-center text-lg">
+                            <p>Permit Paper format</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
+                                    <input id="bordered-radio-1" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="bordered-radio-1" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Default radio</label>
+                                </div>
+                                <div class="flex items-center pl-4 border border-gray-200 rounded dark:border-gray-700">
+                                    <input checked id="bordered-radio-2" type="radio" value="" name="bordered-radio" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="bordered-radio-2" class="w-full py-4 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Checked state</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" mt-3 text-center">
+                            <button type="submit"
+                                class="btn btn-submit bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                Submit
+                            </button>
+                            <button type="button"
+                                class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
+                                onclick="window.location.href='{{ route('settings') }}'">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+
                 </div>
                 <div x-show="openTab ===  3" class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
                     <p class="text-sm text-gray-500 dark:text-gray-400"><strong class="font-medium text-gray-800 dark:text-white">En desarrollo</strong>.</p>
