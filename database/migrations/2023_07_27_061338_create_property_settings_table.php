@@ -59,11 +59,8 @@ return new class extends Migration
             $table->string('start_date')->nullable();
             $table->string('end_date')->nullable();
             $table->string('logo')->nullable();
-            $table->string('ppm1')->nullable();
-            $table->string('ppm2')->nullable();
-            $table->string('img_default')->nullable();
-            $table->string('img_service')->nullable();
-            $table->string('img_property')->nullable();
+            $table->string('ppm')->nullable();
+            $table->string('img')->nullable();
             $table->longText('margin_left')->nullable();
             $table->longText('margin_top')->nullable();
             $table->bigInteger('property_id')->nullable();

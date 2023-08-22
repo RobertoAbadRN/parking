@@ -372,6 +372,43 @@ class SettingsController extends Controller
                 ], 200);
     }
 
+    public function permitMarginSettingStore(Request $request) {
+        $settingLanguage = PropertySetting::where('property_id', $request->property_id)->first();
+        $settingLanguage = $settingLanguage ? $settingLanguage->update($request->except(['_token'])) : false;
+        return $settingLanguage ?
+                response()->json([
+                    'success' => true,
+                    'message' => 'Margin configured successfully'
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'message' => 'Margin not set, try again'
+                ], 200);
+    }
+
+    public function permitPrintSettingStore(Request $request) {
+        $request->merge(['name' => $request->has('name') ? true : false]);
+        $request->merge(['type' => $request->has('type') ? true : false]);
+        $request->merge(['space' => $request->has('space') ? true : false]);
+        $request->merge(['license' => $request->has('license') ? true : false]);
+        $request->merge(['number' => $request->has('number') ? true : false]);
+        $request->merge(['start_date' => $request->has('start_date') ? true : false]);
+        $request->merge(['end_date' => $request->has('end_date') ? true : false]);
+        $request->merge(['logo' => $request->has('logo') ? true : false]);
+
+        $settingLanguage = PropertySetting::where('property_id', $request->property_id)->first();
+        $settingLanguage = $settingLanguage ? $settingLanguage->update($request->except(['_token'])) : false;
+        return $settingLanguage ?
+                response()->json([
+                    'success' => true,
+                    'message' => 'Print configured successfully'
+                ], 200)
+                : response()->json([
+                    'success' => false,
+                    'message' => 'Print not set, try again'
+                ], 200);
+    }
+
     public function registration($property)
     {
         return view('settingss/registration', ['property' => Property::find($property)] );

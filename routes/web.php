@@ -266,6 +266,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/visitors/store', [SettingsController::class, 'visitorSettingStore'])->name('settings.visitor.store');
     Route::post('/settings/registration/store', [SettingsController::class, 'registrationSettingStore'])->name('settings.registration.store');
     Route::post('/settings/permit/types', [SettingsController::class, 'permitTypeSettingStore'])->name('settings.permit.type.store');
+    Route::post('/settings/permit/margin', [SettingsController::class, 'permitMarginSettingStore'])->name('settings.permit.margin.store');
+    Route::post('/settings/permit/print', [SettingsController::class, 'permitPrintSettingStore'])->name('settings.permit.print.store');
+
     /**
      * ==============================
      *       @Router - roles/

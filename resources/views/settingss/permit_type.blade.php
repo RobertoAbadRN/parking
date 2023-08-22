@@ -9,7 +9,7 @@
         ">
             <div>
                 <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
-                    <p class="text-sm text-white dark:text-gray-400">Permit Settings for: <strong class="font-medium text-gray-800 dark:text-white">{{$property->address}}</strong></p>
+                    <p class="text-sm text-gray-800 dark:text-gray-400">Permit Settings for: <strong class="font-medium text-gray-800 dark:text-white">{{$property->address}}</strong></p>
                 </div>
             </div>
             <div class="mb-4 border-b">
