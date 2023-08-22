@@ -2,7 +2,7 @@
 --
 -- Host: 127.0.0.1    Database: parking
 -- ------------------------------------------------------
--- Server version	8.0.33-0ubuntu0.20.04.2
+-- Server version	8.0.34-0ubuntu0.20.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,36 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `departments`
+--
+
+DROP TABLE IF EXISTS `departments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `departments` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `apart_unit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lease_expiration` date NOT NULL,
+  `reserved_space` tinyint unsigned NOT NULL,
+  `property_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `permit_status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `departments`
+--
+
+LOCK TABLES `departments` WRITE;
+/*!40000 ALTER TABLE `departments` DISABLE KEYS */;
+/*!40000 ALTER TABLE `departments` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `failed_jobs`
@@ -56,7 +86,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +95,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2023_06_02_161844_create_properties_table',2),(6,'2023_06_05_193637_create_vehicles_table',3),(7,'2023_06_05_200313_create_visitorpasses_table',4),(8,'2023_06_30_101426_create_user_properties_table',5),(9,'2023_07_12_120500_create_residents_table',6),(10,'2023_07_12_124158_add_password_to_residents_table',7),(11,'2023_07_12_170306_create_profiles_table',8),(12,'2023_07_18_095731_create_permission_tables',8),(13,'2023_07_27_061338_create_property_settings_table',9),(14,'2023_07_27_062552_create_permit_settings_table',9),(18,'2023_07_27_063238_create_visitor_settings_table',10),(19,'2023_08_08_124603_create_registrations_table',11);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_000000_create_users_table',1),(2,'2014_10_12_100000_create_password_resets_table',1),(3,'2019_08_19_000000_create_failed_jobs_table',1),(4,'2019_12_14_000001_create_personal_access_tokens_table',1),(5,'2023_06_02_161844_create_properties_table',2),(6,'2023_06_05_193637_create_vehicles_table',3),(7,'2023_06_05_200313_create_visitorpasses_table',4),(8,'2023_06_30_101426_create_user_properties_table',5),(9,'2023_07_12_120500_create_residents_table',6),(10,'2023_07_12_124158_add_password_to_residents_table',7),(11,'2023_07_12_170306_create_profiles_table',8),(12,'2023_07_18_095731_create_permission_tables',8),(13,'2023_07_27_061338_create_property_settings_table',9),(14,'2023_07_27_062552_create_permit_settings_table',9),(18,'2023_07_27_063238_create_visitor_settings_table',10),(19,'2023_08_08_124603_create_registrations_table',11),(20,'2023_07_31_131837_create_departments_table',12);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -206,7 +236,7 @@ CREATE TABLE `permit_settings` (
 
 LOCK TABLES `permit_settings` WRITE;
 /*!40000 ALTER TABLE `permit_settings` DISABLE KEYS */;
-INSERT INTO `permit_settings` VALUES (8,0,0,0,0,1,1,0,1,1,6,NULL,'2023-08-14 02:27:09'),(9,1,1,0,0,1,1,0,0,0,9,NULL,'2023-08-14 02:26:43');
+INSERT INTO `permit_settings` VALUES (8,1,1,0,0,0,0,0,0,0,6,NULL,'2023-08-14 10:44:34'),(9,1,1,0,0,1,1,0,0,0,9,NULL,'2023-08-14 02:26:43');
 /*!40000 ALTER TABLE `permit_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,11 +389,8 @@ CREATE TABLE `property_settings` (
   `start_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `end_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ppm1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ppm2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `img_default` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `img_service` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `img_property` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ppm` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `img` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `margin_left` longtext COLLATE utf8mb4_unicode_ci,
   `margin_top` longtext COLLATE utf8mb4_unicode_ci,
   `property_id` bigint DEFAULT NULL,
@@ -379,7 +406,7 @@ CREATE TABLE `property_settings` (
 
 LOCK TABLES `property_settings` WRITE;
 /*!40000 ALTER TABLE `property_settings` DISABLE KEYS */;
-INSERT INTO `property_settings` VALUES (14,'Limpie el área donde se colocará el adhesivo.','Separar la etiqueta del documento en las perforaciones','Pelar el revestimiento que cubre el borde azul del adhesivo','Coloque la etiqueta adhesiva en la ventana por encima de la etiqueta de registro / inspección y suavemente suavice la etiqueta adhesiva contra el cristal.','Este Acuerdo es un apéndice y es parte del Contrato de Arrendamiento de Apartamento, realizado y celebrado entre {property_name} y el/los Residente(s) como se indica a continuación:\r\n\r\nAl firmar este apéndice, yo/nosotros acordamos lo siguiente:','Entiendo que se emitirá un permiso de estacionamiento para cada arrendatario. Los permisos de estacionamiento no serán emitidos a los ocupantes. Estoy de acuerdo en colocar el permiso de estacionamiento justo encima de mi vehículo.','Entiendo que cada permiso está designado para un vehículo específico y no puede ser cambiado a otro vehículo. Entiendo que el permiso asignado se basa en la información de la matrícula del vehículo. También estoy de acuerdo en que si consigo un vehículo nuevo estoy de acuerdo en devolver el permiso antiguo. Estoy de acuerdo en que si pierdo mi permiso se me cobrará $ 75 por un reemplazo.','El permiso de estacionamiento expirará el último día del arrendamiento actual. Entiendo que debo renovar mi permiso de estacionamiento cuando mi vigente contrato de arrendamiento caduque. También entiendo que la prueba de la matriculación del vehículo y la prueba del seguro de vehículo válido son requeridas antes de que el permiso (s) será emitido y / o renovado.','Entiendo que los visitantes pueden estacionarse SOLAMENTE en el área de estacionamiento de visitantes ubicada al norte de la comunidad. Todo el estacionamiento de visitantes está designado y marcado. Entiendo que cualquier vehículo estacionado en el Estacionamiento de Residente futuro designado fuera de las puertas de acceso debe ser movido durante las horas de oficina cada día.','Entiendo que no puedo aparcar botes, remolques, vehículos recreativos o vehículos comerciales en la propiedad, en cualquier lugar o en cualquier momento. Los vehículos deben conducirse de manera regular y no pueden dejarse abandonados o inoperables a tiempo.','Entiendo que si un vehículo es remolcado, puedo contactar {company_name}, las 24 horas del día, en {company_phone}.','Si un vehículo se estaciona dentro de las puertas sin permiso, puedo contactar directamente al servicio de remolque para que el vehículo sea removido. Todos los vehículos hacia serán a cargo del propietario / operador del vehículo.','Clean area where sticker is to be placed.','Separate sticker from document at perforations','Peel off liner covering the blue border of the sticker','Place sticker on window above registration/inspection sticker and gently smooth sticker against glass.','This Agreement is an addendum and is a part of the Apartment Lease Contract, made and entered into between {property_name}, and Resident(s) as listed below:\r\n\r\nBy signing this addendum, I/We agree to the following:','I understand that a parking permit will be issued for each leaseholder. Parking permits will not be issued to occupants. I agree to place the parking permit just above my vehicle Inspection/Registration stickers.','I understand that each permit is designated to a specific vehicle and may not be exchanged to another vehicle. I understand that the permit assigned is based on the vehicle license plate information. I also agree that if I obtain a new vehicle I agree to return the old permit.','The parking permit will expire the last day of the current lease. I understand I must renew my parking permit when my current lease agreement expires. I also understand that proof of vehicle registration and proof of valid vehicle insurance are required before permit(s) will be issued and/or renewed.','I understand that visitors may not park inside of the access gates at anytime. All visitor parking is designated outside the  gates at all times. I understand that any vehicle parked in the designated Future Resident Parking outside of the access gates must  be moved during office hours each day.','I understand I may not park boats, trailers, recreational vehicles or commercial vehicles at the property, anywhere or at anytime. Vehicles must be driven on a regular basis and cannot be left abandoned or inoperable at time.','I understand that if a vehicle is towed, I may contact {company_name},  24 hours a day, at {company_phone}.','If a vehicle is park inside the gates without permit, I may contact the towing service directly to have the vehicle removed. All vehicles toward will be at vehicle owner/operator\'s expense.',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,6,'2023-08-01 02:15:50','2023-08-01 02:22:57');
+INSERT INTO `property_settings` VALUES (14,'Limpie el área donde se colocará el adhesivo.','Separar la etiqueta del documento en las perforaciones','Pelar el revestimiento que cubre el borde azul del adhesivo','Coloque la etiqueta adhesiva en la ventana por encima de la etiqueta de registro / inspección y suavemente suavice la etiqueta adhesiva contra el cristal.','Este Acuerdo es un apéndice y es parte del Contrato de Arrendamiento de Apartamento, realizado y celebrado entre {property_name} y el/los Residente(s) como se indica a continuación:\r\n\r\nAl firmar este apéndice, yo/nosotros acordamos lo siguiente:','Entiendo que se emitirá un permiso de estacionamiento para cada arrendatario. Los permisos de estacionamiento no serán emitidos a los ocupantes. Estoy de acuerdo en colocar el permiso de estacionamiento justo encima de mi vehículo.','Entiendo que cada permiso está designado para un vehículo específico y no puede ser cambiado a otro vehículo. Entiendo que el permiso asignado se basa en la información de la matrícula del vehículo. También estoy de acuerdo en que si consigo un vehículo nuevo estoy de acuerdo en devolver el permiso antiguo. Estoy de acuerdo en que si pierdo mi permiso se me cobrará $ 75 por un reemplazo.','El permiso de estacionamiento expirará el último día del arrendamiento actual. Entiendo que debo renovar mi permiso de estacionamiento cuando mi vigente contrato de arrendamiento caduque. También entiendo que la prueba de la matriculación del vehículo y la prueba del seguro de vehículo válido son requeridas antes de que el permiso (s) será emitido y / o renovado.','Entiendo que los visitantes pueden estacionarse SOLAMENTE en el área de estacionamiento de visitantes ubicada al norte de la comunidad. Todo el estacionamiento de visitantes está designado y marcado. Entiendo que cualquier vehículo estacionado en el Estacionamiento de Residente futuro designado fuera de las puertas de acceso debe ser movido durante las horas de oficina cada día.','Entiendo que no puedo aparcar botes, remolques, vehículos recreativos o vehículos comerciales en la propiedad, en cualquier lugar o en cualquier momento. Los vehículos deben conducirse de manera regular y no pueden dejarse abandonados o inoperables a tiempo.','Entiendo que si un vehículo es remolcado, puedo contactar {company_name}, las 24 horas del día, en {company_phone}.','Si un vehículo se estaciona dentro de las puertas sin permiso, puedo contactar directamente al servicio de remolque para que el vehículo sea removido. Todos los vehículos hacia serán a cargo del propietario / operador del vehículo.','Clean area where sticker is to be placed.','Separate sticker from document at perforations','Peel off liner covering the blue border of the sticker','Place sticker on window above registration/inspection sticker and gently smooth sticker against glass.','This Agreement is an addendum and is a part of the Apartment Lease Contract, made and entered into between {property_name}, and Resident(s) as listed below:\r\n\r\nBy signing this addendum, I/We agree to the following:','I understand that a parking permit will be issued for each leaseholder. Parking permits will not be issued to occupants. I agree to place the parking permit just above my vehicle Inspection/Registration stickers.','I understand that each permit is designated to a specific vehicle and may not be exchanged to another vehicle. I understand that the permit assigned is based on the vehicle license plate information. I also agree that if I obtain a new vehicle I agree to return the old permit.','The parking permit will expire the last day of the current lease. I understand I must renew my parking permit when my current lease agreement expires. I also understand that proof of vehicle registration and proof of valid vehicle insurance are required before permit(s) will be issued and/or renewed.','I understand that visitors may not park inside of the access gates at anytime. All visitor parking is designated outside the  gates at all times. I understand that any vehicle parked in the designated Future Resident Parking outside of the access gates must  be moved during office hours each day.','I understand I may not park boats, trailers, recreational vehicles or commercial vehicles at the property, anywhere or at anytime. Vehicles must be driven on a regular basis and cannot be left abandoned or inoperable at time.','I understand that if a vehicle is towed, I may contact {company_name},  24 hours a day, at {company_phone}.','If a vehicle is park inside the gates without permit, I may contact the towing service directly to have the vehicle removed. All vehicles toward will be at vehicle owner/operator\'s expense.',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1,1,1,1,1,'0','0','1','ppm1','default','2','-2',6,'2023-08-01 02:15:50','2023-08-21 22:04:42');
 /*!40000 ALTER TABLE `property_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -564,7 +591,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'martin','martin.amador.tic@gmail.com',NULL,'mar','2101616','Property Manager','QyQxc','NO','2023-07-14 12:10:21','$2y$10$oYRV.EII7.lW99y47XfwYuIaywnnSsgRzANhHrpBVdTqhFZHzOS92','',NULL,'2023-06-01 23:41:18','2023-07-14 18:10:21'),(2,'admin','admin@gmail.com',NULL,'admin123','546456565','property_leasion_agent','QyQxc','NO','2023-08-13 18:55:09','$2y$10$oWKm2Nvg4CKGTFza4iBMY.8PL.auUKkEq26YJPj5sdxf.5cD18Loa','',NULL,'2023-06-05 21:34:08','2023-08-13 22:55:09'),(46,'martin','martin.reyes.qro@gmail.com',NULL,'hola','4428168746','property_leasion_agent','QyQx4','NO','','$2y$10$iVtZ3RO4O9R1WJjWEjBtse19fFpde3tZxNpQONptRgTzYBodQGGza','',NULL,'2023-07-02 02:41:55','2023-07-02 02:42:40'),(47,'tetst','test@test.cpm',NULL,'test','4354545','property_leasion_agent','QyQxc','NO','','$2y$10$K36qoceLoLFc7eJB2v1kdurhMw002JaE.kQVWydOo686GPzJNQz0K','',NULL,'2023-07-18 18:24:15','2023-07-18 18:24:15'),(48,'test','concerje@test.com',NULL,'concerje','87789879978','property_leasion_agent','QyQxc','NO','2023-07-18 15:17:56','$2y$10$XEsSaKhYMYZBEPtX0FjMhOgBCPUjs4DA0bmKVmbIm31paLiAMpCwe','',NULL,'2023-07-18 19:17:31','2023-07-18 19:17:56');
+INSERT INTO `users` VALUES (1,'martin','martin.amador.tic@gmail.com',NULL,'mar','2101616','Property Manager','QyQxc','NO','2023-07-14 12:10:21','$2y$10$oYRV.EII7.lW99y47XfwYuIaywnnSsgRzANhHrpBVdTqhFZHzOS92','',NULL,'2023-06-01 23:41:18','2023-07-14 18:10:21'),(2,'admin','admin@gmail.com',NULL,'admin123','546456565','property_leasion_agent','QyQxc','NO','2023-08-21 10:16:14','$2y$10$oWKm2Nvg4CKGTFza4iBMY.8PL.auUKkEq26YJPj5sdxf.5cD18Loa','',NULL,'2023-06-05 21:34:08','2023-08-21 14:16:14'),(46,'martin','martin.reyes.qro@gmail.com',NULL,'hola','4428168746','property_leasion_agent','QyQx4','NO','','$2y$10$iVtZ3RO4O9R1WJjWEjBtse19fFpde3tZxNpQONptRgTzYBodQGGza','',NULL,'2023-07-02 02:41:55','2023-07-02 02:42:40'),(47,'tetst','test@test.cpm',NULL,'test','4354545','property_leasion_agent','QyQxc','NO','','$2y$10$K36qoceLoLFc7eJB2v1kdurhMw002JaE.kQVWydOo686GPzJNQz0K','',NULL,'2023-07-18 18:24:15','2023-07-18 18:24:15'),(48,'test','concerje@test.com',NULL,'concerje','87789879978','property_leasion_agent','QyQxc','NO','2023-07-18 15:17:56','$2y$10$XEsSaKhYMYZBEPtX0FjMhOgBCPUjs4DA0bmKVmbIm31paLiAMpCwe','',NULL,'2023-07-18 19:17:31','2023-07-18 19:17:56');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -620,7 +647,7 @@ CREATE TABLE `visitor_settings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=243 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=282 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -629,7 +656,7 @@ CREATE TABLE `visitor_settings` (
 
 LOCK TABLES `visitor_settings` WRITE;
 /*!40000 ALTER TABLE `visitor_settings` DISABLE KEYS */;
-INSERT INTO `visitor_settings` VALUES (44,'total','506','setting',6,NULL,NULL),(45,'hours','1006','setting',6,NULL,NULL),(46,'limit','2005','setting',6,NULL,NULL),(47,'days','5008','setting',6,NULL,NULL),(204,'visitor_name','1','form',6,NULL,NULL),(205,'visitor_email','1','form',6,NULL,NULL),(206,'visitor_phone','1','form',6,NULL,NULL),(207,'visitor_language','0','form',6,NULL,NULL),(208,'vin','0','form',6,NULL,NULL),(209,'license_plate','0','form',6,NULL,NULL),(210,'year','0','form',6,NULL,NULL),(211,'make','0','form',6,NULL,NULL),(212,'model','0','form',6,NULL,NULL),(213,'color','0','form',6,NULL,NULL),(214,'vehicle_type','0','form',6,NULL,NULL),(215,'resident_name','1','form',6,NULL,NULL),(216,'resident_unit_number','1','form',6,NULL,NULL),(217,'resident_email','1','form',6,NULL,NULL),(218,'resident_phone','1','form',6,NULL,NULL),(219,'resident_registration','0','form',6,NULL,NULL),(220,'valid_form','0','form',6,NULL,NULL),(221,'required_visitor_name','1','form',6,NULL,NULL),(222,'required_visitor_email','1','form',6,NULL,NULL),(223,'required_visitor_phone','1','form',6,NULL,NULL),(224,'required_visitor_language','0','form',6,NULL,NULL),(225,'required_vin','0','form',6,NULL,NULL),(226,'required_license_plate','0','form',6,NULL,NULL),(227,'required_year','0','form',6,NULL,NULL),(228,'required_make','0','form',6,NULL,NULL),(229,'required_model','0','form',6,NULL,NULL),(230,'required_color','0','form',6,NULL,NULL),(231,'required_vehicle_type','0','form',6,NULL,NULL),(232,'required_resident_name','1','form',6,NULL,NULL),(233,'required_resident_unit_number','1','form',6,NULL,NULL),(234,'required_resident_email','1','form',6,NULL,NULL),(235,'required_resident_phone','1','form',6,NULL,NULL),(236,'required_resident_registration','0','form',6,NULL,NULL),(237,'required_valid_form','0','form',6,NULL,NULL),(238,'validation_resident_name','1','form',6,NULL,NULL),(239,'validation_resident_unit_number','1','form',6,NULL,NULL),(240,'validation_resident_email','1','form',6,NULL,NULL),(241,'validation_resident_phone','1','form',6,NULL,NULL),(242,'validation_resident_registration','0','form',6,NULL,NULL);
+INSERT INTO `visitor_settings` VALUES (44,'total','506','setting',6,NULL,NULL),(45,'hours','1006','setting',6,NULL,NULL),(46,'limit','2005','setting',6,NULL,NULL),(47,'days','5008','setting',6,NULL,NULL),(243,'visitor_name','1','form',6,NULL,NULL),(244,'visitor_email','1','form',6,NULL,NULL),(245,'visitor_phone','1','form',6,NULL,NULL),(246,'visitor_language','0','form',6,NULL,NULL),(247,'vin','0','form',6,NULL,NULL),(248,'license_plate','1','form',6,NULL,NULL),(249,'year','0','form',6,NULL,NULL),(250,'make','0','form',6,NULL,NULL),(251,'model','0','form',6,NULL,NULL),(252,'color','0','form',6,NULL,NULL),(253,'vehicle_type','0','form',6,NULL,NULL),(254,'resident_name','1','form',6,NULL,NULL),(255,'resident_unit_number','1','form',6,NULL,NULL),(256,'resident_email','1','form',6,NULL,NULL),(257,'resident_phone','1','form',6,NULL,NULL),(258,'resident_registration','0','form',6,NULL,NULL),(259,'valid_form','0','form',6,NULL,NULL),(260,'required_visitor_name','1','form',6,NULL,NULL),(261,'required_visitor_email','1','form',6,NULL,NULL),(262,'required_visitor_phone','1','form',6,NULL,NULL),(263,'required_visitor_language','0','form',6,NULL,NULL),(264,'required_vin','0','form',6,NULL,NULL),(265,'required_license_plate','1','form',6,NULL,NULL),(266,'required_year','0','form',6,NULL,NULL),(267,'required_make','0','form',6,NULL,NULL),(268,'required_model','0','form',6,NULL,NULL),(269,'required_color','0','form',6,NULL,NULL),(270,'required_vehicle_type','0','form',6,NULL,NULL),(271,'required_resident_name','1','form',6,NULL,NULL),(272,'required_resident_unit_number','1','form',6,NULL,NULL),(273,'required_resident_email','1','form',6,NULL,NULL),(274,'required_resident_phone','1','form',6,NULL,NULL),(275,'required_resident_registration','0','form',6,NULL,NULL),(276,'required_valid_form','0','form',6,NULL,NULL),(277,'validation_resident_name','1','form',6,NULL,NULL),(278,'validation_resident_unit_number','1','form',6,NULL,NULL),(279,'validation_resident_email','1','form',6,NULL,NULL),(280,'validation_resident_phone','1','form',6,NULL,NULL),(281,'validation_resident_registration','0','form',6,NULL,NULL);
 /*!40000 ALTER TABLE `visitor_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -681,4 +708,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-14  0:28:00
+-- Dump completed on 2023-08-21 20:09:02
