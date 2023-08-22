@@ -114,7 +114,7 @@
         }
     }
 
-    function  permitSetting(lan) {
+    function  permitSetting() {
         $('#permitCheck').html('');
         axios.post('{{ route('settings.permit.type.store') }}',{
                 property_id:   '{{$property->id}}',

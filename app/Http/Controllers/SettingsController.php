@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\PropertySetting;
 use App\Models\visitorSetting;
 use App\Models\PermitSetting;
+use App\Models\Registration;
 
 class SettingsController extends Controller
 {

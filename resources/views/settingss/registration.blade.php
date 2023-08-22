@@ -17,7 +17,7 @@
                         <li class="w-80" @click="openTab = 1" :class="openTab === 1 ? activeClasses : inactiveClasses">
                             <button class="inline-block p-4 rounded-t-lg">Form Fields</button>
                         </li>
-                        <li class="w-80" @click="openTab = 2" :class="openTab === 3 ? activeClasses : inactiveClasses">
+                        <li class="w-80" @click="openTab = 2" :class="openTab === 2 ? activeClasses : inactiveClasses">
                             <button class="inline-block p-4 rounded-t-lg">Form Preview</button>
                         </li>
                     </ul>
