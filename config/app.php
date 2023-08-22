@@ -199,6 +199,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ViewServiceProvider::class,
+        //Barryvdh\DomPDF\ServiceProvider::class,
         //'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 
@@ -214,8 +215,9 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
-       // 'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        // ... other aliases ...
+        'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),
+    
 
 ];

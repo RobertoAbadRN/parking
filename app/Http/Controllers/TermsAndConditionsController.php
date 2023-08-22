@@ -16,22 +16,28 @@ class TermsAndConditionsController extends Controller
         $user = User::whereHas('department', function ($query) use ($token) {
             $query->where('agreement_token', $token);
         })->first();
-
+    
         if ($user) {
-            // Actualiza el estatus en el registro de departments asociado al usuario
+            // Check if terms have already been accepted
             $department = Department::where('user_id', $user->id)->first();
+            if ($department && $department->terms_agreement_status === 'accepted') {
+                return view('sweet_alert', ['message' => 'The terms have already been accepted.']);
+            }
+            
+            // If terms have not been accepted, update the status to 'opened'
             if ($department) {
-                $department->terms_agreement_status = 'opened'; // Cambia a 'opened'
+                $department->terms_agreement_status = 'opened';
                 $department->save();
             }
-
-            // Cargar la vista de términos y condiciones
+    
+            // Load the terms and conditions view
             return view('terms_and_conditions', compact('user'));
         } else {
-            // Maneja el caso cuando el token no es válido
+            // Handle the case when the token is not valid
             return redirect()->route('otra-ruta-de-error');
         }
     }
+    
 
     public function acceptTermsAndConditions(Request $request, $token)
     {

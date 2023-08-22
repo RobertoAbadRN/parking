@@ -39,6 +39,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
+    Route::get('errorregister', function () {
+        return view('errorregister');
+    })->name('errorregister');
+    
     Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
    
     /**
@@ -154,14 +158,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
     Route::get('/recidents/approve/{id}', [RecidentsController::class, 'approve'])->name('residents.approve');
     Route::get('/recidents/decline/{id}', [RecidentsController::class, 'decline'])->name('residents.decline');
-
     Route::get('/residents/addresident', [RecidentsController::class, 'addResident'])->name('resident.addresident');
-
     Route::post('/residents/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
-
     Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
     Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
     Route::get('/residents/{resident}/print', [RecidentsController::class, 'print'])->name('residents.print');
+    Route::get('/residents/{user}', [RecidentsController::class, 'resetPassword'])->name('residents.resetPassword');
     Route::post('/residents/{resident}/delete', [RecidentsController::class, 'destroy'])->name('residents.destroy');
     Route::post('import-csv', [RecidentsController::class, 'importCSV'])->name('importCSV');
     Route::get('/addresident', [RecidentsController::class, 'addResident'])->name('addresident');
@@ -170,9 +172,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents/import/uploaded-files/{upload_id}', [RecidentsController::class, 'import_uploaded_files'])->name('residents.import.uploaded.files');
     Route::get('/recidents/import/uploaded-files/{upload_id}/{file_id}', [RecidentsController::class, 'import_uploaded_files_id'])->name('residents.import.uploaded.files.id');
     Route::post('/recidents/import/upload', [RecidentsController::class, 'import_upload'])->name('residents.import.upload');
-
     Route::post('/update-reserved-space/{departmentId}', [RecidentsController::class, 'updateReservedSpace'])->name('update_reserved_space');
+    Route::get('/download-terms-pdf/{resident}', [RecidentsController::class, 'downloadTermsPDF'])->name('download.terms.pdf');
 
+    Route::post('/update_reserved_space_visitors/{departmentId}', [RecidentsController::class, 'updateReservedSpaceVisitors'])->name('update_reserved_space_visitors');
+   
 
 
 
@@ -186,7 +190,8 @@ Route::middleware('auth')->group(function () {
      * ==============================
      */
     Route::get('/vehicles', [VehiclesController::class, 'index'])->name('vehicles');
-    Route::get('/addvehicle/{property_code}', [VehiclesController::class, 'create'])->name('addvehicle');
+    Route::get('/addvehicle/{user_id}', [VehiclesController::class, 'create'])->name('addvehicle');
+
     Route::post('/vehicles.store', [VehiclesController::class, 'store'])->name('vehicles.store');
     Route::get('/vehicles/{id}/edit/{property_code}', [VehiclesController::class, 'edit'])->name('edit.vehicle');
     Route::put('/update/{id}', [VehiclesController::class, 'update'])->name('vehicles.update');
@@ -196,6 +201,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
     Route::post('/suspend-vehicle/{id}', [VehiclesController::class, 'suspendVehicle'])->name('vehicles.suspend');
+
 
 
     /**
@@ -299,7 +305,6 @@ Route::post('/accept-terms/{token}', [TermsAndConditionsController::class, 'acce
     Route::get('/error', function () {
         return view('error')->with('message', 'Invalid token'); // Puedes personalizar el mensaje de acuerdo a tus necesidades
     })->name('error-route');
-    
 
 
  /**

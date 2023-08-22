@@ -1,30 +1,101 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use App\Models\Vehicle;
-use Carbon\Carbon;
-use App\Models\User;
+
 use App\Models\Property;
+use App\Models\User;
+use App\Models\Vehicle;
 use App\Models\VisitorPass;
-
-
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
+
     public function dashboardsCrmAnalytics()
     {
-        
-             // Calculate the total count of vehicles
-          $totalVehicles = Vehicle::count();
-          $recidentsCount = User::where('access_level', 'Resident')->count();
-          $propertiesCount = Property::count();
-          $visitorPassesCount = VisitorPass::count();
-          $usersCount = User::count();
+        // Calculate the total count of vehicles
+        $totalVehicles = Vehicle::count();
+        $recidentsCount = User::where('access_level', 'Resident')->count();
+        $propertiesCount = Property::count();
+        $visitorPassesCount = VisitorPass::count();
+        $usersCount = User::count();
 
-        return view('home.dashboards-crm-analytics', compact( 'totalVehicles','recidentsCount', 'propertiesCount','visitorPassesCount', 'usersCount'));
-    
+        // Count vehicles with permit_type = 'no_permit'
+        $noPermitVehiclesCount = Vehicle::where('permit_type', 'no_permit')->count();
+        $carportVehiclesCount = Vehicle::where('permit_type', 'Carport')->count();
+        $contractorVehiclesCount = Vehicle::where('permit_type', 'Contractor')->count();
+        $employeeVehiclesCount = Vehicle::where('permit_type', 'Employee')->count();
+        $reservedVehiclesCount = Vehicle::where('permit_type', 'Reserved')->count();
+        $residentVehiclesCount = Vehicle::where('permit_type', 'Resident')->count();
+        $subContractorVehiclesCount = Vehicle::where('permit_type', 'Sub-contractor')->count();
+        $temporaryVehiclesCount = Vehicle::where('permit_type', 'Temporary')->count();
+        $vipVehiclesCount = Vehicle::where('permit_type', 'V.I.P.')->count();
+        $visitorVehiclesCount = Vehicle::where('permit_type', 'Visitor')->count();
+
+        // Count properties by location_type
+        $apartmentBuildingPropertiesCount = Property::where('location_type', 'Apartment Building')->count();
+        $apartmentComplexPropertiesCount = Property::where('location_type', 'Apartment Complex')->count();
+        $companyParkingPropertiesCount = Property::where('location_type', 'Company Parking')->count();
+        $privateParkingPropertiesCount = Property::where('location_type', 'Private Parking')->count();
+        // Repite este patrón para los otros tipos de ubicación
+
+        // Count users by access_level
+        $propertyLeasionAgentCount = User::where('access_level', 'property_leasion_agent')->count();
+        $propertyManagerCount = User::where('access_level', 'property_manager')->count();
+        $propertyOwnerCount = User::where('access_level', 'property_owner')->count();
+        $parkingInspectorCount = User::where('access_level', 'parking_inspector')->count();
+        $companyAdministratorCount = User::where('access_level', 'company_administrator')->count();
+
+        // Get current date
+        $currentDate = Carbon::now()->format('Y-m-d');
+
+        // Count visitor passes based on vehicle_type (date)
+        $registeredTodayCount = VisitorPass::whereDate('vehicle_type', $currentDate)->count();
+        $next7DaysCount = VisitorPass::whereBetween('vehicle_type', [$currentDate, Carbon::now()->addDays(7)->format('Y-m-d')])->count();
+        $laterCount = VisitorPass::where('vehicle_type', '>', Carbon::now()->addDays(7)->format('Y-m-d'))->count();
+        $expiredCount = VisitorPass::where('vehicle_type', '<', $currentDate)->count();
+        $invalidCount = VisitorPass::whereNull('vehicle_type')->count();
+
+        $residentUsersCount = User::where('access_level', 'Resident')->count();
+
+
+        return view('home.dashboards-crm-analytics', compact(
+            'totalVehicles',
+            'recidentsCount',
+            'propertiesCount',
+            'visitorPassesCount',
+            'usersCount',
+            'noPermitVehiclesCount',
+            'carportVehiclesCount',
+            'contractorVehiclesCount',
+            'employeeVehiclesCount',
+            'reservedVehiclesCount',
+            'residentVehiclesCount',
+            'subContractorVehiclesCount',
+            'temporaryVehiclesCount',
+            'vipVehiclesCount',
+            'visitorVehiclesCount',
+            'apartmentBuildingPropertiesCount',
+            'apartmentComplexPropertiesCount',
+            'companyParkingPropertiesCount',
+            'privateParkingPropertiesCount',
+
+            'registeredTodayCount',
+            'next7DaysCount',
+            'laterCount',
+            'expiredCount',
+            'invalidCount',
+
+            'propertyLeasionAgentCount',
+            'propertyManagerCount',
+            'propertyOwnerCount',
+            'parkingInspectorCount',
+            'companyAdministratorCount',
+
+            'residentUsersCount',
+        ));
     }
+
     public function elementsAvatar()
     {
         return view('pages/elements-avatar');
@@ -568,8 +639,6 @@ class HomeController extends Controller
     {
         return view('pages/apps-travel');
     }
-
-
 
     public function dashboardsOrders()
     {

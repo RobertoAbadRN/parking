@@ -20,15 +20,20 @@ class UsersController extends Controller
     public function index()
     {
         $users = DB::table('users')
-        ->leftJoin('user_properties', 'users.id', '=', 'user_properties.user_id')
-        ->leftJoin('properties', 'user_properties.property_id', '=', 'properties.id')
-        ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
-        ->groupBy('users.id')
-        ->get();
+            ->leftJoin('user_properties', 'users.id', '=', 'user_properties.user_id')
+            ->leftJoin('properties', 'user_properties.property_id', '=', 'properties.id')
+            ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
+            ->groupBy('users.id')
+            ->get();
     
-
+        foreach ($users as $user) {
+            $roles = User::find($user->id)->getRoleNames(); // Obtener los roles del usuario
+            $user->roles = $roles->implode(', '); // Convertir los roles en una cadena separada por comas
+        }
+    
         return view('users.index', ['users' => $users]);
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -40,11 +45,13 @@ class UsersController extends Controller
 
         $properties = Property::all();
         $roles = Role::all();
+        //dd($roles);
         return view('users.adduser', compact('properties', 'roles'));
     }
 
     public function verificarCorreo(Request $request)
     {
+
         $email = $request->input('email');
 
         // Verificar si el correo existe en la base de datos
@@ -68,7 +75,7 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         // Validar los datos del formulario
         $validatedData = $request->validate([
             'user' => 'required',
@@ -76,11 +83,10 @@ class UsersController extends Controller
             'phone' => 'required',
             'email' => 'required|email|unique:users,email', // Added unique validation rule
             'password' => 'required',
-            'access_level' => 'required',
+            //'access_level' => 'required',
             'properties' => 'required|array',
             'role' => 'required',
         ]);
-        //dd($validatedData);
 
         // Obtener el correo electrónico y el usuario del formulario
         $correo = $validatedData['email'];
@@ -103,35 +109,29 @@ class UsersController extends Controller
             'phone' => $validatedData['phone'],
             'email' => $validatedData['email'],
             'password' => bcrypt($validatedData['password']), // Asegúrate de encriptar la contraseña
-            'access_level' => $validatedData['access_level'],
-            'properties' => $validatedData['properties'],
+            // 'access_level' => $validatedData['access_level'],
             'banned' => '1',
         ]);
+
         // Asignación del rol
         $user->assignRole($request->role);
 
-        // The 'property_codes' you get from the form
-        $propertyCodes = $request->get('properties');
+        $propertyCodes = $request->input('selected_properties');
+        $propertyCodesArray = explode(',', $propertyCodes);
+//dd($propertyCodesArray);
 
-        // Look up the property IDs in the 'properties' table
-        $propertyIds = Property::whereIn('property_code', $propertyCodes)->pluck('id')->toArray();
+        $propertyIds = Property::whereIn('property_code', $propertyCodesArray)->pluck('id')->toArray();
+//dd($propertyIds);
 
-        // Attach the properties to the user
+// Attach the properties to the user
         $user->properties()->attach($propertyIds);
-        // Redireccionar a una página de éxito o mostrar un mensaje de éxito
+
+// Redireccionar a una página de éxito o mostrar un mensaje de éxito
         return redirect()->route('users')->with('success_message', 'User created successfully!');
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Property  $property
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Property $property)
-    {
-        //
-    }
+   
 
     /**
      * Show the form for editing the specified resource.
@@ -156,6 +156,7 @@ class UsersController extends Controller
         if (!$user) {
             return redirect()->route('users')->with('error', 'User not found.');
         }
+        //dd(compact('user', 'properties', 'userRole', 'roles', 'userProperties'));
 
         return view('users.edituser', compact('user', 'properties', 'userRole', 'roles', 'userProperties'));
     }
@@ -169,12 +170,13 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
+         // dd($request->all());
         $validatedData = $request->validate([
             'user' => 'required',
             'name' => 'required',
             'phone' => 'required',
             'email' => 'required|email',
-            'access_level' => 'required',
+            //'access_level' => 'required',
             'properties' => 'required',
             'role' => 'required',
 
@@ -184,7 +186,7 @@ class UsersController extends Controller
         $user->name = $validatedData['name'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
-        $user->access_level = $validatedData['access_level'];
+        //$user->access_level = $validatedData['access_level'];
 
         $user->save();
         $user->properties()->sync($request->properties); // Actualizar las propiedades del usuario.
@@ -322,16 +324,15 @@ class UsersController extends Controller
     }
 
     // Método en UsersController.php para alternar el estado de banned
-public function toggleBan(User $user)
-{
-    // Toggles the ban status
-    $user->banned = !$user->banned;
-    $user->save();
+    public function toggleBan(User $user)
+    {
+        // Toggles the ban status
+        $user->banned = !$user->banned;
+        $user->save();
 
-    $message = $user->banned ? 'User banned successfully' : 'User unbanned successfully';
-    
-    return redirect()->route('users')->with('success_message', $message);
-}
+        $message = $user->banned ? 'User banned successfully' : 'User unbanned successfully';
 
+        return redirect()->route('users')->with('success_message', $message);
+    }
 
 }

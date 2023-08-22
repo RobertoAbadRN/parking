@@ -124,8 +124,9 @@
                                         {{ $user->email }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $user->access_level }}
+                                        {{ $user->roles }} <!-- Mostrar los roles del usuario -->
                                     </td>
+                                    
                                     <td class="px-4 py-2">
                                         {{ $user->property_name }}
                                     </td>

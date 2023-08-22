@@ -82,7 +82,7 @@
                         Add New User
                     </p>
 
-                    
+
                     <form action="{{ route('users.store') }}" method="POST">
                         @csrf
                         <div class="mb-4">
@@ -143,44 +143,12 @@
                         </div>
 
 
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select id="access_level"
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="access_level">
-                                    <option value="" disabled selected>Select access level</option>
-                                    <option value="property_leasion_agent">Property Leasion Agent</option>
-                                    <option value="property_manager">Property Manager</option>
-                                    <option value="property_owner">Property Owner</option>
-                                    <option value="parking_inspector">Parking Inspector</option>
-                                    <option value="company_administrator">Company Administrator</option>
-                                </select>
-                            </label>
-                            @error('access_level')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
 
+                       
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select id="properties" name="properties[]" class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900" multiple="multiple">
-                                    <option value="" disabled selected>Select property</option>
-                                    <?php foreach ($properties as $property): ?>
-                                        <option value="<?= $property->property_code ?>"><?= $property->name ?> || <?= $property->address ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                
-
-                            </label>
-                            @error('properties')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="role">
+                                <select id="access_level" name="role"
+                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900">
                                     <option value="" disabled selected>Select role</option>
                                     @foreach ($roles as $role)
                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
@@ -192,8 +160,31 @@
                             @enderror
                         </div>
 
-                        <div>
 
+                        <div class="mb-4">
+                            <label class="relative flex">
+                                <select id="properties" name="properties[]"
+                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                    multiple>
+                                    @foreach ($properties as $property)
+                                        <option value="{{ $property->property_code }}">{{ $property->name }} ||
+                                            {{ $property->address }}</option>
+                                    @endforeach
+                                </select>
+                            </label>
+                                <input type="hidden" id="selected_properties" name="selected_properties">
+
+                            @error('properties')
+                                <span class="text-tiny+ text-error">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        
+                        
+
+
+
+
+                        <div>
                             <button type="submit"
                                 class="btn bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
                                 Submit
@@ -205,12 +196,14 @@
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+        
         <script>
             $(document).ready(function() {
                 $('#email').keyup(function() {
@@ -239,41 +232,22 @@
             });
 
 
-            $(document).ready(function() {
-                // Inicialización de Select2 sin opción predeterminada seleccionada
-                $('#properties').select2({
-                    tags: true,
-                    placeholder: "Select properties",
-                    allowClear: true
-                });
-
-                // Escucha cambios en 'access_level'
-                $('#access_level').on('change', function() {
-                    var accessLevel = $(this).val();
-
-                    // Limpiar la selección de propiedades
-                    $('#properties').val(null).trigger('change');
-
-                    // Si el nivel de acceso es 'property_manager', permitir selecciones múltiples
-                    if (accessLevel === 'property_manager') {
-                        $('#properties').prop('multiple', true);
-                        $('#properties').select2('destroy').select2({
-                            tags: true,
-                            placeholder: "Select properties",
-                            allowClear: true
-                        });
-                    } else {
-                        // En caso contrario, solo permitir una selección
-                        $('#properties').prop('multiple', false);
-                        $('#properties').select2('destroy').select2({
-                            tags: true,
-                            placeholder: "Select property",
-                            allowClear: true
-                        });
-                    }
-                });
-            });
         </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#properties').select2({
+                width: '100%',
+                allowClear: true
+            });
+    
+            $('#properties').on('change', function() {
+                var selectedOptions = $(this).val();
+                $('#selected_properties').val(selectedOptions); // No usar join(',') aquí
+            });
+        });
+    </script>
+    
+        
 
 
     </main>

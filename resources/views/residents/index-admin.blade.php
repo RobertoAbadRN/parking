@@ -2,7 +2,8 @@
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
-                <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Residents
+                <a
+                    class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Residents
                 </a>
 
             </h4>
@@ -53,15 +54,21 @@
                                     fill="white" />
                             </svg>
                         </a>
-                        <a href="{{ route('resident.addresident') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                        <a href="{{ route('resident.addresident') }}"
+                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
+                            style="width: auto; height: 40px;">
                             <i class="fa-solid fa-users"></i>
                             &nbsp; Add Resident
                         </a>
-                        <a href="{{ route('residents.import') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                        <a href="{{ route('residents.import') }}"
+                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
+                            style="width: auto; height: 40px;">
                             <i class="fa-solid fa-file-import"></i>
                             &nbsp; Importar
                         </a>
-                        <a href="{{ route('residents.import.uploaded') }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
+                        <a href="{{ route('residents.import.uploaded') }}"
+                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
+                            style="width: auto; height: 40px;">
                             <i class="fa-solid fa-upload"></i>
                             &nbsp; Archivos cargados
                         </a>
@@ -77,6 +84,7 @@
                         <thead>
                             <tr>
                                 <th class="px-4 py-2">Resident Name</th>
+                                <th  class="px-4 py-2">Property</th>
                                 <th class="px-4 py-2">Apart/Unit</th>
                                 <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
@@ -91,10 +99,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($residents as $resident)
+                            @foreach ($residents as $resident)
                                 <tr>
                                     <td class="px-4 py-2">
                                         {{ $resident->name }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $resident->department->property->name }}
                                     </td>
                                     <td class="px-4 py-2">
                                         {{ $resident->apart_unit }}
@@ -110,131 +121,145 @@
                                             class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
                                             style="background-color: #0EA5E9;"
                                             onclick="toggleModal({{ $resident->id }})">
-                                    
+
                                             {{ $resident->id }}
-                                    
+
                                         </button>
-                                    
+
                                         <!-- Ventana modal -->
-                                    
+
                                         <div id="modal-modelo-{{ $resident->id }}"
                                             class="fixed z-10 inset-0 overflow-y-auto hidden">
-                                    
+
                                             <div class="flex items-center justify-center min-h-screen px-4">
-                                    
+
                                                 <div class="fixed inset-0 bg-black opacity-50"></div>
-                                    
+
                                                 <!-- Capa de fondo semitransparente -->
-                                    
+
                                                 <div class="bg-white rounded-lg max-w-lg mx-auto p-6 relative">
-                                    
+
                                                     <h2
                                                         class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
-                                    
+
                                                         {{ $resident->name }}
-                                    
+
                                                     </h2>
-                                    
+
                                                     <h4
                                                         class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
-                                    
+
                                                         QR code: {{ $resident->apart_unit }}
-                                    
+
                                                     </h4>
-                                    
                                                     <div class="visible-print flex justify-center items-center">
-                                                        {!! QrCode::size(200)->generate(
-                                                            'https://amartineztowingop.com/visitors/addvisitors?department_id=' . $resident->department_id,
-                                                        ) !!}
+                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/register?user_id=' . $resident->id) !!}
                                                     </div>
-                                                    
-                                    
                                                     <p class="my-2">Scan me to return to the original page.</p>
-                                    
+
                                                     <button id="cerrar-modal-modelo-{{ $resident->id }}"
                                                         class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center"
                                                         onclick="toggleModal({{ $resident->id }})">
-                                    
+
                                                         Cerrar
-                                    
+
                                                     </button>
-                                    
+
                                                 </div>
-                                    
+
                                             </div>
-                                    
+
                                         </div>
                                     </td>
-                                    
+
                                     <script>
                                         function toggleModal(residentId) {
                                             const modal = document.getElementById(`modal-modelo-${residentId}`);
                                             modal.classList.toggle('hidden');
                                         }
                                     </script>
-                                    
-                                    
+
+
                                     <td class="px-4 py-2">
                                         {{ $resident->lease_expiration }}
                                     </td>
                                     <td class="py-2">
-                                        <form method="POST" action="{{ route('update_reserved_space', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">
+                                        <form method="POST"
+                                            action="{{ route('update_reserved_space', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">
                                             @csrf
                                             <div class="flex items-center">
-                                                <input type="text" name="reserved_space" value="{{ $resident->reserved_space }}"
-                                                       class="w-10 h-8 border border-gray-300 text-black {{ strlen($resident->reserved_space) === 3 ? 'text-black' : 'text-red-500' }}">
+                                                <input type="text" name="reserved_space"
+                                                    value="{{ $resident->reserved_space }}"
+                                                    class="w-10 h-8 border border-gray-300 text-black {{ strlen($resident->reserved_space) === 3 ? 'text-black' : 'text-red-500' }}">
                                                 <button type="submit" class="ml-1">
                                                     <i class="fas fa-save"></i>
                                                 </button>
                                             </div>
-                                        </form>  
+                                        </form>
                                     </td>
-                                    
-                                    <td class="px-4 py-2">
-                                        num visitores
+
+                                    <td class="px-4 py-2">                                        
+                                         <form method="POST"
+                                            action="{{ route('update_reserved_space_visitors', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">                                           
+                                            @csrf
+                                            <div class="flex items-center">
+                                                <input type="text" name="reserved_spacevisitors"
+                                                    value="{{ $resident->reserved_spacevisitors }}"
+                                                    class="w-10 h-8 border border-gray-300 text-black {{ strlen($resident->reserved_spacevisitors) === 3 ? 'text-black' : 'text-red-500' }}">
+                                                <button type="submit" class="ml-1">
+                                                    <i class="fas fa-save"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                        
                                     </td>
-                                   
+
                                     <td class="px-4 py-2">
                                         {{ $resident->reserved_space }}
                                     </td>
-                                   
+
                                     <td class="px-4 py-2">
                                         {{ $resident->terms_agreement_status }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="{{ route('user.resetPassword', $resident->id) }}"
-                                            class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                            <i class="fa fa-key"></i>
-                                        </a>
-                                        
-                                        <form id="delete-form-{{ $resident->id }}"
-                                            action="{{ route('residents.destroy', $resident->id) }}"
-                                            method="POST">
-                                          @csrf
-                                          <a href="#" class="text-red-500 hover:text-red-700 mr-2" onclick="confirmDelete('{{ $resident->id }}')">
-                                              <i class="fas fa-trash"></i>
-                                          </a>
-                                      </form>
-                                      
-                                      <script>
-                                          function confirmDelete(residentId) {
-                                              if (confirm('Are you sure you want to delete this resident?')) {
-                                                  // Enviar el formulario de eliminación
-                                                  document.getElementById('delete-form-' + residentId).submit();
-                                              }
-                                          }
-                                      </script>
-                                      
-                                         
-                                        
-                                        
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+
+                                            <a href="{{ route('residents.resetPassword', $resident->id) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fa fa-key"></i>
+                                            </a>
+                                            <a href="{{ route('download.terms.pdf', $resident->id) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                 <i class="fa fa-download"></i>
+                                             </a>                                            
+
+                                            <form id="delete-form-{{ $resident->id }}"
+                                                action="{{ route('residents.destroy', $resident->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <a href="#"
+                                                    class="btn h-8 w-8 p-0 text-error hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
+                                                    onclick="confirmDelete('{{ $resident->id }}');">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </form>
+                                        </div>
+                                        <script>
+                                            function confirmDelete(residentId) {
+                                                if (confirm('Are you sure you want to delete this resident?')) {
+                                                    // Enviar el formulario de eliminación
+                                                    document.getElementById('delete-form-' + residentId).submit();
+                                                }
+                                            }
+                                        </script>
                                     </td>
                                     <td class="px-4 py-2">
                                         {{ $resident->date_status }}
-                                    </td> 
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -249,7 +274,6 @@
                     responsive: true
                 });
             });
-
         </script>
     </main>
 </x-app-layout>

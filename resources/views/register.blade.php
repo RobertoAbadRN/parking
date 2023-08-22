@@ -1,140 +1,393 @@
-<x-base-layout title="Register">
-    <div class="fixed top-0 hidden p-6 lg:block lg:px-12">
-        <a href="#" class="flex items-center space-x-2">
-            <img class="h-12 w-12 " src="{{ asset('images/app-logo.svg') }}" alt="logo" />
-            <p class="text-xl font-semibold uppercase text-slate-700 dark:text-navy-100">
-                {{ config('app.name') }}
-            </p>
-        </a>
-    </div>
-    <div class="hidden w-full place-items-center lg:grid">
-        <div class="w-full max-w-lg p-6">
-            <img class="w-full" x-show="!$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/dashboard-meet.svg') }}" alt="image" />
-            <img class="w-full" x-show="$store.global.isDarkModeEnabled"
-                src="{{ asset('images/illustrations/dashboard-meet-dark.svg') }}" alt="image" />
+<x-base-layout title="Register" is-sidebar-open="true" is-header-blur="true">
+
+    <main class="main-content w-full px-[var(--margin-x)] pb-8">
+
+        <div class="flex items-center space-x-4 py-5 lg:py-6">
+
+            <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
+
+                Parking Management Service
+
+            </h2>
+
+            <div class="hidden h-full py-1 sm:flex">
+
+                <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
+
+            </div>
+
+
+
         </div>
-    </div>
-    <main class="flex w-full flex-col items-center bg-white dark:bg-navy-700 lg:max-w-md">
-        <div class="flex w-full max-w-sm grow flex-col justify-center p-5">
-            <div class="text-center">
-                <img class="mx-auto h-16 w-16 lg:hidden " src="{{ asset('images/app-logo.svg') }}" alt="logo" />
-                <div class="mt-4">
-                    <h2 class="text-2xl font-semibold text-slate-600 dark:text-navy-100">
-                        Welcome To {{ config('app.name') }}
+
+        <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
+
+            <!-- Boxed Tabs With Icon -->
+
+            <div class="card px-4 pb-4 sm:px-5">
+
+                <div class="my-3 flex h-8 items-center justify-between">
+
+                    <h2 class="font-medium tracking-wide text-slate-700 line-clamp-1 dark:text-navy-100 lg:text-base">
+
+                        @if (session('error'))
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                                role="alert">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+                        @if (session('success'))
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                                role="alert">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+
+
                     </h2>
-                    <p class="text-slate-400 dark:text-navy-300">
-                        Please sign up to continue
-                    </p>
+
+
+
                 </div>
+
+                <div class="max-w-5xl">
+
+                    <div class="mt-5">
+
+                        <div x-data="{ activeTab: 'tabHome' }" class="tabs flex flex-col">
+
+                            <div
+                                class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600 dark:bg-navy-800 dark:text-navy-200">
+
+                                <div class="tabs-list flex px-1.5 py-1">
+
+                                    <button @click="activeTab = 'tabHome'"
+                                        :class="activeTab === 'tabHome' ?
+                                        
+                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
+                                        
+                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                        class="btn shrink-0 space-x-2 px-3 py-1.5 font-medium">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+
+                                        </svg>
+
+                                        <span> RESIDENT VEHICLE
+
+                                            REGISTRATION</span>
+
+                                    </button>
+
+                                    <button @click="activeTab = 'tabProfile'"
+                                        :class="activeTab === 'tabProfile' ?
+                                        
+                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
+                                        
+                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
+                                        class="btn shrink-0 space-x-2 px-3 py-1.5 font-medium">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+
+                                        </svg>
+
+                                        <span>VISITORS PASS REGISTRATION</span>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <div class="tab-content pt-4">
+
+                                <div x-show="activeTab === 'tabHome'"
+                                    x-transition:enter="transition-all duration-500 easy-in-out"
+                                    x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                                    x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
+
+                                    <div class="w-full">
+
+                                        <form action="{{ route('visitors.registerResidentVehicle') }}" method="POST"
+                                            class="form">
+
+                                            <h2 class="text-center mb-4 mt-4">Pre-register your vehicle for a parking
+
+                                                permit / Pre-registra tu vehículo para obtener un permiso de
+
+                                                estacionamiento</h2>
+
+                                            @csrf
+
+
+                                            <input type="hidden" name="property_code" value="{{ $propertyCode }}">
+                                            <input type="hidden" name="user_id" value="{{ request('user_id') }}">
+
+                                            <div class="mb-3">
+
+                                                <label for="license_plate" class="form-label">License Plate /
+
+                                                    Matrícula:</label>
+
+                                                <input type="text" name="license_plate" id="license_plate"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                            </div>
+
+                                            <div class="mb-3">
+
+                                                <label for="vin" class="form-label">VIN:</label>
+
+                                                <input type="text" name="vin" id="vin"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                            </div>
+
+                                            <div class="mb-3">
+
+                                                <label for="make" class="form-label">Make / Marca:</label>
+
+                                                <input type="text" name="make" id="make"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                            </div>
+
+                                            <div class="mb-3">
+
+                                                <label for="model" class="form-label">Model / Modelo:</label>
+
+                                                <input type="text" name="model" id="model"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                            </div>
+
+                                            <div class="mb-3">
+
+                                                <label for="year" class="form-label">Year / Año:</label>
+
+                                                <input type="number" name="year" id="year"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                            </div>
+
+                                            <div class="mb-3">
+
+                                                <label for="color" class="form-label">Color:</label>
+
+                                                <input type="text" name="color" id="color"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                            </div>
+
+
+
+                                            <label class="block mb-3">
+
+                                                <span>Vehicle Type / Tipo de vehículo:</span>
+
+                                                <select name="vehicle_type" id="vehicle_type"
+                                                    class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    required>
+
+                                                    <option value="">-- Select vehicle type / Selecciona el tipo
+
+                                                        de vehículo --</option>
+
+                                                    <option value="Car">Car</option>
+
+                                                    <option value="Truck">Truck</option>
+
+                                                    <option value="Motorcycle">Motorcycle</option>
+
+                                                </select>
+
+                                            </label>
+
+
+                                            <div class="flex justify-center">
+
+                                                <button type="submit"
+                                                    class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit
+
+                                                    / Enviar</button>
+
+                                            </div>
+
+                                        </form>
+
+
+
+                                    </div>
+
+                                </div>
+
+                                <div x-show="activeTab === 'tabProfile'"
+                                    x-transition:enter="transition-all duration-500 easy-in-out"
+                                    x-transition:enter-start="opacity-0 [transform:translate3d(1rem,0,0)]"
+                                    x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
+
+                                    <div>
+
+                                        <form action="{{ route('visitors.registerVisitorPass') }}" method="POST"
+                                            class="form">
+
+                                            <h2 class="text-center mb-4 pt-4">Register your vehicle for a temporary
+
+                                                Visitor's Pass</h2>
+
+                                            @csrf
+                                            <input type="hidden" name="property_code" value="{{ $propertyCode }}">
+                                            <input type="hidden" name="user_id" value="{{ request('user_id') }}">
+
+                                            <div class="mb-3">
+
+                                                <label for="visitor_name" class="form-label">Visitor's Name / Nombre
+
+                                                    del Visitante</label>
+
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="visitor_name" name="visitor_name" required>
+
+                                            </div>
+
+
+
+                                            <div class="mb-3">
+
+                                                <label for="visitor_phone" class="form-label">Visitor's Phone /
+
+                                                    Teléfono del Visitante</label>
+
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="visitor_phone" name="visitor_phone" required>
+
+                                            </div>
+
+
+
+                                            <div class="mb-3">
+
+                                                <label for="license_plate" class="form-label">License Plate / Placa
+
+                                                    del Vehículo</label>
+
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="license_plate" name="license_plate" required>
+
+                                            </div>
+
+
+
+                                            <div class="mb-3">
+
+                                                <label for="year" class="form-label">Year / Año</label>
+
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="year" name="year" required>
+
+                                            </div>
+
+
+
+                                            <div class="mb-3">
+                                                <label for="make" class="form-label">Make / Marca</label>
+
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="make" name="make" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="model" class="form-label">Model</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="model" name="model" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="color" class="form-label">Color / Color</label>
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="color" name="color" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de
+
+                                                    Vehículo</label>
+
+                                                <input type="text"
+                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    id="vehicle_type" name="vehicle_type" required>
+
+                                            </div>
+
+                                            <label class="relative flex mb-3">
+
+                                                <input x-init="$el._x_flatpickr = flatpickr($el, { enableTime: true, dateFormat: 'Y-m-d h:i K', time_24hr: false })"
+                                                    class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                    placeholder="Choose date and time..." type="text"
+                                                    name="valid_from" />
+
+                                                <span
+                                                    class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-5 w-5 transition-colors duration-200" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+
+                                                    </svg>
+
+                                                </span>
+
+                                            </label>
+
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit
+
+                                                / Enviar</button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
             </div>
 
-            <div class="mt-10 flex space-x-4">
-                <button
-                    class="btn w-full space-x-3 border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
-                    <img class="h-5.5 w-5.5 " src="{{asset('images/100x100.png') }}" />
-                    <span>Google</span>
-                </button>
-                <button
-                    class="btn w-full space-x-3 border border-slate-300 font-medium text-slate-800 hover:bg-slate-150 focus:bg-slate-150 active:bg-slate-150/80 dark:border-navy-450 dark:text-navy-50 dark:hover:bg-navy-500 dark:focus:bg-navy-500 dark:active:bg-navy-500/90">
-                    <img class="h-5.5 w-5.5 " src="{{asset('images/100x100.png') }}" />
-                    <span>Github</span>
-                </button>
-            </div>
-            <div class="my-7 flex items-center space-x-3">
-                <div class="h-px flex-1 bg-slate-200 dark:bg-navy-500"></div>
-                <p class="text-tiny+ uppercase">or sign up with email</p>
-
-                <div class="h-px flex-1 bg-slate-200 dark:bg-navy-500"></div>
-            </div>
-            <form class="mt-4" action="{{ route('register') }}" method="post">
-                @method('POST') @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label class="relative flex">
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Full Name" type="text" name="name" value="{{ old('name') }}" />
-                            <span
-                                class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </span>
-                        </label>
-                        @error('name')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="relative flex">
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Email" type="text" name="email" value="{{ old('email') }}" />
-                            <span
-                                class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                </svg>
-                            </span>
-                        </label>
-                        @error('email')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="relative flex">
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Password" type="password" name="password" />
-                            <span
-                                class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                            </span>
-                        </label>
-                        @error('password')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div>
-                        <label class="relative flex">
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Repeat Password" type="password" name="password_confirmation" />
-                            <span
-                                class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
-                            </span>
-                        </label>
-                        @error('password_confirmation')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <button type="submit"
-                    class="btn mt-10 h-10 w-full bg-primary font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90 dark:bg-accent dark:hover:bg-accent-focus dark:focus:bg-accent-focus dark:active:bg-accent/90">
-                    Sign In
-                </button>
-            </form>
-            <div class="mt-4 text-center text-xs+">
-                <p class="line-clamp-1">
-                    <span>Already have an account? </span>
-                    <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="{{ route('loginView') }}">Sign In</a>
-                </p>
-            </div>
         </div>
+
+        </div>
+
     </main>
+
 </x-base-layout>

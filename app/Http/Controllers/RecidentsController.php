@@ -9,29 +9,31 @@ use App\Models\Property;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
 use App\Models\User;
+use App\Models\Vehicle;
+use App\Models\VisitorPass;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 class RecidentsController extends Controller
 {
 
-    /**
-
-     * Display a listing of the resource.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
     public function index()
     {
-        $residents = User::select(
+        $user = Auth::user(); // Obtén el usuario autenticado
+
+        if ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property manager', mostrar la vista de admin
+            $residents = User::select(
                 'users.*',
                 'departments.apart_unit',
                 'departments.lease_expiration',
                 'departments.reserved_space',
+                'departments.reserved_spacevisitors',
                 'departments.property_code',
                 'departments.permit_status',
                 'departments.terms_agreement_status',
@@ -39,15 +41,54 @@ class RecidentsController extends Controller
                 'departments.id as department_id',
                 'departments.date_status'
             )
-            ->join('departments', 'users.id', '=', 'departments.user_id')
-            ->where('users.access_level', 'Resident')
-            ->get();
+                ->join('departments', 'users.id', '=', 'departments.user_id')
+                ->with('department.property') // Cargar la relación property
+                ->get();
     
-        return view('residents.index-admin', compact('residents'));
+            return view('residents.index-admin', compact('residents'));
+        } elseif ($user->hasRole('Resident')) {
+            // Si el usuario tiene el rol 'Resident', obtener su nombre y detalles de vehículos
+            $residentid = $user->id;
+            $residentName = $user->name; // Asumiendo que el campo es 'name' en la tabla 'users'
+            $residentEmail = $user->email;
+            $reservedSpace = $user->department->reserved_space;
+            // Obtener los detalles de los residentes desde la tabla 'departments'
+            $residentDetails = User::join('departments', 'users.id', '=', 'departments.user_id')
+                ->where('users.id', $user->id) // Filtrar por el ID del usuario autenticado
+                ->select(
+                    'departments.apart_unit',
+                    'departments.lease_expiration',
+                    'departments.reserved_space',
+                    'departments.reserved_spacevisitors',
+                    'departments.property_code',
+                    'departments.permit_status',
+                    'departments.terms_agreement_status',
+                    'departments.agreement_token',
+                    'departments.id as department_id',
+                    'departments.date_status'
+                )
+                ->first();
+
+            // Obtener los vehículos del residente desde la tabla 'vehicles'
+            $residentVehicles = User::join('vehicles', 'users.id', '=', 'vehicles.user_id')
+                ->where('users.id', $user->id) // Filtrar por el ID del usuario autenticado
+                ->select(
+                    'vehicles.license_plate',
+                    'vehicles.make',
+                    'vehicles.model',
+                    'vehicles.permit_type',
+                    'vehicles.permit_status'
+
+                )
+                ->get();
+
+            return view('residents.index', compact('residentName', 'residentid', 'reservedSpace', 'residentEmail', 'residentDetails', 'residentVehicles'));
+        } else {
+            // Otros casos o roles desconocidos
+            abort(403, 'Acceso no autorizado');
+        }
     }
-    
-    
-     
+
     public function import()
     {
         return view('residents.import');
@@ -144,9 +185,6 @@ class RecidentsController extends Controller
         return view('residents.import-uploaded-files-id', compact('resident_upload_file'));
     }
 
-
-    
-
     /**
 
      * Show the form for creating a new resource.
@@ -219,6 +257,9 @@ class RecidentsController extends Controller
         $user->banned = false;
         $user->status = 'Pending';
         $user->save();
+        
+        // Asignar el rol "Resident" al usuario
+        $user->assignRole('Resident');
 
         // Crear un nuevo registro de departamento y asociarlo al usuario
         $department = new Department();
@@ -249,25 +290,6 @@ class RecidentsController extends Controller
 
     /**
 
-     * Display the specified resource.
-
-     *
-
-     * @param  \App\Models\Property  $property
-
-     * @return \Illuminate\Http\Response
-
-     */
-
-    public function show(Property $property)
-    {
-
-        //
-
-    }
-
-    /**
-
      * Show the form for editing the specified resource.
 
      *
@@ -278,11 +300,16 @@ class RecidentsController extends Controller
 
      */
 
-    public function edit(Property $property)
+    public function edit(User $resident)
     {
+        $departments = Department::where('user_id', $resident->id)->get();
 
-        //
+        $propertyCodes = $departments->pluck('property_code')->toArray();
 
+        $properties = Property::all(); // Obtén todas las propiedades
+        //dd($properties);
+
+        return view('residents.editresident', compact('resident', 'departments', 'properties'));
     }
 
     /**
@@ -299,11 +326,35 @@ class RecidentsController extends Controller
 
      */
 
-    public function update(Request $request, Property $property)
+    public function update(Request $request, User $resident)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'user' => 'required|string|max:255',
+            'apart_unit' => 'required|string|max:255',
+            'reserved_space' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            // Agrega aquí las validaciones para los demás campos
+        ]);
 
-        //
+        $resident->update([
+            'name' => $request->name,
+            'user' => $request->user,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            // Agrega aquí los demás campos que deseas actualizar en la tabla users
+        ]);
 
+        // Actualiza los campos en la tabla departments relacionados con el usuario
+        $department = Department::where('user_id', $resident->id)->firstOrFail();
+        $department->update([
+            'apart_unit' => $request->apart_unit,
+            'reserved_space' => $request->reserved_space,
+            // Actualiza aquí los demás campos en la tabla departments
+        ]);
+
+        return redirect()->route('recidents')->with('success', 'Resident updated successfully.');
     }
 
     /**
@@ -318,22 +369,40 @@ class RecidentsController extends Controller
 
      */
 
-     public function destroy(User $resident)
-     {
-         // Obtener el departamento asociado al residente
-         $department = Department::where('user_id', $resident->id)->first();
-     
-         if ($department) {
-             // Eliminar el departamento
-             $department->delete();
-         }
-     
-         // Eliminar al residente (usuario)
-         $resident->delete();
-     
-         return redirect()->route('recidents')
-             ->with('success-message', 'Resident and associated department deleted successfully.');
-     }
+    public function destroy(User $resident)
+    {
+        // Obtener el departamento asociado al residente
+        $department = Department::where('user_id', $resident->id)->first();
+
+        if ($department) {
+            // Eliminar los vehículos asociados al departamento
+            Vehicle::where('user_id', $resident->id)->delete();
+
+            // Eliminar los registros en visitorpasses asociados al usuario
+            VisitorPass::where('user_id', $resident->id)->delete();
+
+            // Eliminar el departamento
+            $department->delete();
+        }
+
+        // Eliminar al residente (usuario)
+        $resident->delete();
+
+        return redirect()->route('recidents')
+            ->with('success-message', 'Resident, associated department, vehicles, and related visitor passes deleted successfully.');
+    }
+
+    public function resetPassword($userId)
+    {
+        $user = User::findOrFail($userId); // Get the user by their ID
+
+        $token = Password::broker()->createToken($user);
+
+        $user->sendPasswordResetNotification($token);
+
+        return redirect()->route('recidents')->with('success_message', 'Reset password link sent to Resident.');
+
+    }
 
     public function updateStatus(Request $request)
     {
@@ -352,21 +421,88 @@ class RecidentsController extends Controller
         }
     }
 
-
     public function updateReservedSpace(Request $request, $departmentId)
     {
         $request->validate([
             'reserved_space' => 'required|numeric|min:0',
         ]);
+        //dd($request);
 
         // Actualiza el valor en la tabla de departamentos
         $department = Department::findOrFail($departmentId);
-        //dd($department);
+
         $department->update([
             'reserved_space' => $request->reserved_space,
         ]);
 
         return redirect()->route('recidents')->with('success-message', 'Valor reservado actualizado correctamente.');
+    }
+
+    public function updateReservedSpaceVisitors(Request $request, $departmentId)
+    {
+        $request->validate([
+            'reserved_spacevisitors' => 'required|numeric|min:0',
+        ]);
+
+        // Actualiza el valor en la tabla de departamentos
+        $department = Department::findOrFail($departmentId);
+        //dd($department);
+
+        $department->update([
+            'reserved_spacevisitors' => $request->reserved_spacevisitors,
+        ]);
+
+        return redirect()->route('recidents')->with('success-message', 'Valor reservado para visitantes actualizado correctamente.');
+    }
+
+    public function downloadTermsPdf($userId)
+    {
+        // Fetch necessary data for the PDF
+        $user = User::find($userId);
+
+        if (!$user) {
+            // Handle the case when the user is not found
+            return redirect()->route('otra-ruta-de-error');
+        }
+
+        // Get the associated department
+        $department = Department::where('user_id', $user->id)->first();
+
+        if (!$department) {
+            // Handle the case when the department is not found
+            return redirect()->route('otra-ruta-de-error');
+        }
+
+        // Prepare data for the view
+        $data = [
+            'user' => $user,
+            'department' => $department,
+        ];
+
+        // Render the Blade view to HTML content
+        $htmlContent = view('terms_pdf', $data)->render();
+
+        // Create a new Dompdf instance
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isRemoteEnabled', true);
+
+        $dompdf = new Dompdf($options);
+
+        // Load HTML content into Dompdf
+        $dompdf->loadHtml($htmlContent);
+
+        // Set paper size (e.g., 'letter', 'A4', etc.)
+        $dompdf->setPaper('letter', 'portrait');
+
+        // Render the PDF
+        $dompdf->render();
+
+        // Set the file name dynamically
+        $pdfFileName = 'terms_' . $userId . '.pdf';
+
+        // Return the PDF file for download
+        return $dompdf->stream($pdfFileName);
     }
 
 }

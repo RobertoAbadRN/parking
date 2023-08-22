@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Models\User;
 
 
 
@@ -88,117 +89,70 @@ class VisitorsController extends Controller
 
 }
 
-    
+public function registerVisitorPass(Request $request)
+{
+    // Validar los datos ingresados en el formulario
+    $validatedData = $request->validate([
+        'property_code' => 'required',
+        'visitor_name' => 'required|string',
+        'visitor_phone' => 'required|string',
+        'license_plate' => 'required|string',
+        'year' => 'required|integer',
+        'make' => 'required|string',
+        'color' => 'required|string',
+        'model' => 'required|string',
+        'vehicle_type' => 'required|string',
+        'valid_from' => 'required|date',
+        'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
+    ]);
+
+    // Los datos han sido validados, puedes continuar guardándolos en la base de datos
+
+    $visitorPass = new VisitorPass();
+    $visitorPass->property_code = $validatedData['property_code'];
+    $visitorPass->user_id = $validatedData['user_id'];
+    $visitorPass->visitor_name = $validatedData['visitor_name'];
+    $visitorPass->visitor_phone = $validatedData['visitor_phone'];
+    $visitorPass->license_plate = $validatedData['license_plate'];
+    $visitorPass->year = $validatedData['year'];
+    $visitorPass->make = $validatedData['make'];
+    $visitorPass->color = $validatedData['color'];
+    $visitorPass->model = $validatedData['model'];
+    $visitorPass->vehicle_type = $validatedData['vehicle_type'];
+    $visitorPass->valid_from = $validatedData['valid_from'];
+    $visitorPass->status = 'pending';
+    $visitorPass->save();
+    return redirect()->route('errorregister')->with('success', 'Visitor pass registered successfully.');
+
+}
 
 
+public function listVisitors($property_code)
+{
+    $property = Property::where('property_code', $property_code)->first();
 
-    public function registerVisitorPass(Request $request)
+    $visitors = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
+        ->join('users', 'visitorpasses.user_id', '=', 'users.id')
+        ->join('departments', 'users.id', '=', 'departments.user_id') // Unir la tabla departments
+        ->where('visitorpasses.property_code', $property_code)
+        ->select(
+            'visitorpasses.valid_from', 
+            'visitorpasses.license_plate', 
+            'visitorpasses.make', 
+            'visitorpasses.model', 
+            'visitorpasses.color', 
+            'visitorpasses.year', 
+            'visitorpasses.status', 
+            'visitorpasses.visitor_name', 
+            'users.phone as resident_phone',
+            'visitorpasses.vehicle_type', 
+            'users.name as resident_name',
+            'departments.apart_unit' // Agregar la columna apart_unit
+        )
+        ->get();
 
-    {
-
-        // Obtener el valor de property_code del formulario
-
-        $property_code = $request->input('property_code');
-
-        // Obtener los datos del formulario
-
-        $visitor_name = $request->input('visitor_name');
-
-        $visitor_phone = $request->input('visitor_phone');
-
-        $license_plate = $request->input('license_plate');
-
-        $year = $request->input('year');
-
-        $make = $request->input('make');
-
-        $color = $request->input('color');
-
-        $model = $request->input('model');
-
-        $vehicle_type = $request->input('vehicle_type');
-
-        $resident_name = $request->input('resident_name');
-
-        $unit_number = $request->input('unit_number');
-
-        $resident_phone = $request->input('resident_phone');
-
-        $valid_from = $request->input('valid_from');
-
-
-
-        // Guardar los datos en la base de datos
-
-        $visitorPass = new VisitorPass();
-
-        $visitorPass->property_code = $property_code;
-
-        $visitorPass->visitor_name = $visitor_name;
-
-        $visitorPass->visitor_phone = $visitor_phone;
-
-        $visitorPass->license_plate = $license_plate;
-
-        $visitorPass->year = $year;
-
-        $visitorPass->make = $make;
-
-        $visitorPass->color = $color;
-
-        $visitorPass->model = $model;
-
-        $visitorPass->vehicle_type = $vehicle_type;
-
-        $visitorPass->resident_name = $resident_name;
-
-        $visitorPass->unit_number = $unit_number;
-
-        $visitorPass->resident_phone = $resident_phone;
-
-        $visitorPass->valid_from = $valid_from;
-
-        $visitorPass->status = 'pending';
-
-        $visitorPass->save();
-
-
-
-        // Realizar cualquier otra acción necesaria, como redireccionar a una página de confirmación
-
-        // ...
-
-
-
-        return redirect()->route('login')->with('success', 'Visitor pass registered successfully.');
-
-
-
-    }
-
-
-
-    public function listVisitors($property_code)
-
-    {
-
-        $property = Property::where('property_code', $property_code)->first();
-
-
-
-        $visitors = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
-
-            ->where('visitorpasses.property_code', $property_code)
-
-            ->select('visitorpasses.valid_from', 'visitorpasses.license_plate', 'visitorpasses.make', 'visitorpasses.model', 'visitorpasses.color', 'visitorpasses.year', 'visitorpasses.unit_number', 'visitorpasses.status', 'visitorpasses.visitor_name', 'visitorpasses.resident_phone', 'visitorpasses.vehicle_type', 'visitorpasses.resident_name')
-
-            ->get();
-
-
-
-        return view('visitors.listvisitors', compact('property', 'visitors'));
-
-    }
+    return view('visitors.listvisitors', compact('property', 'visitors'));
+}
 
 
 

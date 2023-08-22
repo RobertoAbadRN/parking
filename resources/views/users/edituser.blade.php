@@ -125,74 +125,19 @@
                             @error('email')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
-                        </div>                 
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select id="access_level"
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="access_level">
-                                    <option value="" disabled>Select access level</option>
-                                    <option value="property_leasion_agent"
-                                        {{ $user->access_level === 'property_leasion_agent' ? 'selected' : '' }}>
-                                        Property Leasion Agent</option>
-                                    <option value="property_manager"
-                                        {{ $user->access_level === 'property_manager' ? 'selected' : '' }}>Property
-                                        Manager</option>
-                                    <option value="property_owner"
-                                        {{ $user->access_level === 'property_owner' ? 'selected' : '' }}>Property Owner
-                                    </option>
-                                    <option value="parking_inspector"
-                                        {{ $user->access_level === 'parking_inspector' ? 'selected' : '' }}>Parking
-                                        Inspector</option>
-                                    <option value="company_administrator"
-                                        {{ $user->access_level === 'company_administrator' ? 'selected' : '' }}>Company
-                                        Administrator</option>
-                                </select>
-                            </label>
                         </div>
 
-                        <div class="mb-4" id="singlePropertySelect">
-                            <label class="relative flex">
-                                <select id="single_property"
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="properties">
-                                    <option value="" disabled>Select property</option>
-                                    @foreach ($properties as $propertyId => $address)
-                                        <option value="{{ $propertyId }}"
-                                            {{ isset($userProperties) && in_array($propertyId, $userProperties) ? 'selected' : '' }}>
-                                            {{ $address }}</option>
-                                    @endforeach
-                                </select>
-                            </label>
-                        </div>
-                        
-                        <div class="mb-4" id="multiplePropertySelect" style="display: none;">
-                            <label class="relative flex">
-                                <select id="multiple_properties"
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="properties[]" multiple="multiple">
-                                    <option value="" disabled>Select property</option>
-                                    @foreach ($properties as $propertyId => $address)
-                                        <option value="{{ $propertyId }}"
-                                            {{ isset($userProperties) && in_array($propertyId, $userProperties) ? 'selected' : '' }}>
-                                            {{ $address }}</option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            @error('properties')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>                        
+
+
 
                         <div class="mb-4">
                             <label class="relative flex">
-                                <select
-                                    class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                    name="role">
+                                <select class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                        name="role">
                                     <option value="" disabled selected>Select role</option>
                                     @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}"
-                                            {{ in_array($role->id, $userRole) ? 'selected' : '' }}>{{ $role->name }}
+                                        <option value="{{ $role->id }}" {{ in_array($role->id, $userRole) ? 'selected' : '' }}>
+                                            {{ $role->name }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -201,6 +146,28 @@
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
+                        
+                        <div class="mb-4" id="multiplePropertySelect">
+                            <label class="relative flex">
+                                <select id="multiple_properties"
+                                        class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
+                                        name="properties[]" multiple="multiple">
+                                    <option value="" disabled>Select property</option>
+                                    @foreach ($properties as $propertyId => $address)
+                                        <option value="{{ $propertyId }}"
+                                            {{ in_array($propertyId, $userProperties) ? 'selected' : '' }}>
+                                            {{ $address }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </label>
+                            @error('properties')
+                                <span class="text-tiny+ text-error">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+
+
                         <div>
                             <button type="button"
                                 class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
@@ -227,24 +194,26 @@
                     allowClear: true,
                     width: '100%', // Ajusta el ancho al 100%
                 });
-
+        
                 $('#multiple_properties').select2({
                     tags: true,
                     placeholder: "Select properties",
                     allowClear: true,
                     width: '100%', // Ajusta el ancho al 100%
                 });
-
+        
                 $('#access_level').on('change', function() {
                     if ($(this).val() === 'property_manager') {
-                        $('#singlePropertySelect').hide();
-                        $('#multiplePropertySelect').show();
+                        $('#single_property').prop('disabled', true).select2('destroy');
+                        $('#multiple_properties').prop('disabled', false).select2();
+        
                     } else {
-                        $('#multiplePropertySelect').hide();
-                        $('#singlePropertySelect').show();
+                        $('#multiple_properties').prop('disabled', true).select2('destroy');
+                        $('#single_property').prop('disabled', false).select2();
                     }
                 });
             });
         </script>
+        
     </main>
 </x-app-layout>

@@ -113,22 +113,31 @@
 
                                     <td class="px-4 py-2 text-center">
                                         @php
-                                        $currentDate = date('Y-m-d');
-                                        $endDate = $vehicle->end_date; // End date from the table (format: 'Y-m-d')
-                                        $diff = strtotime($endDate) - strtotime($currentDate);
-                                        $daysRemaining = round($diff / (60 * 60 * 24));
+                                            $currentDate = date('Y-m-d');
+                                            $endDate = $vehicle->end_date; // End date from the table (format: 'Y-m-d')
+                                            $diff = strtotime($endDate) - strtotime($currentDate);
+                                            $daysRemaining = round($diff / (60 * 60 * 24));
                                         @endphp
-                                    
-                                        @if ($vehicle->permit_status === 'suspended')
-                                            <span class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Suspended</span>
+
+                                        @if ($vehicle->permit_status === 'pending')
+                                            <span
+                                                class="btn font-medium text-warning hover:bg-warning/20 focus:bg-warning/20 active:bg-warning/25">Pending
+                                                to approve</span>
+                                        @elseif ($vehicle->permit_status === 'suspended')
+                                            <span
+                                                class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Suspended</span>
                                         @else
                                             @if ($daysRemaining <= 0)
-                                                <span class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Expired</span>
+                                                <span
+                                                    class="btn font-medium text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">Expired</span>
                                             @else
-                                                <span class="btn font-medium text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">Valid for- {{ $daysRemaining }} days</span>
+                                                <span
+                                                    class="btn font-medium text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">Valid
+                                                    for- {{ $daysRemaining }} days</span>
                                             @endif
                                         @endif
                                     </td>
+
                                     <td class="px-4 py-2">
                                         {{ $vehicle->email }}
                                     </td>
@@ -145,9 +154,12 @@
                                         {{ $vehicle->vin }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        <div class="flex justify-center space-x-2">                                           
-                                           
+                                        <div class="flex justify-center space-x-2">
 
+                                            <a href="{{ route('edit.vehicle', ['id' => $vehicle->id, 'property_code' => $vehicle->property_code]) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                 <i class="fa fa-edit"></i> <!-- Using the "edit" icon from FontAwesome -->
+                                             </a> 
                                             <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-print"></i>
@@ -165,16 +177,18 @@
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
                                             @if ($vehicle->permit_status === 'suspended')
-                                            <a href="#" class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
-                                                onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
-                                                <i class="fa fa-ban"></i>
-                                            </a>
-                                        @else
-                                            <a href="#" class="btn h-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25"
-                                                onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
-                                                <i class="fa fa-ban"></i>
-                                            </a>
-                                        @endif
+                                                <a href="#"
+                                                    class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
+                                                    onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
+                                                    <i class="fa fa-ban"></i>
+                                                </a>
+                                            @else
+                                                <a href="#"
+                                                    class="btn h-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25"
+                                                    onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
+                                                    <i class="fa fa-ban"></i>
+                                                </a>
+                                            @endif
 
 
                                             <script>
@@ -249,6 +263,6 @@
                 });
             }
         </script>
-        
+
     </main>
 </x-app-layout>

@@ -2,7 +2,9 @@
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
-                <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Residents
+                <a
+                    class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Bienvenido:
+                    {{ $residentName }}
                 </a>
 
             </h4>
@@ -53,11 +55,11 @@
                                     fill="white" />
                             </svg>
                         </a>
-                        <a href="#"
-                            class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
-                            style="width: auto; height: 40px;">
+                        <a href="{{ route('addvehicle', ['user_id' => $residentid]) }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
                             <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
-                        </a>
+                        </a>                    
+                        
+                        
                         <a href="#"
                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
                             style="width: auto; height: 40px;">
@@ -66,8 +68,6 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- Basic Table -->
             <div class="card px-4 pb-4 sm:px-5">
                 <div class="container mx-auto pt-5 pb-5">
@@ -77,72 +77,108 @@
                                 <th class="px-4 py-2">Resident Name</th>
                                 <th class="px-4 py-2">Aparment / Unit</th>
                                 <th class="px-4 py-2">E-mail</th>
+                                <th class="px-4 py-2">Reserved</th>
+                                <th class="px-4 py-2">Residents Code</th>
                                 <th class="px-4 py-2">License Plate</th>
                                 <th class="px-4 py-2">Make</th>
                                 <th class="px-4 py-2">Model</th>
                                 <th class="px-4 py-2">Permit Type</th>
-                                <th class="px-4 py-2">Reserved</th>
                                 <th class="px-4 py-2">Permit Status</th>
                                 <th class="px-4 py-2">Actions</th>
-                                <th class="px-4 py-2">Residents Code</th>
-
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($resident->vehicles as $vehicle)
+                            @foreach ($residentVehicles as $vehicle)
                                 <tr>
-                                    <!-- <td class="px-4 py-2">
-                                        {{$resident->created_at}}
-                                    </td> -->
+                                    <td>{{ $residentName }}</td>
+                                    <td>{{ $residentDetails->apart_unit }}</td>
+                                    <td>{{ $residentEmail }}</td>
+                                    <td>{{ $reservedSpace }}</td>
                                     <td class="px-4 py-2">
-                                        {{ $resident->name }}
+                                        <button id="boton-modelo-{{ $residentid }}"
+                                            class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
+                                            style="background-color: #0EA5E9;"
+                                            onclick="toggleModal({{ $residentid }})">
+    
+                                            {{ $residentid }}
+    
+                                        </button>
+    
+                                        <!-- Ventana modal -->
+    
+                                        <div id="modal-modelo-{{ $residentid }}"
+                                            class="fixed z-10 inset-0 overflow-y-auto hidden">
+    
+                                            <div class="flex items-center justify-center min-h-screen px-4">
+    
+                                                <div class="fixed inset-0 bg-black opacity-50"></div>
+    
+                                                <!-- Capa de fondo semitransparente -->
+    
+                                                <div class="bg-white rounded-lg max-w-lg mx-auto p-6 relative">
+    
+                                                    <h2
+                                                        class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
+    
+                                                        {{ $residentName }}
+    
+                                                    </h2>
+    
+                                                    <h4
+                                                        class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
+    
+                                                        QR code: {{ $residentDetails->apart_unit }}
+    
+                                                    </h4>
+                                                    <div class="visible-print flex justify-center items-center">
+                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/register?user_id=' . $residentid) !!}
+                                                    </div>
+                                                    <p class="my-2">Scan me to return to the original page.</p>
+    
+                                                    <button id="cerrar-modal-modelo-{{ $residentid}}"
+                                                        class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center"
+                                                        onclick="toggleModal({{ $residentid }})">
+    
+                                                        Cerrar
+    
+                                                    </button>
+    
+                                                </div>
+    
+                                            </div>
+    
+                                        </div>
                                     </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->apart_unit }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->email }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->license_plate }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->make }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->model }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->permit_type }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        @foreach($resident->departments as $department)
-                                            <p>
-                                                Department: {{ $department->apart_unit }}
-                                                Reserved: {{ $department->reserved_space }}
-                                            </p>
-                                        @endforeach
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->permit_status }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        <a href="{{ route('residents.edit', ['resident' => $resident->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+    
+                                    <script>
+                                        function toggleModal(residentid) {
+                                            const modal = document.getElementById(`modal-modelo-${residentid}`);
+                                            modal.classList.toggle('hidden');
+                                        }
+                                        
+                                    </script>
+                                    <td>{{ $vehicle->license_plate }}</td>
+                                    <td>{{ $vehicle->make }}</td>
+                                    <td>{{ $vehicle->model }}</td>
+                                    <td>{{ $vehicle->permit_type }}</td>
+                                    <td>{{ $vehicle->permit_status }}</td>
+                                    <td>
+                                        <a href="#" class="text-blue-500 hover:text-blue-700 mr-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="#" class="text-green-500 hover:text-green-700 mr-2" onclick="window.print()">
+                                        <a href="#" class="text-green-500 hover:text-green-700 mr-2"
+                                            onclick="window.print()">
                                             <i class="fas fa-print"></i>
                                         </a>
-                                        <a class="text-red-500 hover:text-red-700 mr-2" onclick="confirmDelete('{{ $resident->id }}')">
+                                        <a class="text-red-500 hover:text-red-700 mr-2">
                                             <i class="fas fa-trash"></i>
                                         </a>
-                                        <a href="mailto:correo@example.com" class="text-blue-500 hover:text-blue-700">
+                                        <a href="#" class="text-blue-500 hover:text-blue-700">
                                             <i class="fas fa-envelope"></i>
                                         </a>
                                     </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->property_code }}
-                                    </td>
+                                </td>
+                                
                                 </tr>
                             @endforeach
                         </tbody>

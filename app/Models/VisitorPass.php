@@ -24,5 +24,14 @@ class VisitorPass extends Model
         'valid_from',
         'model',
     ];
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'user_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
 

@@ -15,17 +15,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class PropertyController extends Controller
 {
-
-    /**
-
-     * Display a listing of the resource.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
-
+   
     public function index()
     {
         // Obtén todas las propiedades y calcula el total de autos por cada una usando LEFT JOIN y subconsulta

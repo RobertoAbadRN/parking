@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Mail\RemolcarAutoMail;
 use App\Models\Department;
 use App\Models\Property;
-use App\Models\Resident;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -22,32 +22,21 @@ class VehiclesController extends Controller
 
     public function index()
     {
-
-        $vehicles = Property::select('properties.property_code', 'properties.address as property_address')
-
-            ->selectRaw('COUNT(departments.property_code) as vehicle_count')
-
-            ->selectRaw('SUM(CASE WHEN departments.permit_status = "pending" THEN 1 ELSE 0 END) as nopermit')
-
-            ->selectRaw('SUM(CASE WHEN departments.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
-
-            ->selectRaw('SUM(CASE WHEN departments.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended')
-
-            ->leftJoin('departments', 'properties.property_code', '=', 'departments.property_code')
-
-            ->groupBy('properties.property_code')
-
+        $propertiesWithTotalVehicles = Property::leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+            ->select(
+                'properties.name as propertyname',
+                'properties.property_code',
+                DB::raw('SUM(CASE WHEN vehicles.permit_status != "no permit" THEN 1 ELSE 0 END) as total_vehicles'),
+                DB::raw('SUM(CASE WHEN vehicles.permit_status = "no permit" THEN 1 ELSE 0 END) as no_permit'),
+                DB::raw('SUM(CASE WHEN vehicles.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended'),
+                DB::raw('SUM(CASE WHEN vehicles.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
+            )
+            ->groupBy('properties.id', 'properties.name', 'properties.property_code')
             ->get();
-
-        $nopermit = $vehicles->sum('nopermit');
-
-        $expired = $vehicles->sum('expired');
-
-        $suspended = $vehicles->sum('suspended');
-
-        return view('vehicles.index', compact('vehicles', 'nopermit', 'expired', 'suspended'));
-
+    
+        return view('vehicles.index', compact('propertiesWithTotalVehicles'));
     }
+    
 
     public function create($property_code)
     {
@@ -62,91 +51,57 @@ class VehiclesController extends Controller
 
     public function registerVehicle(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'license_plate' => 'required',
+            'vin' => 'required',
+            'make' => 'required',
+            'model' => 'required',
+            'year' => 'required',
+            'color' => 'required',
+            'vehicle_type' => 'required',
+            'property_code' => 'required',
+        ]);
 
-        // Obtener los datos del formulario
+        if ($validator->fails()) {
+            // Manejar errores de validación
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
-        // Obtener el valor de property_code de la URL
-
-        $property_code = $request->input('property_code');
-
-        $resident_name = $request->input('resident_name');
-
-        $email = $request->input('email');
-
-        $phone = $request->input('phone');
-
-        $apart_unit = $request->input('apart_unit');
-
-        $preferred_language = $request->input('preferred_language');
-
+        // Los datos pasaron la validación, ahora puedes acceder a los campos individualmente
+        $user_id = $request->input('user_id');
         $license_plate = $request->input('license_plate');
-
         $vin = $request->input('vin');
-
         $make = $request->input('make');
-
         $model = $request->input('model');
-
         $year = $request->input('year');
-
         $color = $request->input('color');
-
         $vehicle_type = $request->input('vehicle_type');
+        $property_code = $request->input('property_code');
+        $permit_status = 'pending'; // Establecer el estado del permiso como "pending"
 
-        // Guardar los datos en la base de datos
-
-        // Registrar el vehículo en la tabla vehicles
-
-        $vehicle = new Vehicle();
-
-        $vehicle->property_code = $property_code;
-
-        $vehicle->license_plate = $license_plate;
-
-        $vehicle->vin = $vin;
-
-        $vehicle->make = $make;
-
-        $vehicle->model = $model;
-
-        $vehicle->year = $year;
-
-        $vehicle->color = $color;
-
-        $vehicle->vehicle_type = $vehicle_type;
-
-        // Asignar cualquier otra propiedad necesaria en tu modelo "Vehicle"
-
+        // Guardar en la tabla vehicles
+        $vehicle = new Vehicle([
+            'user_id' => $user_id,
+            'property_code' => $property_code,
+            'permit_status' => $permit_status,
+            'license_plate' => $license_plate,
+            'vin' => $vin,
+            'make' => $make,
+            'model' => $model,
+            'year' => $year,
+            'color' => $color,
+            'vehicle_type' => $vehicle_type,
+        ]);
         $vehicle->save();
 
-        // Registrar el residente en la tabla residents
-
-        $resident = new Resident();
-
-        $resident->resident_name = $resident_name;
-
-        $resident->apart_unit = $apart_unit;
-
-        $resident->email = $email;
-
-        $resident->phone = $phone;
-
-        $resident->property_code = $property_code;
-
-        $resident->preferred_language = $preferred_language;
-
-        // Asignar cualquier otra propiedad necesaria en tu modelo "Resident"
-
-        $resident->save();
-
         // Realizar cualquier otra acción necesaria, como redireccionar a una página de confirmación
-
         return redirect()->route('login')->with('success', 'Resident and vehicle registered successfully.');
-
     }
 
     public function store(Request $request)
     {
+       
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
@@ -163,7 +118,7 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-
+        
         // Verificar si la validación falla
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -174,24 +129,25 @@ class VehiclesController extends Controller
             'license_plate', 'user_id', 'apart_unit', 'vin', 'make', 'model', 'year', 'color',
             'vehicle_type', 'property_code', 'permit_type', 'start_date', 'end_date', 'permit_status',
         ]);
+        dd($data);
 
         // Crear y guardar el registro en la tabla vehicles
         $vehicle = Vehicle::create($data);
 
-         // Buscar la propiedad correspondiente en la base de datos
-         $property = Property::where('property_code', $request->input('property_code'))->first();
-    
-         // Extraer el nombre de la propiedad
-         $property_name = $property->name;
-     
-         // Extraer el campo 'logo' de la propiedad
-         $logo = $property->logo;
-     
-         // Verificar qué botón se presionó
-         if ($request->has('savePrintButton')) {
-             // Si se presionó el botón "Print", enviar los datos del vehículo, el nombre de la propiedad y el campo 'logo' a la vista
-             return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo'));
-         }
+        // Buscar la propiedad correspondiente en la base de datos
+        $property = Property::where('property_code', $request->input('property_code'))->first();
+
+        // Extraer el nombre de la propiedad
+        $property_name = $property->name;
+
+        // Extraer el campo 'logo' de la propiedad
+        $logo = $property->logo;
+
+        // Verificar qué botón se presionó
+        if ($request->has('savePrintButton')) {
+            // Si se presionó el botón "Print", enviar los datos del vehículo, el nombre de la propiedad y el campo 'logo' a la vista
+            return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo'));
+        }
 
         $property_code = $request->input('property_code');
 
@@ -231,14 +187,14 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-    
+
         // Find the vehicle by its ID
         $vehicle = Vehicle::findOrFail($id);
-    
+
         // Convert the start_date and end_date to Carbon objects
         $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
         $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
-    
+
         // Update the vehicle data with the new values from the form
         $vehicle->update([
             'license_plate' => $request->input('license_plate'),
@@ -254,41 +210,41 @@ class VehiclesController extends Controller
             'end_date' => $end_date, // Guardar como objeto Carbon
             'property_code' => $request->input('property_code'),
         ]);
-    
+
         // Buscar la propiedad correspondiente en la base de datos
         $property = Property::where('property_code', $request->input('property_code'))->first();
-    
+
         // Extraer el nombre de la propiedad
         $property_name = $property->name;
-    
+
         // Extraer el campo 'logo' de la propiedad
         $logo = $property->logo;
-    
+
         // Verificar qué botón se presionó
         if ($request->has('savePrintButton')) {
             // Si se presionó el botón "Print", enviar los datos del vehículo, el nombre de la propiedad y el campo 'logo' a la vista
             return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo'));
         }
         $property_code = $request->input('property_code');
-    
+
         return redirect()->route('properties.vehicles', ['property_code' => $property_code])->with('success_message', 'Vehicle updated successfully');
     }
-    
+
     public function destroy(Vehicle $vehicle, $property_code)
     {
 
         // Realiza las acciones necesarias para eliminar el vehículo, por ejemplo:
 
         $vehicle->delete();
-         // Obtener el departamento asociado al vehículo
-    $department = $vehicle->department;
+        // Obtener el departamento asociado al vehículo
+        $department = $vehicle->department;
 
-    // Eliminar el vehículo y el departamento
-    $vehicle->delete();
+        // Eliminar el vehículo y el departamento
+        $vehicle->delete();
 
-    if ($department) {
-        $department->delete();
-    }
+        if ($department) {
+            $department->delete();
+        }
 
         // Obtener el departamento asociado al vehículo
 
@@ -419,7 +375,7 @@ class VehiclesController extends Controller
             ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate')
 
             ->find($id);
-            //dd($vehicle);
+        //dd($vehicle);
 
         $start_date = Carbon::parse($vehicle->start_date);
 
@@ -550,22 +506,22 @@ class VehiclesController extends Controller
         return redirect()->back()->with('error', 'Vehicle not found.');
     }
     public function updateStatus(Request $request, $vehicleId)
-{
-    try {
-        // Encontrar el vehículo por su ID
-        $vehicle = Vehicle::findOrFail($vehicleId);
+    {
+        try {
+            // Encontrar el vehículo por su ID
+            $vehicle = Vehicle::findOrFail($vehicleId);
 
-        // Actualizar el campo 'status' a 'approved'
-        $vehicle->status = 'approved';
-        $vehicle->save();
+            // Actualizar el campo 'status' a 'approved'
+            $vehicle->status = 'approved';
+            $vehicle->save();
 
-        // Enviar un mensaje a la vista usando with()
-        return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
+            // Enviar un mensaje a la vista usando with()
+            return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
 
-    } catch (\Exception $e) {
-        // Si ocurre un error, redirigir con un mensaje de error
-        return Redirect::back()->with('error_message', 'Error updating vehicle status');
+        } catch (\Exception $e) {
+            // Si ocurre un error, redirigir con un mensaje de error
+            return Redirect::back()->with('error_message', 'Error updating vehicle status');
+        }
     }
-}
 
 }

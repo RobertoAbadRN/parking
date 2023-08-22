@@ -82,34 +82,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($vehicles as $vehicle)
+                            @foreach ($propertiesWithTotalVehicles as $property)
                                 <tr>
                                     <td class="px-4 py-2">
-                                        {{ $vehicle->property_address }}
+                                        {{ $property->propertyname }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $vehicle->vehicle_count }}
+                                        {{ $property->total_vehicles }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $nopermit }}
+                                        {{ $property->no_permit }}
+                                        
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $expired }}
+                                        {{ $property->expired }}                                      
                                     </td>
                                     <td class="px-4 py-2">
-                                        {{ $suspended }}
+                                        {{ $property->suspended }}     
                                     </td>
                                     <td class="px-4 py-2">
-                                        <a href="{{ route('properties.vehicles', $vehicle->property_code) }}"
+                                        <a href="{{ route('properties.vehicles', $property->property_code) }}"
                                             class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-                                                <i class="fas fa-car"></i>
-                                                &nbsp; View Vehicles
-                                            </a>
+                                             <i class="fas fa-car"></i>
+                                             &nbsp; View Vehicles
+                                         </a>
+                                         
                                     </td>
                                     
                                     
                                 </tr>
-                            @endforeach
+                                @endforeach
                         </tbody>
                     </table>
                 </div>

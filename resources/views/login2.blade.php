@@ -1,7 +1,7 @@
 <x-base-layout title="Login">
-    <main class="grid w-full grow grid-cols-1 lg:grid-cols-2 place-items-center">
-        <div class="w-full max-w-[30rem] p-4 sm:px-5">
-            <div class="card mt-5 rounded-lg p-5 lg:p-7">
+    <main class="grid w-full grow grid-cols-1 place-items-center">
+        <div class="w-full max-w-[26rem] p-4 sm:px-5">
+             <div class="card mt-5 rounded-lg p-5 lg:p-7">
                 <div class="mt-4 flex justify-center">
                     <a href="#" class="flex items-center space-x-2">
                         <img class="h-auto w-56" src="{{ asset('images/logo_icon.png') }}" alt="logo" />
@@ -70,58 +70,6 @@
                 <a href="#">Term of service</a>
             </div>
         </div>
-        <div class="w-full max-w-[26rem] p-4 sm:px-5">
-            <div class="max-w-md mx-auto">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-semibold">Property Identification Code</h2>
-                </div>
-                <form action="{{ route('validate-property-code') }}" method="POST">
-                    @method('POST') @csrf
-                    <!-- Formulario -->
-                    @if (session('error'))
-                        <div id="error-message"
-                            class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-                            role="alert">
-                            {{ session('error') }}
-                        </div>
-                    @endif
-
-                    @if (session('success'))
-                        <div id="success-message"
-                            class="alert flex rounded-lg border border-info px-4 py-4 text-info sm:px-5" role="alert">
-                            {{ session('success') }}
-                        </div>
-                    @endif
-
-                    @push('scripts')
-                        <script>
-                            setTimeout(function() {
-                                document.getElementById("error-message")?.remove();
-                                document.getElementById("success-message")?.remove();
-                            }, 8000);
-                        </script>
-                    @endpush
-
-                    <div class="mb-4">
-                        <label class="block text-white text-sm font-bold mb-2" for="property_code">Property Code,
-                            Address:</label>
-                        <input class="form-input border border-gray-300 rounded-md px-3 py-2 w-full" type="text"
-                            id="property_code" name="property_code">
-                    </div>
-                    @error('property_code')
-                        <span class="text-tiny+ text-error">{{ $property_code }}</span>
-                    @enderror
-
-                    <div class="text-center">
-                        <button
-                            class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600"
-                            type="submit">Validate Property Code</button>
-                    </div>
-                </form>
-            </div>
-
-        </div>
     </main>
-
-
 </x-base-layout>
+
