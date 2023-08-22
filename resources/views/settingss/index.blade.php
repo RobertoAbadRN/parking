@@ -82,7 +82,7 @@
 
                                 <th class="px-4 py-2">Property Name</th>
 
-                                <th class="px-4 py-2">Permit Definition</th>
+                                <th class="px-4 py-2">Residents</th>
 
                                 <th class="px-4 py-2"> Permit Types</th>
 
@@ -90,7 +90,7 @@
 
                                 <th class="px-4 py-2">Pre-Registration</th>
 
-                                <th class="px-4 py-2">Docusign</th>
+                                <th class="px-4 py-2">Emails</th>
 
                                 <th class="px-4 py-2">View</th>
 
@@ -165,19 +165,8 @@
                                         </a>
 
                                     </td>
-
                                     <td class="px-4 py-2">
-
-                                        <a href="{{ route('connect.docusign') }}"
-
-                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-
-                                            <i class="fas fa-edit mr-2"></i>
-
-                                            Sign document
-
-                                        </a>
-
+                                        emails
                                     </td>
 
                                     <td class="px-4 py-2">

@@ -33,10 +33,9 @@ class VehiclesController extends Controller
             )
             ->groupBy('properties.id', 'properties.name', 'properties.property_code')
             ->get();
-    
+
         return view('vehicles.index', compact('propertiesWithTotalVehicles'));
     }
-    
 
     public function create($property_code)
     {
@@ -72,6 +71,18 @@ class VehiclesController extends Controller
         $user_id = $request->input('user_id');
         $license_plate = $request->input('license_plate');
         $vin = $request->input('vin');
+
+        // Verificar si ya existe un vehículo con la misma placa o VIN
+        $existingVehicle = Vehicle::where('license_plate', $license_plate)
+            ->orWhere('vin', $vin)
+            ->first();
+
+        if ($existingVehicle) {
+            // Si el vehículo ya existe, redirigir con mensaje de error
+            return redirect()->back()->with('error', 'Vehicle with the same license plate or VIN already exists.');
+        }
+
+        // Continuar con la creación y guardado del vehículo
         $make = $request->input('make');
         $model = $request->input('model');
         $year = $request->input('year');
@@ -93,15 +104,17 @@ class VehiclesController extends Controller
             'color' => $color,
             'vehicle_type' => $vehicle_type,
         ]);
+
         $vehicle->save();
 
-        // Realizar cualquier otra acción necesaria, como redireccionar a una página de confirmación
-        return redirect()->route('login')->with('success', 'Resident and vehicle registered successfully.');
+        // Realizar cualquier otra acción necesaria, como redireccionar a la vista de registro
+        return view('registration')->with('success', 'Resident and vehicle registered successfully.');
+
     }
 
     public function store(Request $request)
     {
-       
+
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
@@ -118,7 +131,7 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-        
+
         // Verificar si la validación falla
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
