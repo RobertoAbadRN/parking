@@ -174,9 +174,25 @@ Route::middleware('auth')->group(function () {
     Route::post('/recidents/import/upload', [RecidentsController::class, 'import_upload'])->name('residents.import.upload');
     Route::post('/update-reserved-space/{departmentId}', [RecidentsController::class, 'updateReservedSpace'])->name('update_reserved_space');
     Route::get('/download-terms-pdf/{resident}', [RecidentsController::class, 'downloadTermsPDF'])->name('download.terms.pdf');
-
     Route::post('/update_reserved_space_visitors/{departmentId}', [RecidentsController::class, 'updateReservedSpaceVisitors'])->name('update_reserved_space_visitors');
+
+
+    Route::get('/vehiclesadd/{user_id}', [RecidentsController::class, 'addResidentvehicles'])->name('addResidentvehicles');
+
+    Route::post('/residents/storeResidentVehicle', [RecidentsController::class, 'storeResidentVehicle'])->name('storeResidentVehicle');
+
+    Route::post('/visitors/store', [RecidentsController::class, 'storeVisitor'])->name('store.visitor');
+    Route::get('/visitores/{user_id}', [RecidentsController::class, 'showAddVisitorForm'])->name('add.visitor');
+
+
+
+
+
+
+
    
+
+
 
 
 
@@ -204,6 +220,8 @@ Route::middleware('auth')->group(function () {
 
 
 
+
+
     /**
      * ==============================
      *       @Router - visitors_pass/
@@ -215,6 +233,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/visitors/add', [VisitorsController::class, 'storeTemporary'])->name('visitors.add');
     Route::get('/excelvisitors', [VisitorsController::class, 'excel_visitorspases'])->name('excel_visitorspases');
     Route::get('/excelvisitorsid/{property_code}', [VisitorsController::class, 'excel_visitorforid'])->name('excel_visitorforid');
+    Route::delete('/visitor/{id}', [VisitorsController::class, 'delete'])->name('delete-visitor');
+
 
      /**
 

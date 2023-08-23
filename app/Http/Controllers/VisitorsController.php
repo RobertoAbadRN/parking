@@ -1,43 +1,23 @@
 <?php
 
-
-
 namespace App\Http\Controllers;
 
-
-
 use App\Models\Property;
-
 use App\Models\VisitorPass;
-
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
-
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use App\Models\User;
-
-
 
 class VisitorsController extends Controller
-
 {
 
-
-
     public function index(Request $request)
-
     {
 
         $property_code = $request->query('property_code');
 
-
-
         $property = Property::where('property_code', $property_code)->first();
-
-
 
         if (!$property) {
 
@@ -45,124 +25,136 @@ class VisitorsController extends Controller
 
         }
 
-
-
         $address = $property->address;
-
-
 
         return view('visitors/addvisitors', compact('property_code', 'address'));
 
     }
 
-
-
-   
-
-    
-
     public function show()
+    {
 
-{
+        $properties = Property::select('properties.name as nombre_propiedad', 'properties.property_code',
 
-    $properties = Property::select('properties.name as nombre_propiedad', 'properties.property_code',
+            DB::raw('COUNT(visitorpasses.id) as pass_issued'),
 
-        DB::raw('COUNT(visitorpasses.id) as pass_issued'),
+            DB::raw('SUM(CASE WHEN visitorpasses.status = "Active" THEN 1 ELSE 0 END) as active_passes'),
 
-        DB::raw('SUM(CASE WHEN visitorpasses.status = "Active" THEN 1 ELSE 0 END) as active_passes'),
+            DB::raw('SUM(CASE WHEN visitorpasses.status = "Expired" THEN 1 ELSE 0 END) as expired_passes'),
 
-        DB::raw('SUM(CASE WHEN visitorpasses.status = "Expired" THEN 1 ELSE 0 END) as expired_passes'),
+            DB::raw('SUM(CASE WHEN visitorpasses.status = "Invalid" THEN 1 ELSE 0 END) as invalid_passes'))
 
-        DB::raw('SUM(CASE WHEN visitorpasses.status = "Invalid" THEN 1 ELSE 0 END) as invalid_passes'))
+            ->leftJoin('visitorpasses', 'properties.property_code', '=', 'visitorpasses.property_code')
 
-        ->leftJoin('visitorpasses', 'properties.property_code', '=', 'visitorpasses.property_code')
+            ->groupBy('properties.name', 'properties.property_code')
 
-        ->groupBy('properties.name', 'properties.property_code')
+            ->get();
 
-        ->get();
+        // Puedes pasar la colección con los resultados a la vista
 
+        return view('visitors/index', ['properties' => $properties]);
 
+    }
 
-    // Puedes pasar la colección con los resultados a la vista
+    public function registerVisitorPass(Request $request)
+    {
+        //dd($request);
+        // Validar los datos ingresados en el formulario
+        $validatedData = $request->validate([
+            'property_code' => 'required',
+            'visitor_name' => 'required|string',
+            'visitor_phone' => 'required|string',
+            'license_plate' => 'required|string',
+            'year' => 'required|integer|max:' . date('Y'),
+            'make' => 'required|string',
+            'color' => 'required|string',
+            'model' => 'required|string',
+            'vehicle_type' => 'required|string',
+            'valid_from' => 'required|date',
+            'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
+        ]);
 
-    return view('visitors/index', ['properties' => $properties]);
+        // Generate a unique 5-digit vp_code
+        $vpCode = $this->generateUniqueVpCode();
+        // Los datos han sido validados, puedes continuar guardándolos en la base de datos
+        $visitorPass = new VisitorPass();
+        $visitorPass->vp_code = $vpCode;
+        $visitorPass->property_code = $validatedData['property_code'];
+        $visitorPass->user_id = $validatedData['user_id'];
+        $visitorPass->visitor_name = $validatedData['visitor_name'];
+        $visitorPass->visitor_phone = $validatedData['visitor_phone'];
+        $visitorPass->license_plate = $validatedData['license_plate'];
+        $visitorPass->year = $validatedData['year'];
+        $visitorPass->make = $validatedData['make'];
+        $visitorPass->color = $validatedData['color'];
+        $visitorPass->model = $validatedData['model'];
+        $visitorPass->vehicle_type = $validatedData['vehicle_type'];
+        $visitorPass->valid_from = $validatedData['valid_from'];
 
-}
+        // Check if the vehicle already has an active pass (with a valid date range)
+        $existingActivePass = VisitorPass::where('license_plate', $visitorPass->license_plate)
+            ->where('valid_from', '>=', now()) // Check if the pass is currently active
+            ->first();
 
-public function registerVisitorPass(Request $request)
-{
-    // Validar los datos ingresados en el formulario
-    $validatedData = $request->validate([
-        'property_code' => 'required',
-        'visitor_name' => 'required|string',
-        'visitor_phone' => 'required|string',
-        'license_plate' => 'required|string',
-        'year' => 'required|integer',
-        'make' => 'required|string',
-        'color' => 'required|string',
-        'model' => 'required|string',
-        'vehicle_type' => 'required|string',
-        'valid_from' => 'required|date',
-        'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
-    ]);
+        if ($existingActivePass) {
+// The vehicle already has an active pass
+            return redirect()->back()->with('error', 'Vehicle already has an active pass.');
+        }
 
-    // Los datos han sido validados, puedes continuar guardándolos en la base de datos
+        $visitorPass->save();
 
-    $visitorPass = new VisitorPass();
-    $visitorPass->property_code = $validatedData['property_code'];
-    $visitorPass->user_id = $validatedData['user_id'];
-    $visitorPass->visitor_name = $validatedData['visitor_name'];
-    $visitorPass->visitor_phone = $validatedData['visitor_phone'];
-    $visitorPass->license_plate = $validatedData['license_plate'];
-    $visitorPass->year = $validatedData['year'];
-    $visitorPass->make = $validatedData['make'];
-    $visitorPass->color = $validatedData['color'];
-    $visitorPass->model = $validatedData['model'];
-    $visitorPass->vehicle_type = $validatedData['vehicle_type'];
-    $visitorPass->valid_from = $validatedData['valid_from'];
-    $visitorPass->status = 'pending';
-    $visitorPass->save();
-    return redirect()->route('errorregister')->with('success', 'Visitor pass registered successfully.');
+        // Fetch the latest registered visitor pass for display
+        $latestVisitorPass = VisitorPass::latest()->first();
 
-}
+        return view('errorregister')->with([
+            'successMessage' => 'Visitor pass registered successfully.',
+            'latestVisitorPass' => $latestVisitorPass,
+        ]);
 
+    }
 
-public function listVisitors($property_code)
-{
-    $property = Property::where('property_code', $property_code)->first();
+    private function generateUniqueVpCode()
+    {
+        $vpCode = mt_rand(10000, 99999); // Generate a random 5-digit number
+        while (VisitorPass::where('vp_code', $vpCode)->exists()) {
+            // If the code already exists, generate a new one
+            $vpCode = mt_rand(10000, 99999);
+        }
+        return $vpCode;
+    }
 
-    $visitors = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
-        ->join('users', 'visitorpasses.user_id', '=', 'users.id')
-        ->join('departments', 'users.id', '=', 'departments.user_id') // Unir la tabla departments
-        ->where('visitorpasses.property_code', $property_code)
-        ->select(
-            'visitorpasses.valid_from', 
-            'visitorpasses.license_plate', 
-            'visitorpasses.make', 
-            'visitorpasses.model', 
-            'visitorpasses.color', 
-            'visitorpasses.year', 
-            'visitorpasses.status', 
-            'visitorpasses.visitor_name', 
-            'users.phone as resident_phone',
-            'visitorpasses.vehicle_type', 
-            'users.name as resident_name',
-            'departments.apart_unit' // Agregar la columna apart_unit
-        )
-        ->get();
+    public function listVisitors($property_code)
+    {
+        $property = Property::where('property_code', $property_code)->first();
 
-    return view('visitors.listvisitors', compact('property', 'visitors'));
-}
+        $visitors = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
+            ->join('users', 'visitorpasses.user_id', '=', 'users.id')
+            ->join('departments', 'users.id', '=', 'departments.user_id') // Unir la tabla departments
+            ->where('visitorpasses.property_code', $property_code)
+            ->select(
+                'visitorpasses.id',
+                'visitorpasses.valid_from',
+                'visitorpasses.license_plate',
+                'visitorpasses.make',
+                'visitorpasses.model',
+                'visitorpasses.color',
+                'visitorpasses.year',
+                'visitorpasses.status',
+                'visitorpasses.visitor_name',
+                'users.phone as resident_phone',
+                'visitorpasses.vehicle_type',
+                'users.name as resident_name',
+                'departments.apart_unit' // Agregar la columna apart_unit
+            )
+            ->get();
 
-
+        return view('visitors.listvisitors', compact('property', 'visitors'));
+    }
 
     public function addTemporary(Request $request)
-
     {
 
         $property_code = $request->route('property_code');
-
-
 
         $visitorPasses = DB::table('visitorpasses')
 
@@ -174,23 +166,16 @@ public function listVisitors($property_code)
 
             ->get();
 
-
-
         //dd($visitorPasses); // Imprimir los datos en la consola para verificar
-
-
 
         return view('visitors/addtemporary', compact('property_code', 'visitorPasses'));
 
     }
 
     public function storeTemporary(Request $request)
-
     {
 
         $property_code = $request->input('property_code');
-
-
 
         // Validar los datos del formulario si es necesario
 
@@ -224,8 +209,6 @@ public function listVisitors($property_code)
 
         ]);
 
-
-
         // Crear un nuevo objeto VisitorPass y guardar los datos
 
         $visitorPass = new VisitorPass();
@@ -258,18 +241,13 @@ public function listVisitors($property_code)
 
         $visitorPass->save();
 
-
-
         // Redireccionar o mostrar un mensaje de éxito si es necesario
 
         return redirect()->route('list.visitors', ['property_code' => $property_code])->with('successMessage', 'Vehicle saved successfully.');
 
     }
 
-
-
     public function excel_visitorspases()
-
     {
 
         // Create new Spreadsheet object
@@ -280,8 +258,6 @@ public function listVisitors($property_code)
 
         $sheet = $spreadsheet->getActiveSheet();
 
-
-
         $datos = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
 
             ->select('properties.property_code', 'properties.name')
@@ -290,21 +266,15 @@ public function listVisitors($property_code)
 
             ->get();
 
-
-
         $expiredCount = VisitorPass::where('status', 'expired')->count();
 
         $activeCount = VisitorPass::where('status', 'active')->count();
 
         $invalidCount = VisitorPass::where('status', 'invalid')->count();
 
-
-
         // Obtener el property_code
 
         $propertyCode = request()->get('property_code');
-
-
 
         $spreadsheet->setActiveSheetIndex(0)
 
@@ -322,8 +292,6 @@ public function listVisitors($property_code)
 
         foreach ($datos as $dato) {
 
-
-
             $spreadsheet->getActiveSheet()
 
                 ->setCellValue('A' . $i, $dato->name)
@@ -335,8 +303,6 @@ public function listVisitors($property_code)
                 ->setCellValue('D' . $i, $expiredCount)
 
                 ->setCellValue('E' . $i, $invalidCount);
-
-
 
             $i++;
 
@@ -350,28 +316,19 @@ public function listVisitors($property_code)
 
         $writer->save($filename);
 
-
-
         // Descargar el archivo
 
         $response = response()->download($filename)->deleteFileAfterSend();
-
-
 
         // Redireccionar a la página anterior después de la descarga
 
         $response->headers->set('Refresh', '0;url=' . url()->previous());
 
-
-
         return $response;
 
     }
 
-
-
     public function excel_visitorforid($property_code)
-
     {
 
         // Create new Spreadsheet object
@@ -382,8 +339,6 @@ public function listVisitors($property_code)
 
         $sheet = $spreadsheet->getActiveSheet();
 
-
-
         $datos = VisitorPass::join('properties', 'visitorpasses.property_code', '=', 'properties.property_code')
 
             ->where('visitorpasses.property_code', $property_code)
@@ -391,8 +346,6 @@ public function listVisitors($property_code)
             ->select('visitorpasses.valid_from', 'visitorpasses.license_plate', 'visitorpasses.make', 'visitorpasses.model', 'visitorpasses.color', 'visitorpasses.year', 'visitorpasses.unit_number', 'visitorpasses.status', 'visitorpasses.visitor_name', 'visitorpasses.resident_phone', 'visitorpasses.vehicle_type', 'visitorpasses.resident_name')
 
             ->get();
-
-
 
         $spreadsheet->setActiveSheetIndex(0)
 
@@ -422,8 +375,6 @@ public function listVisitors($property_code)
 
         foreach ($datos as $dato) {
 
-
-
             $spreadsheet->getActiveSheet()
 
                 ->setCellValue('A' . $i, $dato->visitor_name)
@@ -448,8 +399,6 @@ public function listVisitors($property_code)
 
                 ->setCellValue('K' . $i, $dato->status);
 
-
-
             $i++;
 
         }
@@ -462,25 +411,36 @@ public function listVisitors($property_code)
 
         $writer->save($filename);
 
-
-
         // Descargar el archivo
 
         $response = response()->download($filename)->deleteFileAfterSend();
-
-
 
         // Redireccionar a la página anterior después de la descarga
 
         $response->headers->set('Refresh', '0;url=' . url()->previous());
 
-
-
         return $response;
 
     }
 
+    public function delete($id)
+    {
+        // Buscar el visitante por su ID
+        $visitor = VisitorPass::find($id);
 
+        if (!$visitor) {
+            return redirect()->back()->with('error', 'Visitor not found.');
+        }
+
+        // Obtener el property_code asociado al visitor por medio del id
+        $propertyCode = $visitor->property_code;
+
+        // Realizar las acciones de eliminación aquí
+        $visitor->delete();
+
+        // Redirigir a la vista list.visitors con el property_code como parámetro
+        return redirect()->route('list.visitors', ['property_code' => $propertyCode])
+            ->with('success_message', 'Visitor deleted successfully.');
+    }
 
 }
-

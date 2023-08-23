@@ -21,7 +21,6 @@ use Illuminate\Support\Str;
 
 class RecidentsController extends Controller
 {
-
     public function index()
     {
         $user = Auth::user(); // Obtén el usuario autenticado
@@ -44,7 +43,7 @@ class RecidentsController extends Controller
                 ->join('departments', 'users.id', '=', 'departments.user_id')
                 ->with('department.property') // Cargar la relación property
                 ->get();
-    
+
             return view('residents.index-admin', compact('residents'));
         } elseif ($user->hasRole('Resident')) {
             // Si el usuario tiene el rol 'Resident', obtener su nombre y detalles de vehículos
@@ -78,7 +77,6 @@ class RecidentsController extends Controller
                     'vehicles.model',
                     'vehicles.permit_type',
                     'vehicles.permit_status'
-
                 )
                 ->get();
 
@@ -257,7 +255,7 @@ class RecidentsController extends Controller
         $user->banned = false;
         $user->status = 'Pending';
         $user->save();
-        
+
         // Asignar el rol "Resident" al usuario
         $user->assignRole('Resident');
 
@@ -503,6 +501,122 @@ class RecidentsController extends Controller
 
         // Return the PDF file for download
         return $dompdf->stream($pdfFileName);
+    }
+
+    public function addResidentvehicles($user_id)
+    {
+        $resident = User::where('id', $user_id)->first();
+
+        if (!$resident) {
+            return redirect()->back()->with('error', 'Resident not found.');
+        }
+
+        $propertyCode = $resident->property_code;
+        $userId = $resident->user_id;
+
+        return view('residents.addautoresident', [
+            'propertyCode' => $propertyCode,
+            'userId' => $userId,
+        ]);
+    }
+
+    public function storeResidentVehicle(Request $request)
+    {
+        //dd($request);
+        // Validar los datos del formulario antes de guardarlos
+        $validatedData = $request->validate([
+            'property_code' => 'required',
+            'user_id' => 'required',
+            'license_plate' => 'required',
+            'vin' => 'required',
+            'make' => 'required',
+            'model' => 'required',
+            'year' => 'required|integer',
+            'color' => 'required',
+            'vehicle_type' => 'required',
+        ]);
+
+        // Crear un nuevo registro de vehículo residente en la base de datos
+        $vehicle = Vehicle::create($validatedData);
+
+        return redirect()->route('recidents')->with('success-message', 'Resident vehicle added successfully.');
+    }
+
+    public function showAddVisitorForm($user_id)
+    {
+        $resident = User::where('id', $user_id)->first();
+
+        if (!$resident) {
+            return redirect()->back()->with('error', 'Resident not found.');
+        }
+
+        $propertyCode = $resident->property_code;
+        $userId = $resident->user_id;
+
+        return view('residents.addresidentsvisitor', [
+            'propertyCode' => $propertyCode,
+            'userId' => $userId,
+        ]); // Asegúrate de que el nombre de la vista sea correcto
+    }
+
+    public function storeVisitor(Request $request)
+    {
+        // Validar los datos del formulario antes de guardarlos
+        $validatedData = $request->validate([
+            'property_code' => 'required',
+            'visitor_name' => 'required|string',
+            'visitor_phone' => 'required|string',
+            'license_plate' => 'required|string',
+            'year' => 'required|integer|max:' . date('Y'),
+            'make' => 'required|string',
+            'color' => 'required|string',
+            'model' => 'required|string',
+            'vehicle_type' => 'required|string',
+            'valid_from' => 'required|date',
+            'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
+        ]);
+    
+        // Verificar si ya hay un auto registrado con el mismo tipo y está activo
+        $existingActivePass = VisitorPass::where('license_plate', $validatedData['license_plate'])
+            ->where('valid_from', '>=', now()) // Check if the pass is currently active
+            ->first();
+    
+        if ($existingActivePass) {
+            // El vehículo ya tiene un pase activo
+            return redirect()->route('recidents')->with('error', 'A visitor pass with the same license plate is already active.');
+        }
+    
+        // Generar un código único de vp_code
+        $vpCode = $this->generateUniqueVpCode();
+    
+        // Los datos han sido validados y verificados, puedes continuar guardándolos en la base de datos
+        $visitorPass = new VisitorPass();
+        $visitorPass->vp_code = $vpCode;
+        $visitorPass->property_code = $validatedData['property_code'];
+        $visitorPass->user_id = $validatedData['user_id'];
+        $visitorPass->visitor_name = $validatedData['visitor_name'];
+        $visitorPass->visitor_phone = $validatedData['visitor_phone'];
+        $visitorPass->license_plate = $validatedData['license_plate'];
+        $visitorPass->year = $validatedData['year'];
+        $visitorPass->make = $validatedData['make'];
+        $visitorPass->color = $validatedData['color'];
+        $visitorPass->model = $validatedData['model'];
+        $visitorPass->vehicle_type = $validatedData['vehicle_type'];
+        $visitorPass->valid_from = $validatedData['valid_from'];
+        $visitorPass->save();
+    
+        return redirect()->route('recidents')->with('success_message', 'Resident vehicle added successfully.');
+    }
+    
+
+    private function generateUniqueVpCode()
+    {
+        $vpCode = mt_rand(10000, 99999); // Generate a random 5-digit number
+        while (VisitorPass::where('vp_code', $vpCode)->exists()) {
+            // If the code already exists, generate a new one
+            $vpCode = mt_rand(10000, 99999);
+        }
+        return $vpCode;
     }
 
 }

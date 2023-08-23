@@ -21,7 +21,7 @@
                 <li class="flex items-center space-x-2">
 
                     <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#"> LIST OF VISITOR'S PASS: {{ $property->address }}</a>
+                        href="#"> LIST OF VISITOR'S PASS: {{ $property->name }}</a>
 
                     <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -255,277 +255,57 @@
 
                                     </td>
 
-                                    <td class="px-4 py-2">
-
-                                        {{ $visitor->status }}
-
+                                    <td
+                                        class="px-4 py-2 @if ($visitor->valid_from >= now()) bg-green-100 text-green-800 @else bg-red-100 text-red-800 @endif">
+                                        @if ($visitor->valid_from >= now())
+                                            Active
+                                        @else
+                                            Expired
+                                        @endif
                                     </td>
 
                                     <td class="px-4 py-2">
 
                                         <div x-data="{ visitorData: {} }">
-
-                                            <a @click="visitorData = {
-
-                                              validFrom: '{{ $visitor->valid_from }}',
-
-                                              licensePlate: '{{ $visitor->license_plate }}',
-
-                                              make: '{{ $visitor->make }}',
-
-                                              model: '{{ $visitor->model }}',
-
-                                              color: '{{ $visitor->color }}',
-
-                                              year: '{{ $visitor->year }}',
-
-                                              unitNumber: '{{ $visitor->unit_number }}',
-
-                                              visitorName: '{{ $visitor->visitor_name }}',
-
-                                              phone: '{{ $visitor->resident_phone }}',
-
-                                              type: '{{ $visitor->vehicle_type }}',
-
-                                              residentName: '{{ $visitor->resident_name }}',  
-
-                                              status: '{{ $visitor->status }}'
-
-                                          }; printVisitorDetails(visitorData)"
-                                                class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-
-                                                <i class="fas fa-print"></i>
-
-                                                &nbsp; Print
-
-                                            </a>
-
-                                            <script>
-                                                function printVisitorDetails(visitorData) {
-
-                                                    const printContent = `
-
-                                              <div class="header">
-
-                                                  <h2>Address: {{ $property->address }}</h2>
-
-                                              </div>
-
-                                              <div class="body">
-
-                                                  <table>
-
-                                                      <tr>
-
-                                                          <td>Visitor's Name:</td>
-
-                                                          <td>${visitorData.visitorName}</td>
-
-                                                      </tr>
-
-                                                      <tr>
-
-                                                          <td>Phone:</td>
-
-                                                          <td>${visitorData.phone}</td>
-
-                                                      </tr>
-
-                                                      <tr>
-
-                                                          <td>License Plate:</td>
-
-                                                          <td>${visitorData.licensePlate}</td>
-
-                                                      </tr>
-
-
-
-                                                      <tr>
-
-                                                          <td>Year:</td>
-
-                                                          <td>${visitorData.year}</td>
-
-                                                      </tr>
-
-                                                     
-
-                                                      <tr>
-
-                                                          <td>Make:</td>
-
-                                                          <td>${visitorData.make}</td>
-
-                                                      </tr>
-
-                                                      
-
-                                                      <tr>
-
-                                                          <td>Model:</td>
-
-                                                          <td>${visitorData.model}</td>
-
-                                                      </tr>
-
-                                                      <tr>
-
-                                                          <td>Color:</td>
-
-                                                          <td>${visitorData.color}</td>
-
-                                                      </tr>
-
-                                                      <tr>
-
-                                                          <td>Type:</td>
-
-                                                          <td>${visitorData.type}</td>
-
-                                                      </tr>
-
-                                                      
-
-                                                      <tr>
-
-                                                          <td>Unit Number:</td>
-
-                                                          <td>${visitorData.unitNumber}</td>
-
-                                                      </tr>
-
-                                                      <tr>
-
-                                                          <td>Recident Name:</td>
-
-                                                          <td>${visitorData.residentName}</td>
-
-                                                      </tr>
-
-                                                      <tr>
-
-                                                          <td>Valid From:</td>
-
-                                                          <td>${visitorData.validFrom}</td>
-
-                                                      </tr>
-
-                                                  </table>
-
-                                              </div>
-
-                                              <div class="footer">
-
-            <p>Your vehicle has been Registered for a Visitor's Pass.</p>
-
-            <p>Your visitor's pass is valid for 24 hours.</p>
-
-            <p>If your vehicle is parked on the premises of Demo Property before or after the allowed time, it will be removed at your expense.</p>
-
-            ${visitorData.status === 'Pending' ? '<p>Payment pending</p>' : ''}
-
-        </div>
-
-                                              `;
-
-
-
-                                                    const printWindow = window.open('', '_blank');
-
-                                                    printWindow.document.open();
-
-                                                    printWindow.document.write(`
-
-                                              <html>
-
-                                              <head>
-
-                                                  <title>Visitor Details</title>
-
-                                                  <style>
-
-                                                      /* Estilos para el formato de impresión */
-
-                                                      body {
-
-                                                          font-family: Arial, sans-serif;
-
-                                                          font-size: 12px;
-
-                                                          line-height: 1.4;
-
-                                                      }
-
-                                                      .header {
-
-                                                          margin-bottom: 20px;
-
-                                                      }
-
-                                                      .footer {
-
-                                                          margin-top: 20px;
-
-                                                          font-size: 10px;
-
-                                                          color: gray;
-
-                                                      }
-
-                                                      table {
-
-                                                          width: 100%;
-
-                                                          border-collapse: collapse;
-
-                                                      }
-
-                                                      td {
-
-                                                          padding: 8px;
-
-                                                          border: 1px solid #ccc;
-
-                                                      }
-
-                                                      td:first-child {
-
-                                                          font-weight: bold;
-
-                                                      }
-
-                                                  </style>
-
-                                              </head>
-
-                                              <body>
-
-                                                  ${printContent}
-
-                                              </body>
-
-                                              </html>
-
-                                              `);
-
-                                                    printWindow.document.close();
-
-                                                    printWindow.print();
-
-                                                    printWindow.close();
-
-                                                }
-                                            </script>
-
+                                            <div class="flex space-x-2">
+                                    
+                                                <a @click="visitorData = {
+                                                    validFrom: '{{ $visitor->valid_from }}',
+                                                    licensePlate: '{{ $visitor->license_plate }}',
+                                                    make: '{{ $visitor->make }}',
+                                                    model: '{{ $visitor->model }}',
+                                                    color: '{{ $visitor->color }}',
+                                                    year: '{{ $visitor->year }}',
+                                                    unitNumber: '{{ $visitor->unit_number }}',
+                                                    visitorName: '{{ $visitor->visitor_name }}',
+                                                    phone: '{{ $visitor->resident_phone }}',
+                                                    type: '{{ $visitor->vehicle_type }}',
+                                                    residentName: '{{ $visitor->resident_name }}',  
+                                                    status: '{{ $visitor->status }}'
+                                                }; printVisitorDetails(visitorData)"
+                                                class="flex items-center text-info hover:text-info">
+                                                    <i class="fas fa-print mr-1"></i>
+                                                </a>
+                                    
+                                                <form action="{{ route('delete-visitor', ['id' => $visitor->id]) }}" method="POST" class="flex items-center text-red-500 hover:text-red-600">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    
+                                                    <button type="submit" class="focus:outline-none">
+                                                        <i class="fas fa-trash mr-1"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                
+                                    
+                                            </div>
+                                            
+                                            <!-- Tu script para printVisitorDetails aquí -->
+                                    
                                         </div>
-
+                                    
                                     </td>
-
-
-
-
-
+                                    
                                 </tr>
                             @endforeach
 

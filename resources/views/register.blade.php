@@ -116,6 +116,7 @@
                                     x-transition:enter-end="opacity-100 [transform:translate3d(0,0,0)]">
 
                                     <div class="w-full">
+                                        
 
                                         <form action="{{ route('visitors.registerResidentVehicle') }}" method="POST"
                                             class="form">
@@ -291,16 +292,13 @@
                                             </div>
 
 
-
                                             <div class="mb-3">
-
                                                 <label for="year" class="form-label">Year / Año</label>
-
-                                                <input type="text"
+                                                <input type="number"
                                                     class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                    id="year" name="year" required>
-
+                                                    id="year" name="year" required max="{{ date('Y') }}">
                                             </div>
+                                            
 
 
 
@@ -324,38 +322,35 @@
                                                     id="color" name="color" required>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de
-
-                                                    Vehículo</label>
-
-                                                <input type="text"
-                                                    class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                    id="vehicle_type" name="vehicle_type" required>
-
+                                                <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de Vehículo</label>
+                                                <select class="form-select w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                        id="vehicle_type" name="vehicle_type" required>
+                                                    <option value="">Select Vehicle Type / Seleccionar Tipo de Vehículo</option>
+                                                    <option value="car">Car / Automóvil</option>
+                                                    <option value="truck">Truck / Camión</option>
+                                                    <option value="motorcycle">Motorcycle / Motocicleta</option>
+                                                    <!-- Agrega más opciones según tus necesidades -->
+                                                </select>
                                             </div>
+                                            
 
                                             <label class="relative flex mb-3">
-
-                                                <input x-init="$el._x_flatpickr = flatpickr($el, { enableTime: true, dateFormat: 'Y-m-d h:i K', time_24hr: false })"
-                                                    class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                    placeholder="Choose date and time..." type="text"
-                                                    name="valid_from" />
-
-                                                <span
-                                                    class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5 transition-colors duration-200" fill="none"
-                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-
+                                                <input x-init="$el._x_flatpickr = flatpickr($el, {
+                                                    enableTime: true,
+                                                    dateFormat: 'Y-m-d h:i K',
+                                                    time_24hr: false,
+                                                    minDate: 'today' // Set minimum date to today
+                                                })"
+                                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                placeholder="Choose date and time..." type="text" name="valid_from" />
+                                            
+                                                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
-
                                                 </span>
-
                                             </label>
+                                            
 
                                             <button type="submit"
                                                 class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit
