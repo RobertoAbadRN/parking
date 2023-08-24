@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use App\Models\User;
-
-
 
 class VisitorsController extends Controller
 {
@@ -77,25 +74,44 @@ class VisitorsController extends Controller
             'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
         ]);
 
-    // Los datos han sido validados, puedes continuar guardándolos en la base de datos
+        // Generate a unique 5-digit vp_code
+        $vpCode = $this->generateUniqueVpCode();
+        // Los datos han sido validados, puedes continuar guardándolos en la base de datos
+        $visitorPass = new VisitorPass();
+        $visitorPass->vp_code = $vpCode;
+        $visitorPass->property_code = $validatedData['property_code'];
+        $visitorPass->user_id = $validatedData['user_id'];
+        $visitorPass->visitor_name = $validatedData['visitor_name'];
+        $visitorPass->visitor_phone = $validatedData['visitor_phone'];
+        $visitorPass->license_plate = $validatedData['license_plate'];
+        $visitorPass->year = $validatedData['year'];
+        $visitorPass->make = $validatedData['make'];
+        $visitorPass->color = $validatedData['color'];
+        $visitorPass->model = $validatedData['model'];
+        $visitorPass->vehicle_type = $validatedData['vehicle_type'];
+        $visitorPass->valid_from = $validatedData['valid_from'];
 
-    $visitorPass = new VisitorPass();
-    $visitorPass->property_code = $validatedData['property_code'];
-    $visitorPass->user_id = $validatedData['user_id'];
-    $visitorPass->visitor_name = $validatedData['visitor_name'];
-    $visitorPass->visitor_phone = $validatedData['visitor_phone'];
-    $visitorPass->license_plate = $validatedData['license_plate'];
-    $visitorPass->year = $validatedData['year'];
-    $visitorPass->make = $validatedData['make'];
-    $visitorPass->color = $validatedData['color'];
-    $visitorPass->model = $validatedData['model'];
-    $visitorPass->vehicle_type = $validatedData['vehicle_type'];
-    $visitorPass->valid_from = $validatedData['valid_from'];
-    $visitorPass->status = 'pending';
-    $visitorPass->save();
-    return redirect()->route('errorregister')->with('success', 'Visitor pass registered successfully.');
+        // Check if the vehicle already has an active pass (with a valid date range)
+        $existingActivePass = VisitorPass::where('license_plate', $visitorPass->license_plate)
+            ->where('valid_from', '>=', now()) // Check if the pass is currently active
+            ->first();
 
-}
+        if ($existingActivePass) {
+// The vehicle already has an active pass
+            return redirect()->back()->with('error', 'Vehicle already has an active pass.');
+        }
+
+        $visitorPass->save();
+
+        // Fetch the latest registered visitor pass for display
+        $latestVisitorPass = VisitorPass::latest()->first();
+
+        return view('errorregister')->with([
+            'successMessage' => 'Visitor pass registered successfully.',
+            'latestVisitorPass' => $latestVisitorPass,
+        ]);
+
+    }
 
     private function generateUniqueVpCode()
     {
