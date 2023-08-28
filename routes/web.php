@@ -15,6 +15,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VisitorsController;
 use App\Http\Controllers\TermsAndConditionsController;
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,15 +37,18 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')->group(function () {
     Route::get('/login', [\App\Http\Controllers\AuthController::class, 'loginView'])->name('loginView');
     Route::get('/login2', [\App\Http\Controllers\AuthController::class, 'loginView2'])->name('loginView2');
+    Route::get('/registrations', [\App\Http\Controllers\RegistrationController::class, 'registration'])->name('registrations');
+    Route::post('/registrations/vehicle', [\App\Http\Controllers\RegistrationController::class, 'registerVehicle'])->name('registrations.vehicle');
+    Route::post('/registrations/visitor', [\App\Http\Controllers\RegistrationController::class, 'registerVisitor'])->name('registrations.visitor');
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
     Route::get('errorregister', function () {
         return view('errorregister');
     })->name('errorregister');
-    
+
     Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
-   
+
     /**
      * ==============================
      *       @Router - ForgotPassword
@@ -176,7 +180,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/download-terms-pdf/{resident}', [RecidentsController::class, 'downloadTermsPDF'])->name('download.terms.pdf');
 
     Route::post('/update_reserved_space_visitors/{departmentId}', [RecidentsController::class, 'updateReservedSpaceVisitors'])->name('update_reserved_space_visitors');
-   
+
 
 
 

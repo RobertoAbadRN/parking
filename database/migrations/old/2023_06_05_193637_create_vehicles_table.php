@@ -15,19 +15,19 @@ return new class extends Migration
     {
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
-            $table->string('property_code');
-            $table->string('resident_name');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('apart_unit');
-            $table->string('preferred_language');
-            $table->string('license_plate');
-            $table->string('vin');
-            $table->string('make');
-            $table->string('model');
-            $table->integer('year');
-            $table->string('color');
-            $table->string('vehicle_type');
+            $table->string('property_code')->nullable();
+            $table->string('resident_name')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('apart_unit')->nullable();
+            $table->string('preferred_language')->nullable();
+            $table->string('license_plate')->nullable();
+            $table->string('vin')->nullable();
+            $table->string('make')->nullable();
+            $table->string('model')->nullable();
+            $table->integer('year')->nullable();
+            $table->string('color')->nullable();
+            $table->string('vehicle_type')->nullable();
             $table->timestamps();
         });
     }

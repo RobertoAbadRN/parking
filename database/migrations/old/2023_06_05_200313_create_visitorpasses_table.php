@@ -15,20 +15,20 @@ return new class extends Migration
     {
         Schema::create('visitorpasses', function (Blueprint $table) {
             $table->id();
-            $table->string('property_code');
-            $table->string('visitor_name');
-            $table->string('visitor_phone');
-            $table->string('license_plate');
-            $table->integer('year');
-            $table->string('make');
-            $table->string('color');
-            $table->string('vehicle_type');
-            $table->string('resident_name');
-            $table->string('unit_number');
-            $table->string('resident_phone');
-            $table->dateTime('valid_from');
-            $table->string('model');
-            $table->string('status');
+            $table->string('property_code')->nullable();
+            $table->string('visitor_name')->nullable();
+            $table->string('visitor_phone')->nullable();
+            $table->string('license_plate')->nullable();
+            $table->integer('year')->nullable();
+            $table->string('make')->nullable();
+            $table->string('color')->nullable();
+            $table->string('vehicle_type')->nullable();
+            $table->string('resident_name')->nullable();
+            $table->string('unit_number')->nullable();
+            $table->string('resident_phone')->nullable();
+            $table->dateTime('valid_from')->nullable();
+            $table->string('model')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

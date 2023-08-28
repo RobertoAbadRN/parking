@@ -36,7 +36,7 @@
                             @csrf
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="text-gray-900 text-sm" style="padding: 0px 0px 0px 45px;">
-                                    <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
+                                    {{-- <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
                                         <label onchange="check_checked(this)">
                                             <input type="checkbox" id="pre_name" name="pre_name" class="form-control-sm display-me ">
                                             Resident's Name
@@ -65,7 +65,7 @@
                                             <input type="checkbox" id="pre_language" name="pre_language"  class="form-control-sm display-me ">
                                             Language
                                         </label>
-                                    </div>
+                                    </div> --}}
                                     <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                         <label onchange="check_checked(this)">
                                             <input type="checkbox" id="pre_license_plate" name="pre_license_plate"  class="form-control-sm display-me ">
@@ -110,7 +110,7 @@
                                     </div>
                                 </div>
                                 <div class="text-gray-900 text-sm" style="padding: 0px 0px 0px 45px;">
-                                    <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
+                                   {{--  <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
                                         <label onchange="check_required(this)">
                                             <input type="checkbox" id="required_pre_name" name="required_pre_name" class="form-control-sm display-me ">
                                             Field is Required
@@ -139,7 +139,7 @@
                                             <input type="checkbox" id="required_pre_language" name="required_pre_language"  class="form-control-sm display-me ">
                                             Field is Required
                                         </label>
-                                    </div>
+                                    </div> --}}
                                     <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                         <label onchange="check_required(this)">
                                             <input type="checkbox" id="required_pre_license_plate" name="required_pre_license_plate"  class="form-control-sm display-me ">
@@ -184,21 +184,21 @@
                                     </div>
                                 </div>
                                 <div class="text-gray-900 text-sm" style="padding: 0px 0px 0px 45px;">
+                                    {{-- <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
+                                    </div>
+                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                    </div>
+                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                    </div>
+                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                    </div>
+                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                    </div>
+                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                    </div>
+                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                    </div> --}}
                                     <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
-                                    </div>
-                                    <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                         <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                             <label onchange="check_validation(this)">
                                                 <input type="checkbox" id="validation_pre_license_plate" name="validation_pre_license_plate"  class="form-control-sm display-me ">

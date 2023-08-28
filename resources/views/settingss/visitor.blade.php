@@ -45,30 +45,30 @@
                                         Visitor's Name
                                     </label>
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                               {{--  <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
                                         <input type="checkbox" id="visitor_email" name="visitor_email"  class="form-control-sm display-me ">
                                         Visitor's Email
                                     </label>
-                                </div>
+                                </div> --}}
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
                                         <input type="checkbox" id="visitor_phone" name="visitor_phone"  class="form-control-sm display-me ">
                                         Visitor's Phone
                                     </label>
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
                                         <input type="checkbox" id="visitor_language" name="visitor_language"  class="form-control-sm display-me ">
                                         Visitor's Language
                                     </label>
-                                </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                </div> --}}
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
                                         <input type="checkbox" id="vin" name="vin"  class="form-control-sm display-me ">
                                         VIN
                                     </label>
-                                </div>
+                                </div> --}}
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
                                         <input type="checkbox" id="license_plate" name="license_plate"  class="form-control-sm display-me ">
@@ -105,7 +105,7 @@
                                         Vehicle Type
                                     </label>
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
                                         <input type="checkbox" id="resident_name" name="resident_name"  class="form-control-sm display-me ">
                                         Resident's Name
@@ -135,10 +135,10 @@
                                         <input type="checkbox" id="resident_registration" name="resident_registration"  class="form-control-sm display-me ">
                                         Resident's  Registration
                                     </label>
-                                </div>
+                                </div> --}}
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_checked(this)">
-                                        <input type="checkbox" id="valid_form" name="valid_form"  class="form-control-sm display-me ">
+                                        <input type="checkbox" id="valid_from" name="valid_from"  class="form-control-sm display-me ">
                                         Valid From
                                     </label>
                                 </div>
@@ -151,19 +151,19 @@
                                         Field is Required
                                     </label>
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_email" name="required_visitor_email"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
-                                </div>
+                                </div> --}}
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_phone" name="required_visitor_phone"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_visitor_language" name="required_visitor_language"  class="form-control-sm display-me ">
                                         Field is Required
@@ -174,7 +174,7 @@
                                         <input type="checkbox" id="required_vin" name="required_vin"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
-                                </div>
+                                </div> --}}
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_license_plate" name="required_license_plate"  class="form-control-sm display-me ">
@@ -211,7 +211,7 @@
                                         Field is Required
                                     </label>
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_required(this)">
                                         <input type="checkbox" id="required_resident_name" name="required_resident_name"  class="form-control-sm display-me ">
                                         Field is Required
@@ -240,10 +240,10 @@
                                         <input type="checkbox" id="required_resident_registration" name="required_resident_registration"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
-                                </div>
+                                </div> --}}
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_required(this)">
-                                        <input type="checkbox" id="required_valid_form" name="required_valid_form"  class="form-control-sm display-me ">
+                                        <input type="checkbox" id="required_valid_from" name="required_valid_from"  class="form-control-sm display-me ">
                                         Field is Required
                                     </label>
                                 </div>
@@ -252,7 +252,7 @@
                                 <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
 
                                 </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
 
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
@@ -302,8 +302,8 @@
                                 </div>
                                 <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
 
-                                </div>
-                                <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
+                                </div> --}}
+                                {{-- <div class="grid grid-cols-1 mt-8 gap-4 sm:gap-5 lg:gap-6">
                                     <label onchange="check_validation(this)">
                                         <input type="checkbox" id="validation_resident_name" name="validation_resident_name"  class="form-control-sm display-me ">
                                         Use for Validation
@@ -332,7 +332,7 @@
                                         <input type="checkbox" id="validation_resident_registration" name="validation_resident_registration"  class="form-control-sm display-me ">
                                         Use for Validation
                                     </label>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                         <div class=" mt-3 text-center">
