@@ -12,6 +12,21 @@
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
             </div>
         </div>
+        @if (session('error'))
+            <div id="error-message" class="alert flex rounded-lg bg-error px-4 py-4 text-white sm:px-5">
+                {{ session('error') }}
+            </div>
+            <script>
+                // Ocultar el mensaje de error después de 5 segundos
+                setTimeout(function() {
+                    var errorMessage = document.getElementById('error-message');
+                    if (errorMessage) {
+                        errorMessage.style.display = 'none';
+                    }
+                }, 5000);
+            </script>
+        @endif
+
         @if (session('success_message'))
             <div id="success-message" class="alert flex rounded-lg border border-success px-4 py-4 text-success sm:px-5">
                 {{ session('success_message') }}
@@ -27,6 +42,7 @@
                 }
             }, 5000);
         </script>
+
 
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
             <div class="inline-flex space-x-2">
@@ -55,16 +71,17 @@
                                     fill="white" />
                             </svg>
                         </a>
-                        <a href="{{ route('addvehicle', ['user_id' => $residentid]) }}" class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90" style="width: auto; height: 40px;">
-                            <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
-                        </a>                    
-                        
-                        
-                        <a href="#"
+                        <a href="{{ route('addResidentvehicles', ['user_id' => $residentid]) }}"
                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
+                            style="width: auto; height: 40px;">
+                            <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Vehicle
+                        </a>
+                        <a href="{{ route('add.visitor', ['user_id' => $residentid]) }}"
+                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90"
                             style="width: auto; height: 40px;">
                             <i class="fa fa-car" aria-hidden="true"></i> &nbsp; Add Visitor
                         </a>
+
                     </div>
                 </div>
             </div>
@@ -99,63 +116,62 @@
                                             class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
                                             style="background-color: #0EA5E9;"
                                             onclick="toggleModal({{ $residentid }})">
-    
+
                                             {{ $residentid }}
-    
+
                                         </button>
-    
+
                                         <!-- Ventana modal -->
-    
+
                                         <div id="modal-modelo-{{ $residentid }}"
                                             class="fixed z-10 inset-0 overflow-y-auto hidden">
-    
+
                                             <div class="flex items-center justify-center min-h-screen px-4">
-    
+
                                                 <div class="fixed inset-0 bg-black opacity-50"></div>
-    
+
                                                 <!-- Capa de fondo semitransparente -->
-    
+
                                                 <div class="bg-white rounded-lg max-w-lg mx-auto p-6 relative">
-    
+
                                                     <h2
                                                         class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
-    
+
                                                         {{ $residentName }}
-    
+
                                                     </h2>
-    
+
                                                     <h4
                                                         class="text-lg text-center mb-2 text-slate-700 dark:text-navy-100">
-    
+
                                                         QR code: {{ $residentDetails->apart_unit }}
-    
+
                                                     </h4>
                                                     <div class="visible-print flex justify-center items-center">
                                                         {!! QrCode::size(200)->generate('https://amartineztowingop.com/register?user_id=' . $residentid) !!}
                                                     </div>
                                                     <p class="my-2">Scan me to return to the original page.</p>
-    
-                                                    <button id="cerrar-modal-modelo-{{ $residentid}}"
+
+                                                    <button id="cerrar-modal-modelo-{{ $residentid }}"
                                                         class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded inline-flex items-center"
                                                         onclick="toggleModal({{ $residentid }})">
-    
+
                                                         Cerrar
-    
+
                                                     </button>
-    
+
                                                 </div>
-    
+
                                             </div>
-    
+
                                         </div>
                                     </td>
-    
+
                                     <script>
                                         function toggleModal(residentid) {
                                             const modal = document.getElementById(`modal-modelo-${residentid}`);
                                             modal.classList.toggle('hidden');
                                         }
-                                        
                                     </script>
                                     <td>{{ $vehicle->license_plate }}</td>
                                     <td>{{ $vehicle->make }}</td>
@@ -177,8 +193,8 @@
                                             <i class="fas fa-envelope"></i>
                                         </a>
                                     </td>
-                                </td>
-                                
+                                    </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

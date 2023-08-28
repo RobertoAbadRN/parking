@@ -169,6 +169,14 @@ class RegistrationController extends Controller
             'pre_vehicle_type' => (isset($request->required_pre_vehicle_type) && $request->required_pre_vehicle_type) ? 'required' : 'nullable',
             'user_id' => (isset($request->user_id) && $request->user_id) ? 'required|exists:users,id' : 'nullable'
         ]);
+        //valida si tiene espacio para mas vehiculos en la propiedad en el estacionamiento.
+        if($user->department->reserved_space <= $user->vehicles->where('property_code', $propertyCode)->count()){
+            return response()->json([
+                'success' => false,
+                'form'    => false,
+                'message' => 'You have exceeded the reserved vehicle space on the property'
+            ], 200);
+        }
 
         // Guardar en la tabla vehicles
         $vehicle = Vehicle::insert($data);
@@ -228,6 +236,21 @@ class RegistrationController extends Controller
             'valid_from' => (isset($request->required_valid_from) && $request->required_valid_from) ? 'required|date' : 'nullable',
             'user_id' => (isset($request->user_id) && $request->user_id) ? 'required|exists:users,id' : 'nullable'
         ]);
+
+        //valida si tiene activo un carro en el estacionamiento  de la propiedad.
+        $existingActivePass = VisitorPass::where('license_plate', $data['license_plate'])
+            ->where('property_code', $data['property_code'])
+            ->where('valid_from', '>=', now()) // Check if the pass is currently active
+            ->first();
+
+        if($existingActivePass){
+            // The vehicle already has an active pass
+            return response()->json([
+                'success' => false,
+                'form'    => false,
+                'message' => 'Vehicle already has an active pass'
+            ], 200);
+        }
 
         // Los datos han sido validados, puedes continuar guardándolos en la base de datos
         $visitorPass = VisitorPass::insert($data);

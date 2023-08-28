@@ -142,7 +142,7 @@ class VehiclesController extends Controller
             'license_plate', 'user_id', 'apart_unit', 'vin', 'make', 'model', 'year', 'color',
             'vehicle_type', 'property_code', 'permit_type', 'start_date', 'end_date', 'permit_status',
         ]);
-        dd($data);
+       // dd($data);
 
         // Crear y guardar el registro en la tabla vehicles
         $vehicle = Vehicle::create($data);
@@ -537,4 +537,6 @@ class VehiclesController extends Controller
         }
     }
 
+
+   
 }
