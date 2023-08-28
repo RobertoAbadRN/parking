@@ -186,6 +186,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/visitors/store', [RecidentsController::class, 'storeVisitor'])->name('store.visitor');
     Route::get('/visitores/{user_id}', [RecidentsController::class, 'showAddVisitorForm'])->name('add.visitor');
 
+    Route::get('residents/{residentId}/cars', [RecidentsController::class, 'showCars'])->name('show_resident_cars');
+    Route::post('/update-vehicle', [RecidentsController::class, 'updateVehicle'])->name('update.vehicle');
+    Route::get('/addvehicle/{vehicleId}', [RecidentsController::class, 'addVehicle'])->name('addvehicleresident');
+
     /**
      * ==============================
      *       @Router - vehicles/

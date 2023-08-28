@@ -114,7 +114,8 @@ class VehiclesController extends Controller
 
     public function store(Request $request)
     {
-
+       
+        
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
@@ -131,6 +132,7 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
+       // dd($validator);
 
         // Verificar si la validación falla
         if ($validator->fails()) {
@@ -142,7 +144,7 @@ class VehiclesController extends Controller
             'license_plate', 'user_id', 'apart_unit', 'vin', 'make', 'model', 'year', 'color',
             'vehicle_type', 'property_code', 'permit_type', 'start_date', 'end_date', 'permit_status',
         ]);
-       // dd($data);
+       //dd($data);
 
         // Crear y guardar el registro en la tabla vehicles
         $vehicle = Vehicle::create($data);

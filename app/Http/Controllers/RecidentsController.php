@@ -24,7 +24,6 @@ class RecidentsController extends Controller
     public function index()
     {
         $user = Auth::user(); // Obtén el usuario autenticado
-
         if ($user->hasRole('Property manager')) {
             // Si el usuario tiene el rol 'Property manager', mostrar la vista de admin
             $residents = User::select(
@@ -242,6 +241,7 @@ class RecidentsController extends Controller
             'property_id' => 'required', // Asegúrate de que el name del select sea "property_id"
             'apart_unit' => 'required|string',
             'reserved_space' => 'required|string',
+            'lease_expiration' => 'required|date',
         ]);
 
         // Crear un nuevo registro de usuario
@@ -266,6 +266,7 @@ class RecidentsController extends Controller
         $department->reserved_space = $request->input('reserved_space');
         $department->property_code = $request->input('property_code');
         $department->terms_agreement_status = 'pending';
+        $department->lease_expiration = $request->input('lease_expiration');
         $department->save();
 
         // Relacionar el usuario con la propiedad en la tabla intermedia user_properties
@@ -575,20 +576,20 @@ class RecidentsController extends Controller
             'valid_from' => 'required|date',
             'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
         ]);
-    
+
         // Verificar si ya hay un auto registrado con el mismo tipo y está activo
         $existingActivePass = VisitorPass::where('license_plate', $validatedData['license_plate'])
             ->where('valid_from', '>=', now()) // Check if the pass is currently active
             ->first();
-    
+
         if ($existingActivePass) {
             // El vehículo ya tiene un pase activo
             return redirect()->route('recidents')->with('error', 'A visitor pass with the same license plate is already active.');
         }
-    
+
         // Generar un código único de vp_code
         $vpCode = $this->generateUniqueVpCode();
-    
+
         // Los datos han sido validados y verificados, puedes continuar guardándolos en la base de datos
         $visitorPass = new VisitorPass();
         $visitorPass->vp_code = $vpCode;
@@ -604,10 +605,9 @@ class RecidentsController extends Controller
         $visitorPass->vehicle_type = $validatedData['vehicle_type'];
         $visitorPass->valid_from = $validatedData['valid_from'];
         $visitorPass->save();
-    
+
         return redirect()->route('recidents')->with('success_message', 'Resident vehicle added successfully.');
     }
-    
 
     private function generateUniqueVpCode()
     {
@@ -617,6 +617,59 @@ class RecidentsController extends Controller
             $vpCode = mt_rand(10000, 99999);
         }
         return $vpCode;
+    }
+
+    public function showCars($residentId)
+    {
+        $resident = User::findOrFail($residentId);
+        $cars = $resident->vehicles; // Utiliza la relación "vehicles" definida en el modelo User
+
+        return view('residents.show_cars', compact('resident', 'cars'));
+    }
+
+    public function updateVehicle(Request $request)
+    {
+        $validatedData = $request->validate([
+            'permit_status' => 'required|in:active,suspended',
+            'vehicle_id' => 'required',
+        ]);
+
+        $vehicle = Vehicle::findOrFail($validatedData['vehicle_id']);
+        $residentId = $vehicle->user_id;
+
+        $vehicle->permit_status = $validatedData['permit_status'];
+
+        if ($validatedData['permit_status'] === 'active') {
+            $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+            ]);
+
+            $vehicle->start_date = $request->input('start_date');
+            $vehicle->end_date = $request->input('end_date');
+        } else {
+            // Si el estado es 'suspended', elimina las fechas
+            $vehicle->start_date = null;
+            $vehicle->end_date = null;
+        }
+
+        $vehicle->save();
+
+        return redirect()->route('show_resident_cars', ['residentId' => $residentId])->with('success-message', 'Vehicle updated successfully');
+    }
+
+    public function addVehicle($vehicleId)
+    {
+        //dd($vehicleId);
+        // Obtén el vehículo por su ID
+        $vehicle = user::findOrFail($vehicleId);
+        //dd($vehicle);
+        // Obtén la propiedad asociada al vehículo
+        // Obtén el usuario (propiedad) correspondiente al property_code del vehículo
+        $property = User::where('property_code', $vehicle->property_code)->first();
+
+        //dd($property);
+        return view('residents.addvehicle', compact('vehicle', 'property'));
     }
 
 }
