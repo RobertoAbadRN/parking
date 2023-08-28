@@ -20,7 +20,7 @@ class RegistrationController extends Controller
     public function registration(Request $request)
     {
         $user = User::find($request->user_id);
-        $propertyCode = $user->properties[0]->property_code;
+        $propertyCode = $user->property_code;
         $propertyID = $user->properties[0]->id;
         $registrations = Registration::where('property_id', $propertyID)
                         ->where('name', 'not like', '%required%')
@@ -133,7 +133,7 @@ class RegistrationController extends Controller
     public function registerVehicle(Request $request)
     {
         $user = User::find($request->user_id);
-        $propertyCode = $user->properties[0]->property_code;
+        $propertyCode = $user->property_code;
         $propertyID = $user->properties[0]->id;
 
         $registrations = Registration::where('property_id', $propertyID)
@@ -198,7 +198,7 @@ class RegistrationController extends Controller
     public function registerVisitor(Request $request)
     {
         $user = User::find($request->user_id);
-        $propertyCode = $user->properties[0]->property_code;
+        $propertyCode = $user->property_code;
         $propertyID = $user->properties[0]->id;
         $visitors = visitorSetting::where('property_id', $propertyID)
                 ->where('name', 'not like', '%required%')
