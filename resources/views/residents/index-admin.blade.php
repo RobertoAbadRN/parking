@@ -84,7 +84,7 @@
                         <thead>
                             <tr>
                                 <th class="px-4 py-2">Resident Name</th>
-                                <th  class="px-4 py-2">Property</th>
+                                <th class="px-4 py-2">Property</th>
                                 <th class="px-4 py-2">Apart/Unit</th>
                                 <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
@@ -179,10 +179,20 @@
                                         }
                                     </script>
 
-
                                     <td class="px-4 py-2">
-                                        {{ $resident->lease_expiration }}
+                                        @php
+                                            $leaseExpiration = $resident->lease_expiration;
+                                            $currentDate = now();
+                                            $expired = $leaseExpiration < $currentDate;
+                                        @endphp
+
+                                        @if ($expired)
+                                            <span class="text-red-600">Expired</span>
+                                        @else
+                                            <span class="text-green-600">{{ $leaseExpiration }}</span>
+                                        @endif
                                     </td>
+
                                     <td class="py-2">
                                         <form method="POST"
                                             action="{{ route('update_reserved_space', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">
@@ -198,9 +208,9 @@
                                         </form>
                                     </td>
 
-                                    <td class="px-4 py-2">                                        
-                                         <form method="POST"
-                                            action="{{ route('update_reserved_space_visitors', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">                                           
+                                    <td class="px-4 py-2">
+                                        <form method="POST"
+                                            action="{{ route('update_reserved_space_visitors', ['departmentId' => $resident->department_id, 'residentId' => $resident->id]) }}">
                                             @csrf
                                             <div class="flex items-center">
                                                 <input type="text" name="reserved_spacevisitors"
@@ -211,7 +221,7 @@
                                                 </button>
                                             </div>
                                         </form>
-                                        
+
                                     </td>
 
                                     <td class="px-4 py-2">
@@ -234,9 +244,11 @@
                                             </a>
                                             <a href="{{ route('download.terms.pdf', $resident->id) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                 <i class="fa fa-download"></i>
-                                             </a>                                            
-
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                            <a href="{{ route('show_resident_cars', ['residentId' => $resident->id]) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                <i class="fa fa-car"></i>
+                                            </a>
                                             <form id="delete-form-{{ $resident->id }}"
                                                 action="{{ route('residents.destroy', $resident->id) }}"
                                                 method="POST">
