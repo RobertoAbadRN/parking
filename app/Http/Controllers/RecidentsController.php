@@ -633,19 +633,18 @@ class RecidentsController extends Controller
             'permit_status' => 'required|in:active,suspended',
             'vehicle_id' => 'required',
         ]);
-    
+
         $vehicle = Vehicle::findOrFail($validatedData['vehicle_id']);
         $residentId = $vehicle->user_id;
-        
-    
+
         $vehicle->permit_status = $validatedData['permit_status'];
-    
+
         if ($validatedData['permit_status'] === 'active') {
             $request->validate([
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
             ]);
-    
+
             $vehicle->start_date = $request->input('start_date');
             $vehicle->end_date = $request->input('end_date');
         } else {
@@ -653,12 +652,24 @@ class RecidentsController extends Controller
             $vehicle->start_date = null;
             $vehicle->end_date = null;
         }
-    
+
         $vehicle->save();
-    
+
         return redirect()->route('show_resident_cars', ['residentId' => $residentId])->with('success-message', 'Vehicle updated successfully');
     }
-    
 
+    public function addVehicle($vehicleId)
+    {
+        //dd($vehicleId);
+        // Obtén el vehículo por su ID
+        $vehicle = user::findOrFail($vehicleId);
+        //dd($vehicle);
+        // Obtén la propiedad asociada al vehículo
+        // Obtén el usuario (propiedad) correspondiente al property_code del vehículo
+        $property = User::where('property_code', $vehicle->property_code)->first();
+
+        //dd($property);
+        return view('residents.addvehicle', compact('vehicle', 'property'));
+    }
 
 }
