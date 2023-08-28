@@ -37,7 +37,7 @@ CREATE TABLE `departments` (
   `agreement_token` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_status` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +46,7 @@ CREATE TABLE `departments` (
 
 LOCK TABLES `departments` WRITE;
 /*!40000 ALTER TABLE `departments` DISABLE KEYS */;
-INSERT INTO `departments` VALUES (23,106,'2','0000-00-00',2,0,'kmtZH','pending','2023-08-19 18:34:34','2023-08-19 18:34:57','accepted','liByXofcckGttXycRzWwTr11ect7gaAwaQ5q4lu7','2023-08-19 18:34:57'),(24,135,'2','0000-00-00',2,0,'Y6Nj1','pending','2023-08-22 02:12:39','2023-08-22 02:12:39','pending','xisqA6r67jYHtBo0XLZu4wP0rAilfTQnrZRcUgWl',NULL);
+INSERT INTO `departments` VALUES (23,106,'2','0000-00-00',2,0,'kmtZH','pending','2023-08-19 18:34:34','2023-08-19 18:34:57','accepted','liByXofcckGttXycRzWwTr11ect7gaAwaQ5q4lu7','2023-08-19 18:34:57'),(24,135,'2','0000-00-00',2,0,'Y6Nj1','pending','2023-08-22 02:12:39','2023-08-22 02:12:39','pending','xisqA6r67jYHtBo0XLZu4wP0rAilfTQnrZRcUgWl',NULL),(25,136,'122','0000-00-00',1,0,'kmtZH','pending','2023-08-27 14:50:37','2023-08-27 14:50:37','pending','LxTTm7lsGOrfe27vKUQWykJXhh7SOAIrhUte0ItC',NULL);
 /*!40000 ALTER TABLE `departments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,7 +180,7 @@ CREATE TABLE `model_has_roles` (
 
 LOCK TABLES `model_has_roles` WRITE;
 /*!40000 ALTER TABLE `model_has_roles` DISABLE KEYS */;
-INSERT INTO `model_has_roles` VALUES (2,'App\\Models\\User',2),(4,'App\\Models\\User',47),(2,'App\\Models\\User',76),(2,'App\\Models\\User',77),(2,'App\\Models\\User',82),(8,'App\\Models\\User',106),(2,'App\\Models\\User',107),(2,'App\\Models\\User',108),(1,'App\\Models\\User',109),(1,'App\\Models\\User',110),(2,'App\\Models\\User',111),(2,'App\\Models\\User',112),(1,'App\\Models\\User',113),(4,'App\\Models\\User',114),(2,'App\\Models\\User',115),(2,'App\\Models\\User',116),(4,'App\\Models\\User',117),(2,'App\\Models\\User',118),(1,'App\\Models\\User',119),(4,'App\\Models\\User',120),(4,'App\\Models\\User',121),(4,'App\\Models\\User',122),(2,'App\\Models\\User',123),(1,'App\\Models\\User',124),(2,'App\\Models\\User',125),(4,'App\\Models\\User',126),(4,'App\\Models\\User',128),(2,'App\\Models\\User',129),(2,'App\\Models\\User',130),(4,'App\\Models\\User',131),(4,'App\\Models\\User',132),(2,'App\\Models\\User',133),(1,'App\\Models\\User',134),(8,'App\\Models\\User',135);
+INSERT INTO `model_has_roles` VALUES (2,'App\\Models\\User',2),(4,'App\\Models\\User',47),(2,'App\\Models\\User',76),(2,'App\\Models\\User',77),(2,'App\\Models\\User',82),(8,'App\\Models\\User',106),(2,'App\\Models\\User',107),(2,'App\\Models\\User',108),(1,'App\\Models\\User',109),(1,'App\\Models\\User',110),(2,'App\\Models\\User',111),(2,'App\\Models\\User',112),(1,'App\\Models\\User',113),(4,'App\\Models\\User',114),(2,'App\\Models\\User',115),(2,'App\\Models\\User',116),(4,'App\\Models\\User',117),(2,'App\\Models\\User',118),(1,'App\\Models\\User',119),(4,'App\\Models\\User',120),(4,'App\\Models\\User',121),(4,'App\\Models\\User',122),(2,'App\\Models\\User',123),(1,'App\\Models\\User',124),(2,'App\\Models\\User',125),(4,'App\\Models\\User',126),(4,'App\\Models\\User',128),(2,'App\\Models\\User',129),(2,'App\\Models\\User',130),(4,'App\\Models\\User',131),(4,'App\\Models\\User',132),(2,'App\\Models\\User',133),(1,'App\\Models\\User',134),(8,'App\\Models\\User',135),(8,'App\\Models\\User',136);
 /*!40000 ALTER TABLE `model_has_roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -432,7 +432,7 @@ CREATE TABLE `registrations` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -441,7 +441,7 @@ CREATE TABLE `registrations` (
 
 LOCK TABLES `registrations` WRITE;
 /*!40000 ALTER TABLE `registrations` DISABLE KEYS */;
-INSERT INTO `registrations` VALUES (1,'pre_name','1','form',15,NULL,NULL),(2,'pre_email','1','form',15,NULL,NULL),(3,'pre_phone','1','form',15,NULL,NULL),(4,'pre_unit','1','form',15,NULL,NULL),(5,'pre_language','1','form',15,NULL,NULL),(6,'pre_license_plate','1','form',15,NULL,NULL),(7,'pre_vin','1','form',15,NULL,NULL),(8,'pre_make','1','form',15,NULL,NULL),(9,'pre_model','1','form',15,NULL,NULL),(10,'pre_year','1','form',15,NULL,NULL),(11,'pre_color','1','form',15,NULL,NULL),(12,'pre_vehicle_type','1','form',15,NULL,NULL),(13,'required_pre_name','1','form',15,NULL,NULL),(14,'required_pre_email','1','form',15,NULL,NULL),(15,'required_pre_phone','1','form',15,NULL,NULL),(16,'required_pre_unit','1','form',15,NULL,NULL),(17,'required_pre_language','1','form',15,NULL,NULL),(18,'required_pre_license_plate','1','form',15,NULL,NULL),(19,'required_pre_vin','1','form',15,NULL,NULL),(20,'required_pre_make','1','form',15,NULL,NULL),(21,'required_pre_model','1','form',15,NULL,NULL),(22,'required_pre_year','1','form',15,NULL,NULL),(23,'required_pre_color','1','form',15,NULL,NULL),(24,'required_pre_vehicle_type','1','form',15,NULL,NULL),(25,'validation_pre__license_plate','0','form',15,NULL,NULL);
+INSERT INTO `registrations` VALUES (26,'pre_name','1','form',19,NULL,NULL),(27,'pre_email','1','form',19,NULL,NULL),(28,'pre_phone','1','form',19,NULL,NULL),(29,'pre_unit','1','form',19,NULL,NULL),(30,'pre_language','1','form',19,NULL,NULL),(31,'pre_license_plate','1','form',19,NULL,NULL),(32,'pre_vin','1','form',19,NULL,NULL),(33,'pre_make','1','form',19,NULL,NULL),(34,'pre_model','1','form',19,NULL,NULL),(35,'pre_year','1','form',19,NULL,NULL),(36,'pre_color','1','form',19,NULL,NULL),(37,'pre_vehicle_type','1','form',19,NULL,NULL),(38,'required_pre_name','1','form',19,NULL,NULL),(39,'required_pre_email','1','form',19,NULL,NULL),(40,'required_pre_phone','1','form',19,NULL,NULL),(41,'required_pre_unit','1','form',19,NULL,NULL),(42,'required_pre_language','1','form',19,NULL,NULL),(43,'required_pre_license_plate','1','form',19,NULL,NULL),(44,'required_pre_vin','1','form',19,NULL,NULL),(45,'required_pre_make','1','form',19,NULL,NULL),(46,'required_pre_model','1','form',19,NULL,NULL),(47,'required_pre_year','1','form',19,NULL,NULL),(48,'required_pre_color','1','form',19,NULL,NULL),(49,'required_pre_vehicle_type','1','form',19,NULL,NULL),(50,'validation_pre__license_plate','0','form',19,NULL,NULL),(51,'pre_license_plate','1','form',15,NULL,NULL),(52,'pre_vin','1','form',15,NULL,NULL),(53,'pre_make','1','form',15,NULL,NULL),(54,'pre_model','1','form',15,NULL,NULL),(55,'pre_year','1','form',15,NULL,NULL),(56,'pre_color','1','form',15,NULL,NULL),(57,'pre_vehicle_type','1','form',15,NULL,NULL),(58,'required_pre_license_plate','1','form',15,NULL,NULL),(59,'required_pre_vin','1','form',15,NULL,NULL),(60,'required_pre_make','1','form',15,NULL,NULL),(61,'required_pre_model','1','form',15,NULL,NULL),(62,'required_pre_year','1','form',15,NULL,NULL),(63,'required_pre_color','1','form',15,NULL,NULL),(64,'required_pre_vehicle_type','1','form',15,NULL,NULL),(65,'validation_pre_license_plate','1','form',15,NULL,NULL);
 /*!40000 ALTER TABLE `registrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -582,7 +582,7 @@ CREATE TABLE `user_properties` (
 
 LOCK TABLES `user_properties` WRITE;
 /*!40000 ALTER TABLE `user_properties` DISABLE KEYS */;
-INSERT INTO `user_properties` VALUES (2,15),(82,15),(134,15),(134,19),(135,20);
+INSERT INTO `user_properties` VALUES (2,15),(82,15),(134,15),(135,15),(134,19),(136,19);
 /*!40000 ALTER TABLE `user_properties` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -611,7 +611,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -620,7 +620,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'admin','admin@gmail.com',NULL,'admin','546456565','property_manager','4nHZC','1','2023-08-22 13:38:17','$2y$10$oWKm2Nvg4CKGTFza4iBMY.8PL.auUKkEq26YJPj5sdxf.5cD18Loa','',NULL,'2023-06-05 21:34:08','2023-08-22 17:38:17'),(82,'ana','amartinezc.info@gmail.com',NULL,'ana','4428168746','property_manager','','1','','$2y$10$FhhmQVriUQuVv/eAavzWsONgVgS8UdIVXHt2NlQsidmSHXJ3i2Y3W','',NULL,'2023-08-09 00:49:55','2023-08-09 23:09:57'),(134,'martin','martin.amador.tic@gmail.com',NULL,'mar123','4428168746','','','1','','$2y$10$bj3zFQ6NjW1wPMGDY2/1ke7NaVhEcN1VOBe/VUhoyGiAQ1nSJVRc.','',NULL,'2023-08-21 23:44:45','2023-08-22 18:38:34'),(135,'martin','martin.reyes.qro@gmail.com',NULL,'','4428168746','Resident','Y6Nj1','0','2023-08-22 12:40:45','$2y$10$maLjKAf2D6DMetaoSpvPHeTecDOWvtB4Sv95Ms4Jzza4G6RijG/fG','Pending',NULL,'2023-08-22 02:12:39','2023-08-22 18:40:45');
+INSERT INTO `users` VALUES (2,'admin','admin@gmail.com',NULL,'admin','546456565','property_manager','4nHZC','1','2023-08-27 13:55:13','$2y$10$oWKm2Nvg4CKGTFza4iBMY.8PL.auUKkEq26YJPj5sdxf.5cD18Loa','',NULL,'2023-06-05 21:34:08','2023-08-27 17:55:13'),(82,'ana','amartinezc.info@gmail.com',NULL,'ana','4428168746','property_manager','','1','','$2y$10$FhhmQVriUQuVv/eAavzWsONgVgS8UdIVXHt2NlQsidmSHXJ3i2Y3W','',NULL,'2023-08-09 00:49:55','2023-08-09 23:09:57'),(134,'martin','martin.amador.tic@gmail.com',NULL,'mar123','4428168746','','','1','','$2y$10$bj3zFQ6NjW1wPMGDY2/1ke7NaVhEcN1VOBe/VUhoyGiAQ1nSJVRc.','',NULL,'2023-08-21 23:44:45','2023-08-22 18:38:34'),(135,'martin','martin.reyes.qro@gmail.com',NULL,'','4428168746','Resident','Y6Nj1','0','2023-08-22 12:40:45','$2y$10$maLjKAf2D6DMetaoSpvPHeTecDOWvtB4Sv95Ms4Jzza4G6RijG/fG','Pending',NULL,'2023-08-22 02:12:39','2023-08-22 18:40:45'),(136,'Jose','xeferino@test.com',NULL,'','3445454','Resident','kmtZH','0','','$2y$10$q.RUwIsX6aaK/Pc0lE9a3OIJKCnpHIEV4Re8jfn97JNQsCbAp.m9G','Pending',NULL,'2023-08-27 14:50:37','2023-08-27 14:50:37');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -634,24 +634,24 @@ DROP TABLE IF EXISTS `vehicles`;
 CREATE TABLE `vehicles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` bigint unsigned DEFAULT NULL,
-  `property_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `license_plate` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vin` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `make` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `year` int NOT NULL,
-  `color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vehicle_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `permit_type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `permit_status` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `start_date` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `end_date` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `property_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `license_plate` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vin` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `make` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `model` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `year` int DEFAULT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vehicle_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `permit_type` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `permit_status` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `start_date` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `end_date` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `vehicles_user_id_foreign` (`user_id`),
   CONSTRAINT `vehicles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -660,7 +660,7 @@ CREATE TABLE `vehicles` (
 
 LOCK TABLES `vehicles` WRITE;
 /*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
-INSERT INTO `vehicles` VALUES (1,135,'Y6Nj1','2245688','123456789','audi','1234567',2003,'rojo','Car','','pending','','','2023-08-22 18:51:47','2023-08-22 18:51:47'),(2,135,'Y6Nj1','1234','pueba','audi','audi',2003,'negro','Car','','pending','','','2023-08-22 18:55:28','2023-08-22 18:55:28');
+INSERT INTO `vehicles` VALUES (1,135,'Y6Nj1','2245688','123456789','audi','1234567',2003,'rojo','Car','','pending','','','2023-08-22 18:51:47','2023-08-22 18:51:47'),(2,135,'Y6Nj1','1234','pueba','audi','audi',2003,'negro','Car','','pending','','','2023-08-22 18:55:28','2023-08-22 18:55:28'),(3,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 20:44:27','2023-08-27 20:44:27'),(4,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 20:44:30','2023-08-27 20:44:30'),(5,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 20:46:22','2023-08-27 20:46:22'),(6,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 20:46:26','2023-08-27 20:46:26'),(7,135,'4nHZC','hjg','ghj','ghjgh','ghj',0,'ghjgh','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 20:59:57','2023-08-27 20:59:57'),(8,135,'4nHZC','hjg','ghj','ghjgh','ghj',0,'ghjgh','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:00:01','2023-08-27 21:00:01'),(9,135,'4nHZC','hjg','ghj','ghjgh','ghj',0,'ghjgh','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:00:03','2023-08-27 21:00:03'),(10,135,'4nHZC','hjg','ghj','ghjgh','ghj',0,'ghjgh','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:00:07','2023-08-27 21:00:07'),(11,135,'4nHZC','hjg','ghj','ghjgh','ghj',0,'ghjgh','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:00:10','2023-08-27 21:00:10'),(12,135,'4nHZC','hjg','ghj','ghjgh','ghj',0,'ghjgh','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:05:47','2023-08-27 21:05:47'),(13,135,'4nHZC','tytu','tyu','yu','tyu',0,'tyu','Truck',NULL,'pending',NULL,NULL,'2023-08-27 21:08:55','2023-08-27 21:08:55'),(14,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:10:08','2023-08-27 21:10:08'),(15,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:18:07','2023-08-27 21:18:07'),(16,135,'4nHZC','rtret','re','ertr','ertre',4535,'erte','Truck',NULL,'pending',NULL,NULL,'2023-08-27 21:18:25','2023-08-27 21:18:25'),(17,135,'4nHZC','rtret4','re4','ertr','ertre',4535,'erte','Truck',NULL,'pending',NULL,NULL,'2023-08-27 21:18:40','2023-08-27 21:18:40'),(18,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:18:55','2023-08-27 21:18:55'),(19,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:19:10','2023-08-27 21:19:10'),(20,135,'4nHZC','tyry','rtytr','tryt','rty',0,'ryty','Car',NULL,'pending',NULL,NULL,'2023-08-27 21:23:02','2023-08-27 21:23:02'),(21,135,'4nHZC','tyry','rtytr','tryt','rty',0,'ryty','Car',NULL,'pending',NULL,NULL,'2023-08-27 21:23:06','2023-08-27 21:23:06'),(22,135,'4nHZC','tyry','rtytr','tryt','rty',0,'ryty','Car',NULL,'pending',NULL,NULL,'2023-08-27 21:23:08','2023-08-27 21:23:08'),(23,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:24:10','2023-08-27 21:24:10'),(24,135,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:24:14','2023-08-27 21:24:14'),(25,135,'4nHZC','uuu','uuu',NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:26:56','2023-08-27 21:26:56'),(26,135,'4nHZC','uuuu','uuuu','uuu','uuuu',566,'uuu','Car',NULL,'pending',NULL,NULL,'2023-08-27 21:27:14','2023-08-27 21:27:14'),(27,135,'4nHZC','4535','54345','3454','45',3453,'345','Car',NULL,'pending',NULL,NULL,'2023-08-27 21:29:20','2023-08-27 21:29:20'),(28,135,'4nHZC',NULL,'dd',NULL,NULL,NULL,NULL,NULL,NULL,'pending',NULL,NULL,'2023-08-27 21:45:22','2023-08-27 21:45:22'),(29,135,'4nHZC','dfg','fg','dfg','fg',2002,'df','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:47:54','2023-08-27 21:47:54'),(30,135,'4nHZC','dfgt','fgt','dfg','fg',2002,'df','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:48:17','2023-08-27 21:48:17'),(31,135,'4nHZC','retrt','erte','rter','ert',2022,'ertert','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:50:06','2023-08-27 21:50:06'),(32,135,'4nHZC','vcxv','xcvv','cxv','xcvx',2022,'xcvc','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:51:24','2023-08-27 21:51:24'),(33,135,'4nHZC','vcxvdd','xcvvdd','cxv','xcvx',2022,'xcvc','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:53:55','2023-08-27 21:53:55'),(34,135,'4nHZC','yjy','yjy','yj','rty',45,'4534','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:54:29','2023-08-27 21:54:29'),(35,135,'4nHZC','fgfd','df','dfg','fg',564,'fdg','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 21:57:27','2023-08-27 21:57:27'),(36,135,'4nHZC','gfgfd','dfg','dfg','fg',564,'fdg','Motorcycle',NULL,'pending',NULL,NULL,'2023-08-27 22:03:12','2023-08-27 22:03:12');
 /*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -680,7 +680,7 @@ CREATE TABLE `visitor_settings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=140 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -689,7 +689,7 @@ CREATE TABLE `visitor_settings` (
 
 LOCK TABLES `visitor_settings` WRITE;
 /*!40000 ALTER TABLE `visitor_settings` DISABLE KEYS */;
-INSERT INTO `visitor_settings` VALUES (1,'visitor_name','1','form',15,NULL,NULL),(2,'visitor_email','1','form',15,NULL,NULL),(3,'visitor_phone','1','form',15,NULL,NULL),(4,'visitor_language','1','form',15,NULL,NULL),(5,'vin','1','form',15,NULL,NULL),(6,'license_plate','1','form',15,NULL,NULL),(7,'year','1','form',15,NULL,NULL),(8,'make','1','form',15,NULL,NULL),(9,'model','1','form',15,NULL,NULL),(10,'color','1','form',15,NULL,NULL),(11,'vehicle_type','1','form',15,NULL,NULL),(12,'resident_name','1','form',15,NULL,NULL),(13,'resident_unit_number','1','form',15,NULL,NULL),(14,'resident_email','1','form',15,NULL,NULL),(15,'resident_phone','1','form',15,NULL,NULL),(16,'resident_registration','1','form',15,NULL,NULL),(17,'valid_form','1','form',15,NULL,NULL),(18,'required_visitor_name','1','form',15,NULL,NULL),(19,'required_visitor_email','1','form',15,NULL,NULL),(20,'required_visitor_phone','1','form',15,NULL,NULL),(21,'required_visitor_language','1','form',15,NULL,NULL),(22,'required_vin','1','form',15,NULL,NULL),(23,'required_license_plate','1','form',15,NULL,NULL),(24,'required_year','1','form',15,NULL,NULL),(25,'required_make','1','form',15,NULL,NULL),(26,'required_model','1','form',15,NULL,NULL),(27,'required_color','1','form',15,NULL,NULL),(28,'required_vehicle_type','1','form',15,NULL,NULL),(29,'required_resident_name','1','form',15,NULL,NULL),(30,'required_resident_unit_number','1','form',15,NULL,NULL),(31,'required_resident_email','1','form',15,NULL,NULL),(32,'required_resident_phone','1','form',15,NULL,NULL),(33,'required_resident_registration','1','form',15,NULL,NULL),(34,'required_valid_form','1','form',15,NULL,NULL),(35,'validation_resident_name','1','form',15,NULL,NULL),(36,'validation_resident_unit_number','1','form',15,NULL,NULL),(37,'validation_resident_email','1','form',15,NULL,NULL),(38,'validation_resident_phone','1','form',15,NULL,NULL),(39,'validation_resident_registration','1','form',15,NULL,NULL),(40,'total','20','setting',15,NULL,NULL),(41,'hours','15','setting',15,NULL,NULL),(42,'limit','12','setting',15,NULL,NULL),(43,'days','10','setting',15,NULL,NULL);
+INSERT INTO `visitor_settings` VALUES (40,'total','20','setting',15,NULL,NULL),(41,'hours','15','setting',15,NULL,NULL),(42,'limit','12','setting',15,NULL,NULL),(43,'days','10','setting',15,NULL,NULL),(44,'visitor_name','1','form',19,NULL,NULL),(45,'visitor_email','1','form',19,NULL,NULL),(46,'visitor_phone','1','form',19,NULL,NULL),(47,'visitor_language','1','form',19,NULL,NULL),(48,'vin','1','form',19,NULL,NULL),(49,'license_plate','1','form',19,NULL,NULL),(50,'year','1','form',19,NULL,NULL),(51,'make','1','form',19,NULL,NULL),(52,'model','1','form',19,NULL,NULL),(53,'color','1','form',19,NULL,NULL),(54,'vehicle_type','1','form',19,NULL,NULL),(55,'resident_name','1','form',19,NULL,NULL),(56,'resident_unit_number','1','form',19,NULL,NULL),(57,'resident_email','1','form',19,NULL,NULL),(58,'resident_phone','1','form',19,NULL,NULL),(59,'resident_registration','1','form',19,NULL,NULL),(60,'valid_from','1','form',19,NULL,NULL),(61,'required_visitor_name','1','form',19,NULL,NULL),(62,'required_visitor_email','1','form',19,NULL,NULL),(63,'required_visitor_phone','1','form',19,NULL,NULL),(64,'required_visitor_language','1','form',19,NULL,NULL),(65,'required_vin','1','form',19,NULL,NULL),(66,'required_license_plate','1','form',19,NULL,NULL),(67,'required_year','1','form',19,NULL,NULL),(68,'required_make','1','form',19,NULL,NULL),(69,'required_model','1','form',19,NULL,NULL),(70,'required_color','1','form',19,NULL,NULL),(71,'required_vehicle_type','1','form',19,NULL,NULL),(72,'required_resident_name','1','form',19,NULL,NULL),(73,'required_resident_unit_number','1','form',19,NULL,NULL),(74,'required_resident_email','1','form',19,NULL,NULL),(75,'required_resident_phone','1','form',19,NULL,NULL),(76,'required_resident_registration','1','form',19,NULL,NULL),(77,'required_valid_from','1','form',19,NULL,NULL),(78,'validation_resident_name','1','form',19,NULL,NULL),(79,'validation_resident_unit_number','1','form',19,NULL,NULL),(80,'validation_resident_email','1','form',19,NULL,NULL),(81,'validation_resident_phone','1','form',19,NULL,NULL),(82,'validation_resident_registration','1','form',19,NULL,NULL),(122,'visitor_name','1','form',15,NULL,NULL),(123,'visitor_phone','1','form',15,NULL,NULL),(124,'license_plate','1','form',15,NULL,NULL),(125,'year','1','form',15,NULL,NULL),(126,'make','1','form',15,NULL,NULL),(127,'model','1','form',15,NULL,NULL),(128,'color','1','form',15,NULL,NULL),(129,'vehicle_type','1','form',15,NULL,NULL),(130,'valid_from','0','form',15,NULL,NULL),(131,'required_visitor_name','1','form',15,NULL,NULL),(132,'required_visitor_phone','1','form',15,NULL,NULL),(133,'required_license_plate','1','form',15,NULL,NULL),(134,'required_year','1','form',15,NULL,NULL),(135,'required_make','1','form',15,NULL,NULL),(136,'required_model','1','form',15,NULL,NULL),(137,'required_color','1','form',15,NULL,NULL),(138,'required_vehicle_type','1','form',15,NULL,NULL),(139,'required_valid_from','1','form',15,NULL,NULL);
 /*!40000 ALTER TABLE `visitor_settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -702,24 +702,24 @@ DROP TABLE IF EXISTS `visitorpasses`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `visitorpasses` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `property_code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `visitor_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `visitor_phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `license_plate` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `year` int NOT NULL,
-  `make` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `vehicle_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `valid_from` datetime NOT NULL,
-  `model` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `property_code` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `visitor_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `visitor_phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `license_plate` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `year` int DEFAULT NULL,
+  `make` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `vehicle_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `valid_from` datetime DEFAULT NULL,
+  `model` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `user_id` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `visitorpasses_user_id_foreign` (`user_id`),
   CONSTRAINT `visitorpasses_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -728,6 +728,7 @@ CREATE TABLE `visitorpasses` (
 
 LOCK TABLES `visitorpasses` WRITE;
 /*!40000 ALTER TABLE `visitorpasses` DISABLE KEYS */;
+INSERT INTO `visitorpasses` VALUES (10,'4nHZC','gffh',NULL,'fgh',2015,'fgh',NULL,'Car',NULL,'fgh','pending',NULL,NULL,135),(11,'4nHZC','gffh','fghg','fgh',2015,'fgh','fghg','Car',NULL,'fgh','pending','2023-08-27 19:38:52','2023-08-27 19:38:52',135),(12,'4nHZC','gffh','fghg','fgh',2015,'fgh','fghg','Car','2023-08-27 15:45:00','fgh','pending','2023-08-27 19:45:00','2023-08-27 19:45:00',135),(13,'4nHZC','ghfh','gfhgf','fgh',546,'567','56765','Motorcycle','2023-08-27 15:54:00','657','pending','2023-08-27 19:54:00','2023-08-27 19:54:00',135),(14,'4nHZC','rtytry','rtytr','rtyr',566,'456','456','Motorcycle','2023-08-27 15:54:50','456','pending','2023-08-27 19:54:50','2023-08-27 19:54:50',135),(15,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-08-27 16:20:52',NULL,'pending','2023-08-27 20:20:52','2023-08-27 20:20:52',135),(16,'4nHZC','332','dfg','dfgg',1909,'5465','45656','Motorcycle','2023-08-27 16:21:03','5465','pending','2023-08-27 20:21:03','2023-08-27 20:21:03',135),(17,'4nHZC','332','dfg','dfgg',1909,'5465','45656','Motorcycle','2023-08-27 16:38:39','5465','pending','2023-08-27 20:38:39','2023-08-27 20:38:39',135),(18,'4nHZC','332','dfg','dfgg',1909,'5465','45656','Motorcycle','2023-08-27 16:38:44','5465','pending','2023-08-27 20:38:44','2023-08-27 20:38:44',135),(19,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-08-27 16:41:24',NULL,'pending','2023-08-27 20:41:24','2023-08-27 20:41:24',135),(20,'4nHZC',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-08-27 16:41:57',NULL,'pending','2023-08-27 20:41:57','2023-08-27 20:41:57',135),(21,'4nHZC','err','wer','wer',34,'etr','ertr','Car','2023-08-27 17:51:42','ert','pending','2023-08-27 21:51:42','2023-08-27 21:51:42',135),(22,'4nHZC','err','wer','wer',34,'etr','ertr','Car','2023-08-27 17:51:45','ert','pending','2023-08-27 21:51:45','2023-08-27 21:51:45',135),(23,'4nHZC','err','wer','wer',34,'etr','ertr','Car','2023-08-27 17:51:48','ert','pending','2023-08-27 21:51:48','2023-08-27 21:51:48',135),(24,'4nHZC','gfh','ghf','fgh',2023,'fgh','fgh','Truck','2023-08-27 18:03:39','fgh','pending','2023-08-27 22:03:39','2023-08-27 22:03:39',135);
 /*!40000 ALTER TABLE `visitorpasses` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -740,4 +741,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-22 16:00:28
+-- Dump completed on 2023-08-27 20:09:08
