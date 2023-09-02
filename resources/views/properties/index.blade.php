@@ -77,7 +77,7 @@
                 <div class="inline-flex space-x-4">
 
                     <div class="inline-flex space-x-4">
-
+                        @if (!Auth::user()->hasRole('Dispatcher'))
                         <a href="{{ route('utiles_excel') }}" class="btn custom-btn-lg">
 
                             <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
@@ -123,7 +123,7 @@
 
                     </div>
 
-
+                    @endif
 
                 </div>
 
@@ -284,91 +284,54 @@
 
 
                                     <td class="px-4 py-2 text-center">
-
+                                        @if (!Auth::user()->hasRole('Dispatcher'))
                                         <div class="flex justify-center space-x-2">
-
                                             <a href="{{ route('properties.edit', $property->id) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-
                                                 <i class="fa fa-edit"></i>
-
                                             </a>
-
                                             <a href="{{ route('properties.vehicles', $property->property_code) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-
                                                 <i class="fa fa-car"></i>
-
                                             </a>
-
                                             <a href="{{ route('properties.users', $property->property_code) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-
                                                 <i class="fas fa-users"></i>
-
                                             </a>
+                                            @if (!Auth::user()->hasRole('Manager dispatcher'))
                                             <a href="{{ route('properties.destroy', $property->id) }}"
                                                 class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                 onclick="event.preventDefault(); showConfirmation('{{ $property->id }}');">
-
                                                 <i class="fa fa-trash-alt"></i>
-
                                             </a>
-
-                                            <script>
-                                                function showConfirmation(propertyId) {
-
-                                                    Swal.fire({
-
-                                                        title: 'Are you sure?',
-
-                                                        text: 'You will not be able to recover this property!',
-
-                                                        icon: 'warning',
-
-                                                        showCancelButton: true,
-
-                                                        confirmButtonColor: '#d33',
-
-                                                        cancelButtonColor: '#3085d6',
-
-                                                        confirmButtonText: 'Yes, delete it!',
-
-                                                        cancelButtonText: 'Cancel'
-
-                                                    }).then((result) => {
-
-                                                        if (result.isConfirmed) {
-
-                                                            document.getElementById('delete-form-' + propertyId).submit();
-
-                                                        }
-
-                                                    });
-
-                                                }
-                                            </script>
-
-
-
-
-
-                                            <form id="delete-form-{{ $property->id }}"
-                                                action="{{ route('properties.destroy', $property->id) }}"
-                                                method="POST" style="display: none;">
-
-                                                @csrf
-
-                                                @method('DELETE')
-
-                                            </form>
-
-
-
+                                            @endif
                                         </div>
-
+                                        @endif
+                                        <script>
+                                            function showConfirmation(propertyId) {
+                                                Swal.fire({
+                                                    title: 'Are you sure?',
+                                                    text: 'You will not be able to recover this property!',
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#d33',
+                                                    cancelButtonColor: '#3085d6',
+                                                    confirmButtonText: 'Yes, delete it!',
+                                                    cancelButtonText: 'Cancel'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('delete-form-' + propertyId).submit();
+                                                    }
+                                                });
+                                            }
+                                        </script>
+                                        <form id="delete-form-{{ $property->id }}"
+                                            action="{{ route('properties.destroy', $property->id) }}" method="POST" style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
                                     </td>
-
+                                    
                                 </tr>
                             @endforeach
 

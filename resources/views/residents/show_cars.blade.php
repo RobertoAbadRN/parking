@@ -34,14 +34,14 @@
                     // Obtener el ID del usuario desde la URL actual
                     $userId = request()->segment(2); // El segundo segmento de la URL después de "residents"
                 @endphp
-            
+
                 <a href="{{ route('addvehicleresident', ['vehicleId' => $userId]) }}"
                     class="btn bg-primary text-white hover:bg-primary/80 focus:bg-primary/80 active:bg-primary/90">
                     Add Vehicle
                 </a>
             </div>
-            
-            
+
+
             <!-- Basic Table -->
             <div class="card px-4 pb-4 sm:px-5">
                 <div class="container mx-auto">
@@ -66,13 +66,21 @@
                                 <tr>
                                     <td class="px-4 py-2">
                                         <button id="boton-modelo-{{ $vehicle->id }}"
-                                            class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
-                                            style="background-color: #0EA5E9;"
+                                            class="btn bg-slate-150 font-medium text-white text-sm hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
+                                            style="background-color: #0EA5E9; font-size: 12px;"
                                             onclick="toggleModal({{ $vehicle->id }})">
-
-                                            <i class="fa fa-check"></i>
-
+                                        
+                                            <i class="fa fa-check"></i> <span class="text-white">APPROVE</span>
+                                        
                                         </button>
+                                        
+
+                                        @if ($vehicle->permit_status === 'suspended')
+                                            <a href="{{ route('send.suspended.email', ['vehicleId' => $vehicle->id]) }}"
+                                                class="btn h-8 w-8 p-0 text-red-500 hover:bg-red-500/20 focus:bg-red-500/20 active:bg-red-500/25">
+                                                <i class="fa fa-envelope"></i>
+                                            </a>
+                                        @endif
 
                                         <!-- Ventana modal -->
 
@@ -132,6 +140,7 @@
                                             </div>
 
                                         </div>
+
                                     </td>
 
                                     <script>

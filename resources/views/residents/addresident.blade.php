@@ -152,9 +152,7 @@
                     </p>
                     <form action="{{ route('resident.store') }}" method="POST">
                         @csrf
-
                         <div class="mb-4 pt-5">
-
                             <label class="relative flex">
 
                                 <input
@@ -286,9 +284,6 @@
                         </div>
 
 
-
-
-
                         <div class="mb-4">
 
                             <label class="relative flex">
@@ -328,7 +323,7 @@
                                     @foreach ($properties as $property)
                                         <option value="{{ $property->id }}"
                                             data-property-code="{{ $property->property_code }}">
-                                            {{ $property->address }}</option>
+                                            {{ $property->name }}</option>
                                     @endforeach
                                 </select>
                             </label>

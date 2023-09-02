@@ -1,4 +1,5 @@
 <x-app-layout title="List of vehicles" is-sidebar-open="true" is-header-blur="true">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
@@ -11,6 +12,12 @@
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
             </div>
         </div>
+        @if (session('error-message'))
+            <div class="text-red-600 font-bold">
+                {{ session('error-message') }}
+            </div>
+        @endif
+
         @if (session('success_message'))
             <div id="success-message" class="alert flex rounded-lg border border-success px-4 py-4 text-success sm:px-5">
                 {{ session('success_message') }}
@@ -72,6 +79,14 @@
                             <i class="fa-solid fa-upload"></i>
                             &nbsp; Archivos cargados
                         </a>
+
+                        <button id="sendMassEmailButton" type="button"
+                            class="btn bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90"
+                            style="width: auto; height: 40px; margin-right: 10px;">
+                            <i class="fa-solid fa-envelope"></i>
+                            &nbsp; Enviar Correos Masivos
+                        </button>
+
                     </div>
                 </div>
             </div>
@@ -83,12 +98,14 @@
                     <table id="residents" class="table-auto min-w-full">
                         <thead>
                             <tr>
+                                <th class="px-4 py-2">Select</th>
+                                <th class="px-4 py-2">Emails</th>
+                                <th class="px-4 py-2">Qr-code</th>
                                 <th class="px-4 py-2">Resident Name</th>
                                 <th class="px-4 py-2">Property</th>
                                 <th class="px-4 py-2">Apart/Unit</th>
                                 <th class="px-4 py-2">Email</th>
                                 <th class="px-4 py-2">Phone</th>
-                                <th class="px-4 py-2">Qr-code</th>
                                 <th class="px-4 py-2">Lease Expiration</th>
                                 <th class="px-4 py-2">Vehicles Per Apartment</th>
                                 <th class="px-4 py-2">Visitors Per Apartment</th>
@@ -101,20 +118,31 @@
                         <tbody>
                             @foreach ($residents as $resident)
                                 <tr>
+
                                     <td class="px-4 py-2">
-                                        {{ $resident->name }}
+                                        <input type="checkbox" name="selectedResidents[]" value="{{ $resident->id }}">
                                     </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->department->property->name }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->apart_unit }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->email }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $resident->phone }}
+                                    <td class="px-2 py-1">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('send-email-expiredemail', ['id' => $resident->id]) }}"
+                                                class="px-1 py-0.5 rounded bg-blue-500 text-xxs text-white font-medium hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700/90">
+                                                Expired
+                                            </a>
+                                            <form action="{{ route('send-email-activate', ['id' => $resident->id]) }}"
+                                                method="get">
+                                                <button
+                                                    class="px-1 py-0.5 rounded bg-red-500 text-xxs text-white font-medium hover:bg-red-700 focus:bg-red-700 active:bg-red-700/90"
+                                                    type="submit">
+                                                    Activate
+                                                </button>
+                                            </form>
+
+                                            <a href="{{ route('send-email-suspend', ['id' => $resident->id]) }}"
+                                                class="px-1 py-0.5 rounded bg-yellow-500 text-xxs text-white font-medium hover:bg-yellow-700 focus:bg-yellow-700 active:bg-yellow-700/90">
+                                                Suspend
+                                            </a>
+
+                                        </div>
                                     </td>
                                     <td class="px-4 py-2">
                                         <button id="boton-modelo-{{ $resident->id }}"
@@ -153,7 +181,7 @@
 
                                                     </h4>
                                                     <div class="visible-print flex justify-center items-center">
-                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/register?user_id=' . $resident->id) !!}
+                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/registrations?user_id=' . $resident->id) !!}
                                                     </div>
                                                     <p class="my-2">Scan me to return to the original page.</p>
 
@@ -170,6 +198,25 @@
                                             </div>
 
                                         </div>
+                                    </td>
+
+
+
+
+                                    <td class="px-4 py-2">
+                                        {{ $resident->name }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $resident->department->property->name }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $resident->apart_unit }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $resident->email }}
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        {{ $resident->phone }}
                                     </td>
 
                                     <script>
@@ -246,7 +293,8 @@
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-download"></i>
                                             </a>
-                                            <a href="{{ route('show_resident_cars', ['residentId' => $resident->id]) }}" class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                            <a href="{{ route('show_resident_cars', ['residentId' => $resident->id]) }}"
+                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-car"></i>
                                             </a>
                                             <form id="delete-form-{{ $resident->id }}"
@@ -276,6 +324,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </form>
                 </div>
             </div>
         </div>
@@ -284,6 +333,36 @@
             $(document).ready(function() {
                 $('#residents').DataTable({
                     responsive: true
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const sendMassEmailButton = document.getElementById("sendMassEmailButton");
+
+                sendMassEmailButton.addEventListener("click", function() {
+                    const selectedResidents = Array.from(document.querySelectorAll(
+                            "input[name='selectedResidents[]']:checked"))
+                        .map(input => input.value);
+
+                    if (selectedResidents.length > 0) {
+                        axios.post("{{ route('send_mass_email') }}", {
+                                selectedResidents: selectedResidents
+                            })
+                            .then(function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.data.message,
+                                });
+                            })
+                            .catch(function(error) {
+                                console.error(error);
+                                alert("An error occurred in the request.");
+                            });
+                    } else {
+                        alert("Select at least one resident to send mass emails.");
+                    }
                 });
             });
         </script>

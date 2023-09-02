@@ -10,20 +10,27 @@ use Illuminate\Queue\SerializesModels;
 class SignAgreement extends Mailable {
     use Queueable, SerializesModels;
     public $user;
-    public $plainPassword;
+    public $englishLink;
+    public $spanishLink;
+    public $token;
 
-    public function __construct($user, $link) {
+    public function __construct($user, $englishLink, $spanishLink, $token) {
         $this->user = $user;
-        $this->link = $link;
+        $this->englishLink = $englishLink;
+        $this->spanishLink = $spanishLink;
+        $this->token = $token;
     }
 
     public function build()
     {
         return $this->view('emails.sign-agreement')
                     ->with([
-                        'user' => $this->user,
-                        'link' => $this->link,
+                    'user' => $this->user,
+                    'englishLink' => $this->englishLink,
+                    'spanishLink' => $this->spanishLink,
+                    'token' => $this->token,
                     ]);
     }
     
 }
+

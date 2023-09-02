@@ -5,17 +5,17 @@ use App\Http\Controllers\DocusignController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\RecidentsController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TermsAndConditionsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VisitorsController;
-use App\Http\Controllers\TermsAndConditionsController;
-use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -134,7 +134,6 @@ Route::middleware('auth')->group(function () {
         ->name('propertiesUser');
     Route::get('/search-residents', [PropertyController::class, 'searchResidents'])->name('search.residents');
 
-
     /**
      * ==============================
      *       @Router - users/
@@ -152,7 +151,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/{user}', [UsersController::class, 'resetPassword'])->name('user.resetPassword');
     Route::put('/users/{user}/ban', [UsersController::class, 'banUser'])->name('user.ban');
     Route::put('/users/{user}/toggleban', [UsersController::class, 'toggleBan'])->name('user.toggleBan');
-
 
     /**
      * ==============================
@@ -180,7 +178,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/download-terms-pdf/{resident}', [RecidentsController::class, 'downloadTermsPDF'])->name('download.terms.pdf');
     Route::post('/update_reserved_space_visitors/{departmentId}', [RecidentsController::class, 'updateReservedSpaceVisitors'])->name('update_reserved_space_visitors');
 
-
     Route::get('/vehiclesadd/{user_id}', [RecidentsController::class, 'addResidentvehicles'])->name('addResidentvehicles');
     Route::post('/residents/storeResidentVehicle', [RecidentsController::class, 'storeResidentVehicle'])->name('storeResidentVehicle');
     Route::post('/visitors/store', [RecidentsController::class, 'storeVisitor'])->name('store.visitor');
@@ -189,6 +186,12 @@ Route::middleware('auth')->group(function () {
     Route::get('residents/{residentId}/cars', [RecidentsController::class, 'showCars'])->name('show_resident_cars');
     Route::post('/update-vehicle', [RecidentsController::class, 'updateVehicle'])->name('update.vehicle');
     Route::get('/addvehicle/{vehicleId}', [RecidentsController::class, 'addVehicle'])->name('addvehicleresident');
+    Route::get('/send-suspended-email/{vehicleId}', [RecidentsController::class, 'sendSuspendedEmail'])
+        ->name('send.suspended.email');
+
+    Route::get('/residents/edit-vehicle/{id}', [RecidentsController::class, 'editResidentVehicle'])->name('editResidentVehicle');
+    Route::put('/residents/update-vehicle/{id}', [RecidentsController::class, 'updateResidentVehicle'])->name('updateResidentVehicle');
+    Route::delete('/residents/delete-vehicle/{id}', [RecidentsController::class, 'deleteResidentVehicle'])->name('deleteResidentVehicle');
 
     /**
      * ==============================
@@ -208,10 +211,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
     Route::post('/suspend-vehicle/{id}', [VehiclesController::class, 'suspendVehicle'])->name('vehicles.suspend');
 
-
-
-
-
     /**
      * ==============================
      *       @Router - visitors_pass/
@@ -225,8 +224,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/excelvisitorsid/{property_code}', [VisitorsController::class, 'excel_visitorforid'])->name('excel_visitorforid');
     Route::delete('/visitor/{id}', [VisitorsController::class, 'delete'])->name('delete-visitor');
 
-
-     /**
+    /**
 
      * ==============================
 
@@ -235,13 +233,37 @@ Route::middleware('auth')->group(function () {
      * ==============================
 
      */
-    Route::get('/documentos', [DocumentsController::class, 'index'])->name('documents');
-    Route::get('/documentos/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
-    Route::get('/documentos/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
-    Route::get('/documentos/property', [DocumentsController::class, 'property'])->name('documents.property');
-    Route::post('/documentos', [DocumentsController::class, 'store'])->name('documents.store');
-    Route::put('/documentos/{id}', [DocumentsController::class, 'update'])->name('documents.update');
-    Route::delete('/documentos/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
+    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
+    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
+    Route::get('/documents/property', [DocumentsController::class, 'property'])->name('documents.property');
+    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
+    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+
+
+    /*Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
+    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
+    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
+    // Ruta para mostrar el formulario de edición
+    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
+    // Ruta para enviar los datos del formulario y actualizar el documento
+    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
+    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+
+    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
+
+    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
+
+    // Ruta para mostrar el formulario de edición
+
+    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
+
+    // Ruta para enviar los datos del formulario y actualizar el documento
+
+    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
+
+    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');*/
 
     /**
      * ==============================
@@ -271,6 +293,15 @@ Route::middleware('auth')->group(function () {
 
     /**
      * ==============================
+     *       @Router - profile/
+     * ==============================
+     */
+
+    // Ruta para cargar el formulario modal de edición del perfil
+    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+
+    /**
+     * ==============================
      *       @Router - Docusign
      * ==============================
      */
@@ -288,8 +319,16 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::get('/send-email/{id}/{property_code}/{email}', [EmailController::class, 'sendEmail'])->name('send.email');
-Route::get('/terms-and-conditions/{token}', [TermsAndConditionsController::class, 'openTermsAndConditions'])
-    ->name('terms-and-conditions');
+Route::post('/send_mass_email', [EmailController::class, 'sendMassEmail'])->name('send_mass_email');
+Route::get('/send-email-expiredEmail/{id}', [EmailController::class, 'sendExpiredEmail'])->name('send-email-expiredemail');
+Route::get('/send-email-activate/{id}', [EmailController::class, 'sendActivateEmail'])->name('send-email-activate');
+Route::get('/send-email-suspend/{id}', [EmailController::class, 'sendSuspendEmail'])->name('send-email-suspend');
+
+Route::get('/terms-and-conditions-english/{token}/{language}', [TermsAndConditionsController::class, 'openTermsAndConditions'])
+    ->name('terms-and-conditions-english');
+
+Route::get('/terms-and-conditions-spanish/{token}/{language}', [TermsAndConditionsController::class, 'openTermsAndConditions'])
+    ->name('terms-and-conditions-spanish');
 
 Route::get('/show-terms/{token}', [TermsAndConditionsController::class, 'showTermsAndConditions'])
     ->name('show-terms');
@@ -297,25 +336,24 @@ Route::get('/show-terms/{token}', [TermsAndConditionsController::class, 'showTer
 Route::post('/accept-terms/{token}', [TermsAndConditionsController::class, 'acceptTermsAndConditions'])
     ->name('accept-terms');
 
-    Route::get('/error', function () {
-        return view('error')->with('message', 'Invalid token'); // Puedes personalizar el mensaje de acuerdo a tus necesidades
-    })->name('error-route');
+Route::get('/error', function () {
+    return view('error')->with('message', 'Invalid token'); // Puedes personalizar el mensaje de acuerdo a tus necesidades
+})->name('error-route');
 
+/**
 
- /**
+ * ==============================
 
-     * ==============================
+ *       @Router - Docusign
 
-     *       @Router - Docusign
+ * ==============================
 
-     * ==============================
+ */
 
-     */
+Route::get('docusign', [DocusignController::class, 'index'])->name('docusign');
 
-    Route::get('docusign', [DocusignController::class, 'index'])->name('docusign');
+Route::get('connect-docusign', [DocusignController::class, 'connectDocusign'])->name('connect.docusign');
 
-    Route::get('connect-docusign', [DocusignController::class, 'connectDocusign'])->name('connect.docusign');
+Route::get('docusign/callback', [DocusignController::class, 'callback'])->name('docusign.callback');
 
-    Route::get('docusign/callback', [DocusignController::class, 'callback'])->name('docusign.callback');
-
-    Route::get('sign-document', [DocusignController::class, 'signDocument'])->name('docusign.sign');
+Route::get('sign-document', [DocusignController::class, 'signDocument'])->name('docusign.sign');

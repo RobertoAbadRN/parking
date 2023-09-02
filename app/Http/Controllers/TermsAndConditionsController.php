@@ -11,8 +11,9 @@ use Illuminate\Http\Request;
 
 class TermsAndConditionsController extends Controller
 {
-    public function openTermsAndConditions($token)
+    public function openTermsAndConditions(Request $request, $token, $language)
     {
+       // dd($request);
         $user = User::whereHas('department', function ($query) use ($token) {
             $query->where('agreement_token', $token);
         })->first();
@@ -30,11 +31,15 @@ class TermsAndConditionsController extends Controller
                 $department->save();
             }
     
-            // Load the terms and conditions view
-            return view('terms_and_conditions', compact('user'));
+            // Load the terms and conditions view based on the selected language
+            if ($language === 'english') {
+                return view('terms_and_conditions_english', compact('user'));
+            } elseif ($language === 'spanish') {
+                return view('terms_and_conditions_spanish', compact('user'));
+            }
         } else {
             // Handle the case when the token is not valid
-            return redirect()->route('otra-ruta-de-error');
+            return redirect()->route('error-route');
         }
     }
     

@@ -81,6 +81,7 @@
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100">
                         Edit User
                     </p>
+                    
                     <form action="{{ route('users.update', $user->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -125,46 +126,7 @@
                             @error('email')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
-                        </div>
-
-
-
-
-                        <div class="mb-4">
-                            <label class="relative flex">
-                                <select class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                        name="role">
-                                    <option value="" disabled selected>Select role</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{{ $role->id }}" {{ in_array($role->id, $userRole) ? 'selected' : '' }}>
-                                            {{ $role->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            @error('role')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="mb-4" id="multiplePropertySelect">
-                            <label class="relative flex">
-                                <select id="multiple_properties"
-                                        class="form-select peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                        name="properties[]" multiple="multiple">
-                                    <option value="" disabled>Select property</option>
-                                    @foreach ($properties as $propertyId => $name)
-                                        <option value="{{ $propertyId }}"
-                                            {{ in_array($propertyId, $userProperties) ? 'selected' : '' }}>
-                                            {{ $name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </label>
-                            @error('properties')
-                                <span class="text-tiny+ text-error">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        </div>                       
 
                         <div>
                             <button type="button"
@@ -178,6 +140,8 @@
                             </button>
                         </div>
                     </form>
+
+
                 </div>
             </div>
         </div>
@@ -215,3 +179,4 @@
         
     </main>
 </x-app-layout>
+
