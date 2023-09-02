@@ -502,24 +502,24 @@ class VehiclesController extends Controller
     }
 
     public function suspendVehicle($id)
-    {
-        $vehicle = Vehicle::find($id);
+{
+    $vehicle = Vehicle::find($id);
 
-        if ($vehicle) {
-            $vehicle->update(['permit_status' => 'suspended']);
+    if ($vehicle) {
+        $vehicle->update(['permit_status' => 'suspended']);
 
-            // Obtener todos los inspectores de estacionamiento y enviarles un correo electrónico
-            $parkingInspectors = User::where('access_level', 'parking_inspector')->get();
+        // Obtener todos los inspectores de estacionamiento y enviarles un correo electrónico
+        $parkingInspectors = User::role('Parking inspector')->get();
 
-            foreach ($parkingInspectors as $inspector) {
-                Mail::to($inspector->email)->send(new RemolcarAutoMail($vehicle->license_plate));
-            }
-
-            return redirect()->back()->with('success', 'Vehicle suspended and email sent.');
+        foreach ($parkingInspectors as $inspector) {
+            Mail::to($inspector->email)->send(new RemolcarAutoMail($vehicle->license_plate));
         }
 
-        return redirect()->back()->with('error', 'Vehicle not found.');
+        return redirect()->back()->with('success', 'Vehicle suspended and email sent.');
     }
+
+    return redirect()->back()->with('error', 'Vehicle not found.');
+}
     public function updateStatus(Request $request, $vehicleId)
     {
         try {

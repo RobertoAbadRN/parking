@@ -25,15 +25,14 @@ class UsersController extends Controller
             ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
             ->groupBy('users.id')
             ->get();
-    
+
         foreach ($users as $user) {
             $roles = User::find($user->id)->getRoleNames(); // Obtener los roles del usuario
             $user->roles = $roles->implode(', '); // Convertir los roles en una cadena separada por comas
         }
-    
+
         return view('users.index', ['users' => $users]);
     }
-    
 
     /**
      * Show the form for creating a new resource.
@@ -91,12 +90,17 @@ class UsersController extends Controller
         // Obtener el correo electrónico y el usuario del formulario
         $correo = $validatedData['email'];
         $user = $validatedData['user'];
-
+        $role = $request->role; // Get the selected role
         // Generar la contraseña sin encriptar
         $plainPassword = $validatedData['password'];
 
         // Enviar el correo al usuario
-        Mail::to($correo)->send(new NewUserNotification(User::make($validatedData), $plainPassword));
+        // Send the appropriate email to the user based on their role
+        if ($role === 'Property manager') {
+            Mail::to($correo)->send(new PropertyManagerNotification(User::make($validatedData), $plainPassword));
+        } else {
+            Mail::to($correo)->send(new NewUserNotification(User::make($validatedData), $plainPassword));
+        }
 
         // Encriptar la contraseña antes de asignarla al campo 'password' del modelo User
         $validatedData['password'] = bcrypt($validatedData['password']);
@@ -130,8 +134,6 @@ class UsersController extends Controller
         return redirect()->route('users')->with('success_message', 'User created successfully!');
 
     }
-
-   
 
     /**
      * Show the form for editing the specified resource.
@@ -170,7 +172,7 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-         // dd($request->all());
+        // dd($request->all());
         $validatedData = $request->validate([
             'user' => 'required',
             'name' => 'required',

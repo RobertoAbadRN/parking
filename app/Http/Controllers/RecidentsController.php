@@ -75,7 +75,8 @@ class RecidentsController extends Controller
                     'vehicles.make',
                     'vehicles.model',
                     'vehicles.permit_type',
-                    'vehicles.permit_status'
+                    'vehicles.permit_status',
+                    'vehicles.id'
                 )
                 ->get();
 
@@ -278,11 +279,13 @@ class RecidentsController extends Controller
         $department->agreement_token = $token;
         $department->save();
 
-        // Generar el enlace para los términos y condiciones
-        $link = route('terms-and-conditions', ['token' => $token]);
+      // Generar los enlaces para los términos y condiciones en inglés y español
+$linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
+$linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
 
-        // Enviar un correo electrónico
-        Mail::to($user->email)->send(new SignAgreement($user, $link));
+// Enviar un correo electrónico
+Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
+
 
         return redirect()->route('recidents')->with('success', 'Resident registered successfully!');
     }
@@ -523,8 +526,6 @@ class RecidentsController extends Controller
 
     public function storeResidentVehicle(Request $request)
     {
-        //dd($request);
-        // Validar los datos del formulario antes de guardarlos
         $validatedData = $request->validate([
             'property_code' => 'required',
             'user_id' => 'required',
@@ -535,10 +536,33 @@ class RecidentsController extends Controller
             'year' => 'required|integer',
             'color' => 'required',
             'vehicle_type' => 'required',
+            'permit_type' => 'required',
         ]);
+
+        // Obtener el usuario con su departamento usando un join
+        $user = User::join('departments', 'users.id', '=', 'departments.user_id')
+            ->where('users.id', $request->input('user_id'))
+            ->select('users.*', 'departments.reserved_space as reserved_spaces')
+            ->firstOrFail();
+
+        $reservedSpaces = $user->reserved_spaces;
+        //dd($reservedSpaces);
+
+        // Contar la cantidad de vehículos registrados por el usuario
+        $registeredVehiclesCount = Vehicle::where('user_id', $user->id)->count();
+        //dd( $registeredVehiclesCount);
+        if ($registeredVehiclesCount >= $reservedSpaces) {
+            return redirect()->back()->with('error-message', 'You have reached the maximum number of registered vehicles.');
+        }
 
         // Crear un nuevo registro de vehículo residente en la base de datos
         $vehicle = Vehicle::create($validatedData);
+
+        // Envío del correo para estado 'pending to approve'
+        Mail::send('emails.pending_approval', ['property_name' => $user->property_name], function ($message) use ($user) {
+            $message->to($user->email, $user->name)
+                ->subject('Pending Vehicle Approval');
+        });
 
         return redirect()->route('recidents')->with('success-message', 'Resident vehicle added successfully.');
     }
@@ -647,7 +671,30 @@ class RecidentsController extends Controller
 
             $vehicle->start_date = $request->input('start_date');
             $vehicle->end_date = $request->input('end_date');
+
+            // Obtén el usuario con su propiedad usando un join
+            $user = User::join('properties', 'users.property_code', '=', 'properties.property_code')
+                ->where('users.id', $residentId)
+                ->select('users.*', 'properties.name as property_name')
+                ->firstOrFail();
+
+            // Envío del correo para el estado 'active'
+            Mail::send('emails.permit_active', ['property_name' => $user->property_name], function ($message) use ($user) {
+                $message->to($user->email, $user->name)
+                    ->subject('Your Parking Permit is Active');
+            });
         } else {
+            // Envío del correo para el estado 'suspended'
+            $user = User::join('properties', 'users.property_code', '=', 'properties.property_code')
+                ->where('users.id', $residentId)
+                ->select('users.*', 'properties.name as property_name')
+                ->firstOrFail();
+
+            Mail::send('emails.permit_suspended', ['property_name' => $user->property_name], function ($message) use ($user) {
+                $message->to($user->email, $user->name)
+                    ->subject('Your Parking Permit has been Suspended');
+            });
+
             // Si el estado es 'suspended', elimina las fechas
             $vehicle->start_date = null;
             $vehicle->end_date = null;
@@ -671,5 +718,74 @@ class RecidentsController extends Controller
         //dd($property);
         return view('residents.addvehicle', compact('vehicle', 'property'));
     }
+
+    public function sendSuspendedEmail($vehicleId)
+    {
+        $vehicle = Vehicle::findOrFail($vehicleId);
+
+        if ($vehicle->permit_status === 'suspended') {
+            $user = User::find($vehicle->user_id);
+
+            Mail::send('emails.permit_expired', ['property_name' => $user->property_name], function ($message) use ($user) {
+                $message->to($user->email, $user->name)
+                    ->subject('Your Parking Permit has been Suspended');
+            });
+
+            return redirect()->back()->with('success-message', 'Email sent successfully.');
+        }
+
+        return redirect()->back()->with('error-message', 'Failed to send email.');
+    }
+
+
+    public function editResidentVehicle($id)
+{
+    $vehicle = Vehicle::find($id);
+
+    if (!$vehicle) {
+        return redirect()->back()->with('error-message', 'Vehicle not found.');
+    }
+
+    return view('residents.editvehiclesresidents', compact('vehicle')); // Reemplaza 'vehicles.edit' con la ruta de tu vista de edición
+}
+
+
+public function updateResidentVehicle(Request $request, $id)
+{
+    $validatedData = $request->validate([
+        'license_plate' => 'required',
+        'vin' => 'required',
+        'make' => 'required',
+        'model' => 'required',
+        'year' => 'required|integer',
+        'color' => 'required',
+        'vehicle_type' => 'required',
+        'permit_type' => 'required',
+    ]);
+
+    $vehicle = Vehicle::find($id);
+
+    if (!$vehicle) {
+        return redirect()->back()->with('error-message', 'Vehicle not found.');
+    }
+
+    // Actualizar los datos del vehículo con los valores validados
+    $vehicle->update($validatedData);
+
+    return redirect()->route('recidents')->with('success_message', 'Vehicle updated successfully.');
+}
+
+public function deleteResidentVehicle($id)
+{
+    $vehicle = Vehicle::find($id);
+
+    if ($vehicle) {
+        $vehicle->delete();
+        return redirect()->back()->with('success_message', 'Vehicle deleted successfully.');
+    }
+
+    return redirect()->back()->with('error-message', 'Vehicle not found.');
+}
+
 
 }

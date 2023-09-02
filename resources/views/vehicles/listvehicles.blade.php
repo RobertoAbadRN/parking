@@ -235,34 +235,55 @@
                 });
             });
         </script>
-        <script>
-            function sendSuspensionEmail(vehicleId) {
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: 'This will suspend the vehicle and send a notification email to parking inspectors!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, suspend it!',
-                    cancelButtonText: 'Cancel'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Send AJAX request to suspend the vehicle and send the email
-                        axios.post(`/suspend-vehicle/${vehicleId}`)
-                            .then(response => {
-                                // Handle the response if necessary
-                                Swal.fire('Success', 'Vehicle suspended and email sent.', 'success');
-                                // You can also reload the page if needed: location.reload();
-                            })
-                            .catch(error => {
-                                // Handle the error if necessary
-                                Swal.fire('Error', 'An error occurred while processing the request.', 'error');
-                            });
-                    }
-                });
+       <script>
+        function sendSuspensionEmail(vehicleId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This will suspend the vehicle and send a notification email to parking inspectors!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, suspend it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Send AJAX request to suspend the vehicle and send the email
+                    axios.post(`/suspend-vehicle/${vehicleId}`)
+                        .then(response => {
+                            // Handle the response if necessary
+                            Swal.fire('Success', 'Vehicle suspended and email sent.', 'success')
+                                .then(() => {
+                                    if (response.data === 'success') {
+                                        // Reload the chat section using AJAX
+                                        reloadChatSection();
+                                    }
+                                });
+                        })
+                        .catch(error => {
+                            // Handle the error if necessary
+                            Swal.fire('Error', 'An error occurred while processing the request.', 'error');
+                        });
+                }
+            });
+        }
+    
+        function reloadChatSection() {
+            // Use AJAX to reload the chat section
+            var chatSection = document.getElementById('chat-section'); // Replace with the actual ID of the chat section
+            if (chatSection) {
+                axios.get('/get-chat-section') // Replace with the actual endpoint to fetch the chat section content
+                    .then(response => {
+                        chatSection.innerHTML = response.data; // Update the chat section content
+                    })
+                    .catch(error => {
+                        console.error('Error reloading chat section:', error);
+                    });
             }
-        </script>
+        }
+    </script>
+    
+    
 
     </main>
 </x-app-layout>

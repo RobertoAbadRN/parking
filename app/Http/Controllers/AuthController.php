@@ -23,7 +23,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => ['required', 'email', 'exists:users'],
+            'login' => ['required'],
             'password' => ['required'],
         ]);
     
@@ -33,20 +33,25 @@ class AuthController extends Controller
     
         $validated = $validator->validated();
     
-        if (\Auth::attempt(array('email' => $validated['email'], 'password' => $validated['password']))) {
+        // Intentar autenticar por correo electrónico o nombre de usuario
+        $user = User::where(function ($query) use ($validated) {
+            $query->where('email', $validated['login'])
+                ->orWhere('user', $validated['login']);
+        })->first();
+    
+        if ($user && \Auth::attempt(['email' => $user->email, 'password' => $validated['password']])) {
             // Usuario autenticado correctamente
-            $user = \Auth::user();
-            $user->last_login = now();
-            $user->save();
+            $user->update(['last_login' => now()]);
     
             return redirect()->route('index');
-        } else {
-            $validator->errors()->add(
-                'password', 'The password does not match with username'
-            );
-            return redirect()->back()->withErrors($validator)->withInput();
         }
+    
+        $validator->errors()->add(
+            'login', 'Usuario o contraseña incorrectos'
+        );
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+    
 
     public function registerView()
     {

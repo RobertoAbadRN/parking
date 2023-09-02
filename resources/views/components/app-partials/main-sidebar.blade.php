@@ -12,18 +12,19 @@
         <!-- Main Sections Links -->
         <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
             <!-- Dashobards -->
-            <a href="{{ route('dashboards/crm-analytics') }}"
-                class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'dashboards' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
-                x-tooltip.placement.right="'Dashboards'">
-                <!-- Change the fill color to blue for the active icon -->
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M4.18753 11.3788C4.03002 11.759 4 11.9533 4 12V20.0018C4 20.5529 4.44652 21 5 21H8V15C8 13.8954 8.89543 13 10 13H14C15.1046 13 16 13.8954 16 15V21H19C19.5535 21 20 20.5529 20 20.0018V12C20 11.9533 19.97 11.759 19.8125 11.3788C19.6662 11.0256 19.4443 10.5926 19.1547 10.1025C18.5764 9.1238 17.765 7.97999 16.8568 6.89018C15.9465 5.79788 14.9639 4.78969 14.0502 4.06454C13.5935 3.70204 13.1736 3.42608 12.8055 3.2444C12.429 3.05862 12.1641 3 12 3C11.8359 3 11.571 3.05862 11.1945 3.2444C10.8264 3.42608 10.4065 3.70204 9.94978 4.06454C9.03609 4.78969 8.05348 5.79788 7.14322 6.89018C6.23505 7.97999 5.42361 9.1238 4.8453 10.1025C4.55568 10.5926 4.33385 11.0256 4.18753 11.3788ZM10.3094 1.45091C10.8353 1.19138 11.4141 1 12 1C12.5859 1 13.1647 1.19138 13.6906 1.45091C14.2248 1.71454 14.7659 2.07921 15.2935 2.49796C16.3486 3.33531 17.4285 4.45212 18.3932 5.60982C19.3601 6.77001 20.2361 8.0012 20.8766 9.08502C21.1963 9.62614 21.4667 10.1462 21.6602 10.6134C21.8425 11.0535 22 11.5467 22 12V20.0018C22 21.6599 20.6557 23 19 23H16C14.8954 23 14 22.1046 14 21V15H10V21C10 22.1046 9.10457 23 8 23H5C3.34434 23 2 21.6599 2 20.0018V12C2 11.5467 2.15748 11.0535 2.33982 10.6134C2.53334 10.1462 2.80369 9.62614 3.12345 9.08502C3.76389 8.0012 4.63995 6.77001 5.60678 5.60982C6.57152 4.45212 7.65141 3.33531 8.70647 2.49796C9.2341 2.07921 9.77521 1.71454 10.3094 1.45091Z"
-                        fill="{{ $routePrefix === 'dashboards' ? '#007BFF' : '#F0AD4E' }}" />
-                </svg>
-            </a>
-
+            @can('dashboards/crm-analytics')
+                <a href="{{ route('dashboards/crm-analytics') }}"
+                    class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'dashboards' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                    x-tooltip.placement.right="'Dashboards'">
+                    <!-- Change the fill color to blue for the active icon -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M4.18753 11.3788C4.03002 11.759 4 11.9533 4 12V20.0018C4 20.5529 4.44652 21 5 21H8V15C8 13.8954 8.89543 13 10 13H14C15.1046 13 16 13.8954 16 15V21H19C19.5535 21 20 20.5529 20 20.0018V12C20 11.9533 19.97 11.759 19.8125 11.3788C19.6662 11.0256 19.4443 10.5926 19.1547 10.1025C18.5764 9.1238 17.765 7.97999 16.8568 6.89018C15.9465 5.79788 14.9639 4.78969 14.0502 4.06454C13.5935 3.70204 13.1736 3.42608 12.8055 3.2444C12.429 3.05862 12.1641 3 12 3C11.8359 3 11.571 3.05862 11.1945 3.2444C10.8264 3.42608 10.4065 3.70204 9.94978 4.06454C9.03609 4.78969 8.05348 5.79788 7.14322 6.89018C6.23505 7.97999 5.42361 9.1238 4.8453 10.1025C4.55568 10.5926 4.33385 11.0256 4.18753 11.3788ZM10.3094 1.45091C10.8353 1.19138 11.4141 1 12 1C12.5859 1 13.1647 1.19138 13.6906 1.45091C14.2248 1.71454 14.7659 2.07921 15.2935 2.49796C16.3486 3.33531 17.4285 4.45212 18.3932 5.60982C19.3601 6.77001 20.2361 8.0012 20.8766 9.08502C21.1963 9.62614 21.4667 10.1462 21.6602 10.6134C21.8425 11.0535 22 11.5467 22 12V20.0018C22 21.6599 20.6557 23 19 23H16C14.8954 23 14 22.1046 14 21V15H10V21C10 22.1046 9.10457 23 8 23H5C3.34434 23 2 21.6599 2 20.0018V12C2 11.5467 2.15748 11.0535 2.33982 10.6134C2.53334 10.1462 2.80369 9.62614 3.12345 9.08502C3.76389 8.0012 4.63995 6.77001 5.60678 5.60982C6.57152 4.45212 7.65141 3.33531 8.70647 2.49796C9.2341 2.07921 9.77521 1.71454 10.3094 1.45091Z"
+                            fill="{{ $routePrefix === 'dashboards' ? '#007BFF' : '#F0AD4E' }}" />
+                    </svg>
+                </a>
+            @endcan
 
 
             <!-- properties -->
@@ -132,19 +133,19 @@
 
             @can('settings')
                 <a href="{{ route('settings') }}"
-                    class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'elements' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+                    class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ request()->is('settings*') ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                     x-tooltip.placement.right="'Settings'">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M3.59938 6.22413C3.362 4.82033 4.68002 3.64638 6.07306 4.02084L7.12777 4.30435C7.96485 4.52937 8.85305 4.19092 9.31887 3.46943L10.3298 1.90368C11.1077 0.698775 12.8923 0.698773 13.6702 1.90368L14.6811 3.46943C15.1469 4.19092 16.0351 4.52937 16.8722 4.30435L17.9269 4.02084C19.32 3.64638 20.638 4.82033 20.4006 6.22413L20.1405 7.76265C20.0068 8.55335 20.3773 9.3442 21.0747 9.75663L22.0388 10.3268C23.3204 11.0847 23.3204 12.9153 22.0388 13.6732L21.0747 14.2434C20.3773 14.6558 20.0068 15.4467 20.1405 16.2374L20.4006 17.7759C20.638 19.1797 19.32 20.3536 17.9269 19.9792L16.8722 19.6957C16.0351 19.4706 15.1469 19.8091 14.6811 20.5306L13.6702 22.0963C12.8923 23.3012 11.1077 23.3012 10.3298 22.0963L9.31887 20.5306C8.85305 19.8091 7.96485 19.4706 7.12777 19.6957L6.07306 19.9792C4.68002 20.3536 3.362 19.1797 3.59938 17.7759L3.85954 16.2374C3.99324 15.4467 3.62271 14.6558 2.92531 14.2434L1.96116 13.6732C0.679612 12.9153 0.679614 11.0847 1.96116 10.3268L2.92531 9.75663C3.62271 9.3442 3.99324 8.55335 3.85954 7.76265L3.59938 6.22413ZM9.03042 6.14621H6.06085V9.0731L3.09127 12L6.06085 14.9269V17.8538H9.03042L12 20.7807L14.9696 17.8538H17.9392V14.9269L20.9087 12L17.9392 9.0731V6.14621H14.9696L12 3.21931L9.03042 6.14621Z"
-                            fill="{{ $routePrefix === 'settings' ? '#007BFF' : '#F0AD4E' }}" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="{{ request()->is('settings*') ? '#007BFF' : '#F0AD4E' }}"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
                         <path
-                            d="M16.4515 12C16.4515 14.4247 14.4572 16.3903 11.9971 16.3903C9.53706 16.3903 7.54277 14.4247 7.54277 12C7.54277 9.57528 9.53706 7.60965 11.9971 7.60965C14.4572 7.60965 16.4515 9.57528 16.4515 12ZM9.51963 12C9.51963 13.3486 10.6288 14.4419 11.9971 14.4419C13.3654 14.4419 14.4746 13.3486 14.4746 12C14.4746 10.6514 13.3654 9.5581 11.9971 9.5581C10.6288 9.5581 9.51963 10.6514 9.51963 12Z"
-                            fill="#F0AD4E" />
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                        </path>
                     </svg>
                 </a>
             @endcan
+
 
 
             <!-- roles -->
@@ -154,7 +155,7 @@
                     x-tooltip.placement.right="'Roles'">
                     <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                         fill="currentColor" class="w-6 h-6">
-                        <path fill="{{ $routePrefix === 'roles' ? '#007BFF' : '#F0AD4E' }}"
+                        <path fill="{{ request()->is('roles*') ? '#007BFF' : '#F0AD4E' }}"
                             d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
                     </svg>
                 </a>
@@ -183,15 +184,17 @@
                             <div>
                                 <a href="#"
                                     class="text-base font-medium text-slate-700 hover:text-primary focus:text-primary dark:text-navy-100 dark:hover:text-accent-light dark:focus:text-accent-light">
-                                    Travis Fuller
+                                    {{ auth()->user()->name }}
                                 </a>
                                 <p class="text-xs text-slate-400 dark:text-navy-300">
-                                    Product Designer
+                                    {{ auth()->user()->getRoleNames()->implode(', ') }}
                                 </p>
+
                             </div>
+
                         </div>
                         <div class="flex flex-col pt-2 pb-5">
-                            <a href="#"
+                            <a href="{{ route('profile.edit') }}"
                                 class="group flex items-center space-x-3 py-2 px-4 tracking-wide outline-none transition-all hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-navy-600 dark:focus:bg-navy-600">
                                 <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-warning text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
@@ -204,96 +207,15 @@
                                 <div>
                                     <h2
                                         class="font-medium text-slate-700 transition-colors group-hover:text-primary group-focus:text-primary dark:text-navy-100 dark:group-hover:text-accent-light dark:group-focus:text-accent-light">
-                                        Profile
+                                        Edit Profile
                                     </h2>
                                     <div class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                        Your profile setting
+                                        Edit your profile settings
                                     </div>
                                 </div>
                             </a>
-                            <a href="#"
-                                class="group flex items-center space-x-3 py-2 px-4 tracking-wide outline-none transition-all hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-navy-600 dark:focus:bg-navy-600">
-                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-info text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                    </svg>
-                                </div>
 
-                                <div>
-                                    <h2
-                                        class="font-medium text-slate-700 transition-colors group-hover:text-primary group-focus:text-primary dark:text-navy-100 dark:group-hover:text-accent-light dark:group-focus:text-accent-light">
-                                        Messages
-                                    </h2>
-                                    <div class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                        Your messages and tasks
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#"
-                                class="group flex items-center space-x-3 py-2 px-4 tracking-wide outline-none transition-all hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-navy-600 dark:focus:bg-navy-600">
-                                <div
-                                    class="flex h-8 w-8 items-center justify-center rounded-lg bg-secondary text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                </div>
 
-                                <div>
-                                    <h2
-                                        class="font-medium text-slate-700 transition-colors group-hover:text-primary group-focus:text-primary dark:text-navy-100 dark:group-hover:text-accent-light dark:group-focus:text-accent-light">
-                                        Team
-                                    </h2>
-                                    <div class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                        Your team activity
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#"
-                                class="group flex items-center space-x-3 py-2 px-4 tracking-wide outline-none transition-all hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-navy-600 dark:focus:bg-navy-600">
-                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-error text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </div>
-
-                                <div>
-                                    <h2
-                                        class="font-medium text-slate-700 transition-colors group-hover:text-primary group-focus:text-primary dark:text-navy-100 dark:group-hover:text-accent-light dark:group-focus:text-accent-light">
-                                        Activity
-                                    </h2>
-                                    <div class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                        Your activity and events
-                                    </div>
-                                </div>
-                            </a>
-                            <a href="#"
-                                class="group flex items-center space-x-3 py-2 px-4 tracking-wide outline-none transition-all hover:bg-slate-100 focus:bg-slate-100 dark:hover:bg-navy-600 dark:focus:bg-navy-600">
-                                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-success text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    </svg>
-                                </div>
-
-                                <div>
-                                    <h2
-                                        class="font-medium text-slate-700 transition-colors group-hover:text-primary group-focus:text-primary dark:text-navy-100 dark:group-hover:text-accent-light dark:group-focus:text-accent-light">
-                                        Settings
-                                    </h2>
-                                    <div class="text-xs text-slate-400 line-clamp-1 dark:text-navy-300">
-                                        Webapp settings
-                                    </div>
-                                </div>
-                            </a>
                             <div class="mt-3 px-4">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf

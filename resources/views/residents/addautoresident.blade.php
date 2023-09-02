@@ -150,6 +150,22 @@
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100 mb-5">
                         Add New auto
                     </p>
+                    @if(session('error-message'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{{ session('error-message') }}</span>
+                        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                            <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <title>Close</title>
+                                <path d="M14.348 5.652a1 1 0 011.414 0l4 4a1 1 0 11-1.414 1.414L14 7.414l-4.348 4.346a1 1 0 01-1.414-1.414l4-4z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <script>
+                        setTimeout(function(){
+                            document.querySelector('.alert').classList.add('fadeOut');
+                        }, 10000); // 10 segundos
+                    </script>
+                @endif
 
                     <form action="{{ route('storeResidentVehicle') }}" method="POST" class="form">
                         @csrf
@@ -240,6 +256,19 @@
 
                             </select>
 
+                        </label>
+                        <label class="block pt-4 mb-5">
+                            <span class="font-medium text-slate-600 dark:text-navy-100">Permit Type</span>
+                            <select name="permit_type"
+                                class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:bg-navy-700 dark:hover:border-navy-400 dark:focus:border-accent">
+                                @php
+                                    $permitTypes = ['visitor', 'resident', 'temporary', 'employee', 'contractor', 'vip', 'carport', 'reserved', 'handicap', 'fire lane'];
+                                @endphp
+                                <option value="">-- Select permit type / Selecciona el tipo de permiso --</option>
+                                @foreach ($permitTypes as $permitType)
+                                    <option value="{{ $permitType }}">{{ $permitType }}</option>
+                                @endforeach
+                            </select>
                         </label>
 
 

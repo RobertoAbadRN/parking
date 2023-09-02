@@ -7,7 +7,6 @@
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
 
                 <a
-
                     class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Documets
 
                 </a>
@@ -25,19 +24,16 @@
         </div>
 
         @if (session('success_message'))
-
             <div id="success-message" class="alert flex rounded-lg border border-success px-4 py-4 text-success sm:px-5">
 
                 {{ session('success_message') }}
 
             </div>
-
         @endif
 
 
 
         <script>
-
             // Ocultar el mensaje de éxito después de 5 segundos
 
             setTimeout(function() {
@@ -51,7 +47,6 @@
                 }
 
             }, 5000);
-
         </script>
 
 
@@ -81,6 +76,9 @@
                             <tr>
 
                                 <th class="px-4 py-2">Property Name</th>
+                                @role('Leasing agent')
+                                <th class="px-4 py-2">View</th>
+                            @else
 
                                 <th class="px-4 py-2">Residents</th>
 
@@ -90,10 +88,8 @@
 
                                 <th class="px-4 py-2">Pre-Registration</th>
 
-                                <th class="px-4 py-2">Emails</th>
-
                                 <th class="px-4 py-2">View</th>
-
+                                @endrole
                             </tr>
 
                         </thead>
@@ -101,101 +97,99 @@
                         <tbody>
 
                             @foreach ($properties as $property)
-
                                 <tr>
 
-                                    <td class="px-4 py-2">
+                                    
+                                        <td class="px-4 py-2">
 
-                                        {{ $property->address }}
+                                            {{ $property->address }}
 
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        <a href="{{ route('settings.permit',['property' => $property->id]) }}"
-
-                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-
-                                            <i class="fas fa-edit mr-2"></i>
-
-                                            2 languages
-
-                                        </a>
-
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        <a href="{{ route('settings.permit.type',['property' => $property->id]) }}"
-
-                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-
-                                            <i class="fas fa-edit mr-2"></i>
-
-                                            Edit
-
-                                        </a>
-
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        <a href="{{ route('settings.permit.visitor',['property' => $property->id]) }}"
-
-                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-
-                                            <i class="fas fa-edit mr-2"></i>
-
-                                            Edit
-
-                                        </a>
-
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        <a href="{{ route('settings.permit.registration',['property' => $property->id]) }}"
-
-                                            class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-
-                                            <i class="fas fa-edit mr-2"></i>
-
-                                            Edit
-
-                                        </a>
-
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        emails
-                                    </td>
-
-                                    <td class="px-4 py-2">
-
-                                        <div class="flex space-x-10">
-
+                                        </td>
+                                    @role('Leasing agent')
+                                        <td class="px-4 py-2">
                                             <a href="{{ route('properties.vehicles', $property->property_code) }}"
-
                                                 class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
-
                                                 <i class="fas fa-car mr-2"></i>
+                                            </a>
+                                        </td>
+                                    @else
+
+                                        <td class="px-4 py-2">
+
+                                            <a href="{{ route('settings.permit', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+
+                                                <i class="fas fa-edit mr-2"></i>
+
+                                                2 languages
 
                                             </a>
 
-                                            <a href="{{ route('properties.users', $property->property_code) }}"
+                                        </td>
 
-                                                class="btn bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90">
+                                        <td class="px-4 py-2">
 
-                                                <i class="fas fa-users mr-2"></i>
+                                            <a href="{{ route('settings.permit.type', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+
+                                                <i class="fas fa-edit mr-2"></i>
+
+                                                Edit
 
                                             </a>
 
-                                        </div>
+                                        </td>
 
-                                    </td>
+                                        <td class="px-4 py-2">
+
+                                            <a href="{{ route('settings.permit.visitor', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+
+                                                <i class="fas fa-edit mr-2"></i>
+
+                                                Edit
+
+                                            </a>
+
+                                        </td>
+
+                                        <td class="px-4 py-2">
+
+                                            <a href="{{ route('settings.permit.registration', ['property' => $property->id]) }}"
+                                                class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+
+                                                <i class="fas fa-edit mr-2"></i>
+
+                                                Edit
+
+                                            </a>
+
+                                        </td>
+
+                                        <td class="px-4 py-2">
+
+                                            <div class="flex space-x-10">
+
+                                                <a href="{{ route('properties.vehicles', $property->property_code) }}"
+                                                    class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">
+
+                                                    <i class="fas fa-car mr-2"></i>
+
+                                                </a>
+                                                <a href="{{ route('properties.users', $property->property_code) }}"
+                                                    class="btn bg-success font-medium text-white hover:bg-success-focus focus:bg-success-focus active:bg-success-focus/90">
+
+                                                    <i class="fas fa-users mr-2"></i>
+
+                                                </a>
+
+                                            </div>
+
+                                        </td>
+                                    @endrole
 
 
                                 </tr>
-
                             @endforeach
 
                         </tbody>
@@ -213,7 +207,6 @@
 
 
         <script>
-
             $(document).ready(function() {
 
                 $('#settings').DataTable({
@@ -223,10 +216,8 @@
                 });
 
             });
-
         </script>
 
     </main>
 
 </x-app-layout>
-

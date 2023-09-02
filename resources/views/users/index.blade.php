@@ -92,7 +92,7 @@
                         }
                     }, 5000);
                 </script>
-                <div class="container mx-auto">
+                <div class="container mx-auto pt-5">
                     <table id="listuser" class="table-auto min-w-full">
                         <thead>
                             <tr>
