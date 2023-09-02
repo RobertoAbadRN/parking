@@ -170,7 +170,7 @@
 
                         @method('PUT')
 
-                    
+
 
                         <label class="block">
 
@@ -186,7 +186,7 @@
 
                         </label>
 
-                    
+
 
                         @error('file_description')
 
@@ -194,35 +194,36 @@
 
                         @enderror
 
-                    
+
 
                         <!-- Agregar el campo de archivo -->
 
                         <div class="flex space-x-4 mt-6">
-
                             <label class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
-
-                                <input tabindex="-1" type="file" name="file" class="pointer-events-none absolute inset-0 h-full w-full opacity-0">
-
+                                <input tabindex="-1" type="file" name="file_en" class="pointer-events-none absolute inset-0 h-full w-full opacity-0" required>
                                 <div class="flex items-center space-x-2">
-
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-
-                                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                     </svg>
-
                                     <span>Choose English File</span>
-
+                                    <small>{{$document->file_path_en}}</small>
                                 </div>
-
                             </label>
-
+                        </div>
+                        <div class="flex space-x-4 mt-6">
+                            <label class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
+                                <input tabindex="-1" type="file" name="file_es" class="pointer-events-none absolute inset-0 h-full w-full opacity-0" required>
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                    <span>Choose Spanish File</span>
+                                    <small>{{$document->file_path_es}}</small>
+                                </div>
+                            </label>
                         </div>
 
-                    
+
 
                         <div class="mt-6">
 
@@ -234,9 +235,9 @@
 
                     </form>
 
-                    
 
-                    
+
+
 
                 </div>
 

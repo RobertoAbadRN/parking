@@ -151,89 +151,53 @@
         </template>
 
         <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
-
             <div class="col-span-12 sm:col-span-10">
-
                 <div class="card p-4 sm:p-5">
-
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100 pb-5">
-
                         Add Documets
-
                     </p>
-
-
-
                     <form action="{{ route('documents.store') }}" method="POST" enctype="multipart/form-data">
-
                         @csrf
-
-
-
                         <label class="block">
-
                             <span>File Description:</span>
-
                             <input
-
                                 class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-
                                 type="text" name="file_description" placeholder="File Description" required
-
                                 value="{{ old('file_description') }}">
-
                         </label>
 
-
-
                         @error('file_description')
-
                             <span class="text-tiny+ text-error">{{ $message }}</span>
-
                         @enderror
 
-
-
-                        
-
-
-
                         <div class="flex space-x-4 mt-6">
-
                             <label class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
-
-                                <input tabindex="-1" type="file" name="file" class="pointer-events-none absolute inset-0 h-full w-full opacity-0">
-
+                                <input tabindex="-1" type="file" name="file_en" class="pointer-events-none absolute inset-0 h-full w-full opacity-0" required>
                                 <div class="flex items-center space-x-2">
-
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-
                                     </svg>
-
                                     <span>Choose English File</span>
-
                                 </div>
-
                             </label>
-
                         </div>
-
-
-
+                        <div class="flex space-x-4 mt-6">
+                            <label class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90">
+                                <input tabindex="-1" type="file" name="file_es" class="pointer-events-none absolute inset-0 h-full w-full opacity-0" required>
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                    </svg>
+                                    <span>Choose Spanish File</span>
+                                </div>
+                            </label>
+                        </div>
                         <div class="mt-6">
-
                             <button type="submit"
-
                                 class="btn bg-primary text-white hover:bg-primary-dark">Submit</button>
-
                             <a href="{{ route('documents') }}"
-
                                 class="btn bg-gray-300 text-gray-800 hover:bg-gray-400">Cancel</a>
-
                         </div>
-
                     </form>
 
                 </div>

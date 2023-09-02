@@ -235,31 +235,13 @@ Route::middleware('auth')->group(function () {
      * ==============================
 
      */
-
-    Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
-    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
-    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
-    // Ruta para mostrar el formulario de edición
-    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
-    // Ruta para enviar los datos del formulario y actualizar el documento
-    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
-    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
-
-    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
-
-    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
-
-    // Ruta para mostrar el formulario de edición
-
-    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
-
-    // Ruta para enviar los datos del formulario y actualizar el documento
-
-    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
-
-    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
-
-
+    Route::get('/documentos', [DocumentsController::class, 'index'])->name('documents');
+    Route::get('/documentos/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
+    Route::get('/documentos/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
+    Route::get('/documentos/property', [DocumentsController::class, 'property'])->name('documents.property');
+    Route::post('/documentos', [DocumentsController::class, 'store'])->name('documents.store');
+    Route::put('/documentos/{id}', [DocumentsController::class, 'update'])->name('documents.update');
+    Route::delete('/documentos/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
 
     /**
      * ==============================

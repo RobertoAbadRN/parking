@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->string('description')->nullable();
-            $table->string('file_path')->nullable();
+            $table->string('file_path_en')->nullable();
+            $table->string('file_path_es')->nullable();
             $table->timestamps();
         });
     }
