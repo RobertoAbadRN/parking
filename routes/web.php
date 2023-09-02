@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocusignController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\ForgotPasswordController;
@@ -233,14 +233,17 @@ Route::middleware('auth')->group(function () {
      * ==============================
 
      */
-    Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
-    Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');
-    Route::get('/documents/{id}/edit', [DocumentsController::class, 'edit'])->name('documents.edit');
-    Route::get('/documents/property', [DocumentsController::class, 'property'])->name('documents.property');
-    Route::post('/documents', [DocumentsController::class, 'store'])->name('documents.store');
-    Route::put('/documents/{id}', [DocumentsController::class, 'update'])->name('documents.update');
-    Route::delete('/documents/{id}', [DocumentsController::class, 'destroy'])->name('documents.destroy');
+    //Route::resource('/documents', 'DocumentController');
+    //Route::get('/documents/property', [DocumentController::class, 'property'])->name('documents.property');
 
+    Route::get('documents/formats', [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('documents/addfile', [DocumentController::class, 'create'])->name('documents.create');
+    Route::get('documents/{id}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+    Route::get('documents/property', [DocumentController::class, 'property'])->name('documents.property');
+    Route::post('documents/store', [DocumentController::class, 'store'])->name('documents.store');
+    Route::put('documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('documents/delete/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('documents/property', [DocumentController::class, 'property'])->name('documents.property');
 
     /*Route::get('/documents', [DocumentsController::class, 'index'])->name('documents');
     Route::get('/documents/addfile', [DocumentsController::class, 'addFile'])->name('documents.addfile');

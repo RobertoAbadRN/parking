@@ -229,7 +229,7 @@
 
                             <button type="submit" class="btn bg-primary text-white hover:bg-primary-dark">Update</button>
 
-                            <a href="{{ route('documents') }}" class="btn bg-gray-300 text-gray-800 hover:bg-gray-400">Cancel</a>
+                            <a href="{{ route('documents.index') }}" class="btn bg-gray-300 text-gray-800 hover:bg-gray-400">Cancel</a>
 
                         </div>
 

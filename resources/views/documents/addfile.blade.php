@@ -195,7 +195,7 @@
                         <div class="mt-6">
                             <button type="submit"
                                 class="btn bg-primary text-white hover:bg-primary-dark">Submit</button>
-                            <a href="{{ route('documents') }}"
+                            <a href="{{ route('documents.index') }}"
                                 class="btn bg-gray-300 text-gray-800 hover:bg-gray-400">Cancel</a>
                         </div>
                     </form>

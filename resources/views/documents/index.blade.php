@@ -41,7 +41,7 @@
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
                     <div class="inline-flex space-x-4">
-                        <a href="{{ route('documents.addfile') }}"
+                        <a href="{{ route('documents.create') }}"
                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
                             style="width: auto; height: 40px;">
                             <i class="fa fa-file" aria-hidden="true"></i> &nbsp; Add Files
