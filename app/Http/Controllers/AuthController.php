@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -42,9 +43,15 @@ class AuthController extends Controller
         if ($user && \Auth::attempt(['email' => $user->email, 'password' => $validated['password']])) {
             // Usuario autenticado correctamente
             $user->update(['last_login' => now()]);
-    
-            return redirect()->route('index');
-        }
+        
+            if ($user->hasRole('Resident')) {
+                // Si el usuario tiene el rol "Resident", redirige a la ruta de "recidents"
+                return redirect()->route('recidents'); // Asegúrate de que la ruta sea correcta
+            } else {
+                // Si el usuario tiene otros roles, redirige a la ruta "index" o cualquier otra que desees
+                return redirect()->route('index'); // Asegúrate de que la ruta sea correcta
+            }
+        }        
     
         $validator->errors()->add(
             'login', 'Usuario o contraseña incorrectos'
@@ -57,14 +64,25 @@ class AuthController extends Controller
     {
         $user_id = request('user_id');
         $user = User::find($user_id);
-
+    
         if ($user && $user->hasRole('Resident')) {
             $propertyCode = $user->property_code;
-            return view('register', compact('user', 'propertyCode'));
+            
+            // Realiza una consulta para obtener la propiedad por su property_code
+            $property = Property::where('property_code', $propertyCode)->first();
+            
+            if ($property) {
+                $propertyName = $property->name;
+                $propertyAddress = $property->address;
+                return view('register', compact('user', 'propertyCode', 'propertyName','propertyAddress'));
+            } else {
+                return redirect()->route('errorregister')->with('error', 'Property not found.');
+            }
         } else {
             return redirect()->route('errorregister')->with('error', 'User not found or does not have access.');
         }
     }
+    
 
     public function register(Request $request)
     {

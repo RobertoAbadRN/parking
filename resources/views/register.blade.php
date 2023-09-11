@@ -2,23 +2,21 @@
 
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
 
-        <div class="flex items-center space-x-4 py-5 lg:py-6">
-
+        <div class="flex flex-col items-center py-5 lg:py-6">
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
-
                 Parking Management Service
-
             </h2>
-
-            <div class="hidden h-full py-1 sm:flex">
-
-                <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
-
+            <div class="h-1 bg-slate-300 dark:bg-navy-600 w-full my-2 sm:hidden"></div>
+            <div class="my-2">
+                <p class="text-slate-600 dark:text-navy-300">Property Name:</p>
+                <p class="text-lg font-semibold text-slate-800 dark:text-navy-50">{{ $propertyName }}</p>
             </div>
-
-
-
-        </div>
+            <div class="my-2">
+                <p class="text-slate-600 dark:text-navy-300">Property Address:</p>
+                <p class="text-lg font-semibold text-slate-800 dark:text-navy-50">{{ $propertyAddress }}</p>
+            </div>
+        </div>       
+        
 
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
 
@@ -126,7 +124,6 @@
                                                 permit / Pre-registra tu vehículo para obtener un permiso de
 
                                                 estacionamiento</h2>
-
                                             @csrf
 
 
@@ -338,27 +335,24 @@
 
 
                                             <label class="relative flex mb-3">
-                                                <input x-init="$el._x_flatpickr = flatpickr($el, {
-                                                    enableTime: true,
-                                                    dateFormat: 'Y-m-d h:i K',
-                                                    time_24hr: false,
-                                                    minDate: 'today' // Set minimum date to today
-                                                })"
-                                                    class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                    placeholder="Choose date and time..." type="text"
-                                                    name="valid_from" />
-
-                                                <span
-                                                    class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5 transition-colors duration-200" fill="none"
-                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                <input x-data="{ maxDate: new Date().setDate(new Date().getDate() + 7) }"
+                                                       x-init="$el._x_flatpickr = flatpickr($el, {
+                                                           enableTime: true,
+                                                           dateFormat: 'Y-m-d h:i K',
+                                                           time_24hr: false,
+                                                           minDate: 'today',
+                                                           maxDate: maxDate // Configura la fecha máxima
+                                                       })"
+                                                       class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                       placeholder="Choose date and time..." type="text"
+                                                       name="valid_from" />
+                                            
+                                                <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
                                                 </span>
                                             </label>
-
 
                                             <button type="submit"
                                                 class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit

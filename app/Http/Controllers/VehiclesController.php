@@ -50,6 +50,7 @@ class VehiclesController extends Controller
 
     public function registerVehicle(Request $request)
     {
+        //dd($request);
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'license_plate' => 'required',
@@ -108,14 +109,26 @@ class VehiclesController extends Controller
         $vehicle->save();
 
         // Realizar cualquier otra acción necesaria, como redireccionar a la vista de registro
-        return view('registration')->with('success', 'Resident and vehicle registered successfully.');
+        return view('registration')->with([
+            'success' => 'Resident and vehicle registered successfully.',
+            'user_id' => $user_id,
+            'property_code' => $property_code,
+            'permit_status' => $permit_status,
+            'license_plate' => $license_plate,
+            'vin' => $vin,
+            'make' => $make,
+            'model' => $model,
+            'year' => $year,
+            'color' => $color,
+            'vehicle_type' => $vehicle_type,
+            // Agrega cualquier otro dato que desees pasar a la vista aquí
+        ]); 
 
     }
 
     public function store(Request $request)
     {
-       
-        
+
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
@@ -132,7 +145,7 @@ class VehiclesController extends Controller
             'start_date' => 'required',
             'end_date' => 'required',
         ]);
-       // dd($validator);
+        // dd($validator);
 
         // Verificar si la validación falla
         if ($validator->fails()) {
@@ -144,7 +157,7 @@ class VehiclesController extends Controller
             'license_plate', 'user_id', 'apart_unit', 'vin', 'make', 'model', 'year', 'color',
             'vehicle_type', 'property_code', 'permit_type', 'start_date', 'end_date', 'permit_status',
         ]);
-       //dd($data);
+        //dd($data);
 
         // Crear y guardar el registro en la tabla vehicles
         $vehicle = Vehicle::create($data);
@@ -178,11 +191,18 @@ class VehiclesController extends Controller
 
         $user = User::find($vehicle->user_id); // Obtener el usuario asociado al vehículo
 
-        $departament = Department::where('user_id', $user->id)->first(); // Obtener el departamento asociado al usuario
-
+        $departament = Department::where('user_id', $user->id)->first();
         $properties = Property::pluck('address', 'property_code');
 
-        return view('vehicles.editvehicle', compact('vehicle', 'property', 'user', 'departament', 'properties', 'id'));
+        // Inicializa $reservedSpace en null por defecto
+        $reservedSpace = null;
+
+        if ($departament) {
+            $reservedSpace = $departament->reserved_space;
+            $leaseExpiration = $departament->lease_expiration;
+        }
+
+        return view('vehicles.editvehicle', compact('vehicle', 'property', 'user', 'departament', 'properties', 'id', 'reservedSpace', 'leaseExpiration'));
 
     }
 
@@ -199,15 +219,17 @@ class VehiclesController extends Controller
             'vehicle_type' => 'required',
             'permit_status' => 'required',
             'permit_type' => 'required',
-            'start_date' => 'required',
+            'reserved_space' => 'required',
             'end_date' => 'required',
         ]);
+        //dd($request);
 
         // Find the vehicle by its ID
         $vehicle = Vehicle::findOrFail($id);
+        //dd( $vehicle);
 
         // Convert the start_date and end_date to Carbon objects
-        $start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+        //$start_date = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
         $end_date = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
 
         // Update the vehicle data with the new values from the form
@@ -221,10 +243,20 @@ class VehiclesController extends Controller
             'vehicle_type' => $request->input('vehicle_type'),
             'permit_status' => $request->input('permit_status'),
             'permit_type' => $request->input('permit_type'),
-            'start_date' => $start_date, // Guardar como objeto Carbon
             'end_date' => $end_date, // Guardar como objeto Carbon
             'property_code' => $request->input('property_code'),
         ]);
+
+        // Actualizar el valor 'reserved_space' en la tabla 'departments' asociado al usuario
+        $user = $vehicle->user;
+        $department = Department::where('user_id', $user->id)->first();
+        
+        if ($department) {
+            $department->reserved_space = $request->input('reserved_space');
+            $department->lease_expiration = $end_date;
+            $department->save();
+        }
+        
 
         // Buscar la propiedad correspondiente en la base de datos
         $property = Property::where('property_code', $request->input('property_code'))->first();
@@ -381,40 +413,38 @@ class VehiclesController extends Controller
         return $response;
 
     }
-
     public function show($id)
     {
-
         $vehicle = Vehicle::join('properties', 'vehicles.property_code', '=', 'properties.property_code')
-
-            ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate')
-
+            ->join('users', 'vehicles.user_id', '=', 'users.id')
+            ->leftJoin('departments', 'users.id', '=', 'departments.user_id')
+            ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate', 'users.name', 'departments.apart_unit as unit_number')
             ->find($id);
-        //dd($vehicle);
-
-        $start_date = Carbon::parse($vehicle->start_date);
-
-        $end_date = Carbon::parse($vehicle->end_date);
-
+    
+        // Obtén el valor de 'lease_expiration' como una cadena de texto desde la relación 'departments'
+        $lease_expirationString = $vehicle->user->departments->first()->lease_expiration;
+    
+        // Obtén el 'unit_number' directamente desde la consulta SQL
+        $unit_number = $vehicle->unit_number;
+    
+        $start_date = Carbon::parse($vehicle->created_at);
         $license_plate = $vehicle->license_plate;
-
+    
         return view('vehicles.show', [
-
             'vehicle' => $vehicle,
-
             'property_name' => $vehicle->property_name,
-
             'logo' => $vehicle->logo,
-
             'start_date' => $start_date,
-
-            'end_date' => $end_date,
-
+            'end_date' => $lease_expirationString,
             'license_plate' => $license_plate,
-
+            'permit_type' => $vehicle->permit_type,
+            'name' => $vehicle->name,
+            'unit_number' => $unit_number, // Agregar el número de departamento a la vista
         ]);
-
     }
+    
+    
+    
 
     public function excel_vehicles()
     {
@@ -502,24 +532,24 @@ class VehiclesController extends Controller
     }
 
     public function suspendVehicle($id)
-{
-    $vehicle = Vehicle::find($id);
+    {
+        $vehicle = Vehicle::find($id);
 
-    if ($vehicle) {
-        $vehicle->update(['permit_status' => 'suspended']);
+        if ($vehicle) {
+            $vehicle->update(['permit_status' => 'suspended']);
 
-        // Obtener todos los inspectores de estacionamiento y enviarles un correo electrónico
-        $parkingInspectors = User::role('Parking inspector')->get();
+            // Obtener todos los inspectores de estacionamiento y enviarles un correo electrónico
+            $parkingInspectors = User::role('Parking inspector')->get();
 
-        foreach ($parkingInspectors as $inspector) {
-            Mail::to($inspector->email)->send(new RemolcarAutoMail($vehicle->license_plate));
+            foreach ($parkingInspectors as $inspector) {
+                Mail::to($inspector->email)->send(new RemolcarAutoMail($vehicle->license_plate));
+            }
+
+            return redirect()->back()->with('success', 'Vehicle suspended and email sent.');
         }
 
-        return redirect()->back()->with('success', 'Vehicle suspended and email sent.');
+        return redirect()->back()->with('error', 'Vehicle not found.');
     }
-
-    return redirect()->back()->with('error', 'Vehicle not found.');
-}
     public function updateStatus(Request $request, $vehicleId)
     {
         try {
@@ -539,6 +569,4 @@ class VehiclesController extends Controller
         }
     }
 
-
-   
 }

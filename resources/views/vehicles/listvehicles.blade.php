@@ -59,8 +59,8 @@
                 </div>
             </div>
             <!-- Basic Table -->
-            <div class="card px-4 pb-4 sm:px-5">
-                <div class="container mx-auto">
+            <div class="card px-4 pb-4 sm:px-5 ">
+                <div class="container mx-auto mt-5">
                     <table id="example" class="table-auto min-w-full">
                         <thead>
                             <tr>
@@ -114,7 +114,7 @@
                                     <td class="px-4 py-2 text-center">
                                         @php
                                             $currentDate = date('Y-m-d');
-                                            $endDate = $vehicle->end_date; // End date from the table (format: 'Y-m-d')
+                                            $endDate = $vehicle->lease_expiration; // End date from the table (format: 'Y-m-d')
                                             $diff = strtotime($endDate) - strtotime($currentDate);
                                             $daysRemaining = round($diff / (60 * 60 * 24));
                                         @endphp

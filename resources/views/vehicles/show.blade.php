@@ -33,16 +33,27 @@
                                 <div class="mb-2">
                                     <p class="text-lg text-center font-semibold">{{ $property_name }}</p>
                                 </div>
+                                
+                                <div class="mb-2">
+                                    <p class="text-sm text-center text-gray-500">{{ $permit_type }}</p>
+                                </div>                                                               
 
                                 <div class="flex items-center justify-center mb-2">
+                                    @if ($logo)
                                     <img src="{{ asset($logo) }}" alt="Logo Resident" class="w-12 h-12 mr-2">
-                                    <span>{{ $license_plate }}</span>
+                                @else
+                                    <img src="{{ asset('favicon.png') }}" alt="Logo por defecto" class="w-12 h-12 mr-2">
+                                @endif
+                                
+                                    <span class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
                                 </div>
                                 
 
                                 <div class="text-center">
-                                    <p class="mb-2 text-xs font-semibold">From: {{ $start_date->format('Y-m-d') }} To:
-                                        {{ $end_date->format('Y-m-d') }}</p>
+                                    <p class="mb-2 text-xs font-semibold">
+                                        From: {{ $start_date->format('d/m/Y') }} To: {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
+                                    </p>                                                                      
+
                                 </div>
                             </div>
                         </div>
@@ -97,22 +108,34 @@
                     </ul>
 
 
-                    <footer>
-                        <div class="flex justify-between">
-                            <div>
-                                <p>Resident's Printed Name</p>
-                                <p>Unit #</p>
-                                <p>Signature</p>
-                                <p>Date</p>
-                            </div>
-                            <div>
-                                <p>Oscar De Los Santos</p>
-                                <p>102</p>
-                                <p></p>
-                                <p>07/06/2023</p>
-                            </div>
-                        </div>
-                    </footer>
+                    <div style="padding-top: 5em">
+                        <table width="99%" cellpadding="5" cellspacing="2">
+                            <tbody>
+                                <tr>
+                                    <td width="205"><span class="center_txt">{{ $name }}</span></td>
+                                    <td width="60" class="center_txt">{{ $unit_number }}</td>
+                                    <td width="25">&nbsp;</td>
+                                    <td width="210"></td>
+                                    <td width="95">{{ now()->format('d/m/Y') }}</td>
+
+                                </tr>
+                                <tr>
+                                    <td width="205" class="border-t border-gray-800">
+                                        <span class="center_txt">Resident's Printed Name</span>
+                                    </td>
+                                    <td width="60" class="center_txt border-t border-gray-800">Unit #</td>
+                                    <td width="25">&nbsp;</td>
+                                    <td width="210" class="border-t border-gray-800">
+                                        <span class="center_txt">Signature</span>
+                                    </td>
+                                    <td width="95" class="border-t border-gray-800">
+                                        <span class="center_txt">Date</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
                 </div>
             </div>
         </div>

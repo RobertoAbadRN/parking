@@ -5,12 +5,18 @@
         <div class="flex pt-4">
             <a href="/">
                 <img class="h-11 w-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
-                    src="{{ asset('favicon.png') }}" alt="logo" />
+                @if(empty($vehicle->logo))
+                <img src="{{ asset('favicon.png') }}" alt="Logo por defecto" />
+            @else
+                <img src="{{ asset($vehicle->logo) }}" alt="Logo del vehículo" />
+            @endif
+            
             </a>
         </div>
 
         <!-- Main Sections Links -->
         <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
+            
             <!-- Dashobards -->
             @can('dashboards/crm-analytics')
                 <a href="{{ route('dashboards/crm-analytics') }}"

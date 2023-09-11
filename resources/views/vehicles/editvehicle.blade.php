@@ -126,113 +126,28 @@
                             @endforeach
                         </select>
                     </label>
-                    <label class="block pt-4">
-                        <span class="font-medium text-slate-600 dark:text-navy-100">Start Date</span>
-                        <span class="relative mt-1.5 flex">
-                            <input id="start_date_input" name="start_date" value="{{ $vehicle->start_date }}"
-                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent datepicker-input"
-                                placeholder="Start Date:..." type="text" />
-                        </span>
-                    </label>
 
-                    <label class="block pt-4">
+                    <label class="block">
+                        <span class="font-medium text-slate-600 dark:text-navy-100">Reserved Space</span>
+                        <input
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Reserved Space" type="text" name="reserved_space"
+                            value="{{ $reservedSpace }}" required />
+                    </label>
+                    
+
+                    <label class="block">
                         <span class="font-medium text-slate-600 dark:text-navy-100">End Date</span>
-                        <span class="relative mt-1.5 flex">
-                            <input id="end_date_input" name="end_date" value="{{ $vehicle->end_date }}"
-                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent datepicker-input"
-                                placeholder="End Date:..." type="text" />
-                        </span>
+                        <input
+                            x-init="$el._x_flatpickr = flatpickr($el)"
+                            class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Choose date..."
+                            type="text"
+                            name="end_date" 
+                            value="{{ $leaseExpiration }}" 
+                        />
                     </label>
-
-                    <div class="grid grid-cols-2 gap-4 pt-10">
-                        <button type="button" onclick="setDateRange(30)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1
-                            Month</button>
-                        <button type="button" onclick="setDateRange(60)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">2
-                            Months</button>
-                        <button type="button" onclick="setDateRange(90)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">3
-                            Months</button>
-                        <button type="button" onclick="setDateRange(180)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">6
-                            Months</button>
-                        <button type="button" onclick="setDateRange(365)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1
-                            Year</button>
-                        <button type="button" onclick="setDateRange(7)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">1
-                            Week</button>
-                        <button type="button" onclick="setDateRange(14)"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">2
-                            Weeks</button>
-                        <button type="button" onclick="setWeekendRange()"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">Weekend</button>
-                        <button type="button" onclick="setEndOfMonthRange()"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">End
-                            of Month</button>
-                        <button type="button" onclick="setEndOfYearRange()"
-                            class="btn rounded-full bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90">End
-                            of Year</button>
-                    </div>
-
-                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-                    <script>
-                        const startInput = document.querySelector('input[name="start_date"]');
-                        const endInput = document.querySelector('input[name="end_date"]');
-
-                        function setDateRange(days) {
-                            const currentDate = new Date();
-                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-                            const endDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + days);
-
-                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
-                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
-                        }
-
-                        function setWeekendRange() {
-                            const currentDate = new Date();
-                            const startDay = currentDate.getDate();
-                            const endDay = startDay + (6 - currentDate.getDay()); // Obtener el próximo sábado
-                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), startDay);
-                            const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), endDay);
-
-                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
-                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
-                        }
-
-                        function setEndOfMonthRange() {
-                            const currentDate = new Date();
-                            const startDay = 1;
-                            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-                            const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), startDay);
-                            const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), lastDay);
-
-                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
-                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
-                        }
-
-                        function setEndOfYearRange() {
-                            const currentDate = new Date();
-                            const startDay = 1;
-                            const lastMonth = 11; // Diciembre
-                            const lastDay = new Date(currentDate.getFullYear() + 1, 0, 0).getDate();
-                            const startDate = new Date(currentDate.getFullYear(), lastMonth, startDay);
-                            const endDate = new Date(currentDate.getFullYear(), lastMonth, lastDay);
-
-                            startInput._flatpickr.setDate(startDate, false, 'Y-m-d');
-                            endInput._flatpickr.setDate(endDate, false, 'Y-m-d');
-                        }
-
-                        document.addEventListener('DOMContentLoaded', function() {
-                            flatpickr('.datepicker-input', {
-                                enableTime: false,
-                                dateFormat: 'Y-m-d',
-                                minDate: 'today',
-                                clickOpens: true
-                            });
-                        });
-                    </script>
+                    
                 </div>
             </div>
         </div>

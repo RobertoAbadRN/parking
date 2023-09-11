@@ -227,9 +227,9 @@
 
                                                     <div class="visible-print flex justify-center items-center">
 
-                                                        {!! QrCode::size(200)->generate(
-                                                            'https://amartineztowingop.com/visitors/addvisitors?property_code=' . $property->property_code,
-                                                        ) !!}
+                                                      
+                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/addnewresident/' . $property->property_code)
+                                                        !!}
 
                                                     </div>
 

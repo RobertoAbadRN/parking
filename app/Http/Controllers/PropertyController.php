@@ -278,7 +278,7 @@ class PropertyController extends Controller
     {
         $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
             ->join('departments', 'departments.user_id', '=', 'users.id')
-            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space')
+            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space' ,'departments.lease_expiration')
             ->where('vehicles.property_code', $property_code)
             ->groupBy('vehicles.id')
             ->get();

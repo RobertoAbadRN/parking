@@ -88,6 +88,7 @@
 
                                 <th class="px-4 py-2">Pre-Registration</th>
 
+                                <th class="px-4 py-2">Emails</th>
                                 <th class="px-4 py-2">View</th>
                                 @endrole
                             </tr>
@@ -97,12 +98,10 @@
                         <tbody>
 
                             @foreach ($properties as $property)
-                                <tr>
-
-                                    
+                                <tr>                                    
                                         <td class="px-4 py-2">
 
-                                            {{ $property->address }}
+                             {{ $property->name }}
 
                                         </td>
                                     @role('Leasing agent')
@@ -165,6 +164,14 @@
                                             </a>
 
                                         </td>
+                                        <td class="px-4 py-2">
+
+                                            <a href="{{ route('email.edit', ['property_code' => $property->property_code]) }}" class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                                <i class="fas fa-edit mr-2"></i>
+                                                Editar
+                                            </a>
+                                        </td>
+                                        
 
                                         <td class="px-4 py-2">
 

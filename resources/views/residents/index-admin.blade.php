@@ -98,8 +98,7 @@
                     <table id="residents" class="table-auto min-w-full">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2">Select</th>
-                                <th class="px-4 py-2">Emails</th>
+                                <th class="px-4 py-2">Select</th>            
                                 <th class="px-4 py-2">Qr-code</th>
                                 <th class="px-4 py-2">Resident Name</th>
                                 <th class="px-4 py-2">Property</th>
@@ -113,6 +112,7 @@
                                 <th class="px-4 py-2">Resident Status</th>
                                 <th class="px-4 py-2">Actions</th>
                                 <th class="px-4 py-2">Confirmation</th>
+                                <th class="px-4 py-2">Emails</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -122,28 +122,7 @@
                                     <td class="px-4 py-2">
                                         <input type="checkbox" name="selectedResidents[]" value="{{ $resident->id }}">
                                     </td>
-                                    <td class="px-2 py-1">
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('send-email-expiredemail', ['id' => $resident->id]) }}"
-                                                class="px-1 py-0.5 rounded bg-blue-500 text-xxs text-white font-medium hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700/90">
-                                                Expired
-                                            </a>
-                                            <form action="{{ route('send-email-activate', ['id' => $resident->id]) }}"
-                                                method="get">
-                                                <button
-                                                    class="px-1 py-0.5 rounded bg-red-500 text-xxs text-white font-medium hover:bg-red-700 focus:bg-red-700 active:bg-red-700/90"
-                                                    type="submit">
-                                                    Activate
-                                                </button>
-                                            </form>
-
-                                            <a href="{{ route('send-email-suspend', ['id' => $resident->id]) }}"
-                                                class="px-1 py-0.5 rounded bg-yellow-500 text-xxs text-white font-medium hover:bg-yellow-700 focus:bg-yellow-700 active:bg-yellow-700/90">
-                                                Suspend
-                                            </a>
-
-                                        </div>
-                                    </td>
+                                  
                                     <td class="px-4 py-2">
                                         <button id="boton-modelo-{{ $resident->id }}"
                                             class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
@@ -181,7 +160,7 @@
 
                                                     </h4>
                                                     <div class="visible-print flex justify-center items-center">
-                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/registrations?user_id=' . $resident->id) !!}
+                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/register?user_id=' . $resident->id) !!}
                                                     </div>
                                                     <p class="my-2">Scan me to return to the original page.</p>
 
@@ -319,6 +298,28 @@
                                     </td>
                                     <td class="px-4 py-2">
                                         {{ $resident->date_status }}
+                                    </td>
+                                    <td class="px-2 py-1">
+                                        <div class="flex space-x-2">
+                                            <a href="{{ route('send-email-expiredemail', ['id' => $resident->id]) }}"
+                                                class="px-1 py-0.5 rounded bg-blue-500 text-xxs text-white font-medium hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-700/90">
+                                                Expired
+                                            </a>
+                                            <form action="{{ route('send-email-activate', ['id' => $resident->id]) }}"
+                                                method="get">
+                                                <button
+                                                    class="px-1 py-0.5 rounded bg-red-500 text-xxs text-white font-medium hover:bg-red-700 focus:bg-red-700 active:bg-red-700/90"
+                                                    type="submit">
+                                                    Activate
+                                                </button>
+                                            </form>
+
+                                            <a href="{{ route('send-email-suspend', ['id' => $resident->id]) }}"
+                                                class="px-1 py-0.5 rounded bg-yellow-500 text-xxs text-white font-medium hover:bg-yellow-700 focus:bg-yellow-700 active:bg-yellow-700/90">
+                                                Suspend
+                                            </a>
+
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

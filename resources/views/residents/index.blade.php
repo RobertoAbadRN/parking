@@ -125,7 +125,7 @@
 
                                                     </h4>
                                                     <div class="visible-print flex justify-center items-center">
-                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/registrations?user_id=' . $residentid) !!}
+                                                        {!! QrCode::size(200)->generate('https://amartineztowingop.com/register?user_id=' . $residentid) !!}
                                                     </div>
                                                     <p class="my-2">Scan me to return to the original page.</p>
 

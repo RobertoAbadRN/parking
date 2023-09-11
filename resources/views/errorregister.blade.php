@@ -1,8 +1,9 @@
 <x-base-layout title="Register" is-sidebar-open="true" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="container mx-auto">
-            @if(session('successMessage'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            @if (session('successMessage'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                    role="alert">
                     <span class="block sm:inline">{{ session('successMessage') }}</span>
                 </div>
             @endif
@@ -10,27 +11,31 @@
             <h2 class="text-2xl font-semibold mb-4">Visitor Pass Registration Completed</h2>
             <div class="overflow-x-auto">
                 <div class="flex overflow-x-auto">
-                    <table class="min-w-full bg-white border rounded shadow-sm">
-                        <tbody>
+                    <table class="table-auto w-full sm:w-5/6 md:w-4/5 bg-white border rounded shadow-sm text-sm sm:text-base">
+                           <tbody>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">VP Code</td>
                                 <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->vp_code }}</td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">Property Code</td>
-                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->property_code }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->property_code }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">Visitor Name</td>
-                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->visitor_name }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->visitor_name }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">Visitor Phone</td>
-                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->visitor_phone }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->visitor_phone }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">License Plate</td>
-                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->license_plate }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->license_plate }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">Year</td>
@@ -50,11 +55,13 @@
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">Vehicle Type</td>
-                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->vehicle_type }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->vehicle_type }}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="py-2 px-4 border-b border-gray-200 font-semibold">Valid From</td>
-                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->valid_from }}</td>
+                                <td class="py-2 px-4 border-b border-gray-200">{{ $latestVisitorPass->valid_from }}
+                                </td>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -66,15 +73,28 @@
                                 </td>
                             </tr>
                         </tfoot>
-                    </table>                  
-                    
-                    
-                </div>              
+                    </table>
+                </div>
+                <div class="pt-5">
+                    <button id="printButton" class="btn bg-primary  text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90">
+                        Print
+                    </button>
+                </div>                
+            </div>
 
-                
-        </div>
+
+            <script>
+                document.getElementById('printButton').addEventListener('click', function () {
+                    // Ocultar el botón de impresión antes de imprimir
+                    this.style.display = 'none';
+            
+                    // Lanzar el diálogo de impresión
+                    window.print();
+            
+                    // Restaurar el botón de impresión después de imprimir (opcional)
+                    this.style.display = 'block';
+                });
+            </script>
+            
     </main>
 </x-base-layout>
-
-
-

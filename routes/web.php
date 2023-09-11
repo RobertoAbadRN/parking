@@ -40,6 +40,11 @@ Route::middleware('guest')->group(function () {
     Route::get('/registrations', [\App\Http\Controllers\RegistrationController::class, 'registration'])->name('registrations');
     Route::post('/registrations/vehicle', [\App\Http\Controllers\RegistrationController::class, 'registerVehicle'])->name('registrations.vehicle');
     Route::post('/registrations/visitor', [\App\Http\Controllers\RegistrationController::class, 'registerVisitor'])->name('registrations.visitor');
+
+    Route::get('/addnewresident/{property_code}', [\App\Http\Controllers\RegistrationController::class, 'newresidet'])->name('addnewresident');    
+    Route::post('/residentes/new', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('registerResidentNew');
+
+
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
     Route::post('/register', [\App\Http\Controllers\AuthController::class, 'register'])->name('register');
@@ -193,6 +198,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/residents/update-vehicle/{id}', [RecidentsController::class, 'updateResidentVehicle'])->name('updateResidentVehicle');
     Route::delete('/residents/delete-vehicle/{id}', [RecidentsController::class, 'deleteResidentVehicle'])->name('deleteResidentVehicle');
 
+    Route::get('/visitors/addnewresident', function () {
+        return view('addnewresident');
+    });
+    Route::get('/visitors/addnewresident/{id}', [RecidentsController::class, 'addVisitorForm'])->name('addnewresident');
+
+
     /**
      * ==============================
      *       @Router - vehicles/
@@ -342,6 +353,13 @@ Route::post('/accept-terms/{token}', [TermsAndConditionsController::class, 'acce
 Route::get('/error', function () {
     return view('error')->with('message', 'Invalid token'); // Puedes personalizar el mensaje de acuerdo a tus necesidades
 })->name('error-route');
+
+
+// rutas para los emails de los settings 
+Route::get('/email/edit/{property_code}', [EmailController::class, 'edit'])->name('email.edit');
+Route::post('/email/update', [EmailController::class, 'update'])->name('email.update');
+
+
 
 /**
 
