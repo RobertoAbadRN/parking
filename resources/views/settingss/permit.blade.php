@@ -309,7 +309,7 @@
                         </div>
                         <div class=" mt-3 text-center">
                             <button type="submit"
-                                class="btn btn-submit bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                class="btn btn-submit bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" {{($setting) ? '' : 'disabled'}}>
                                 Save Permit
                             </button>
                             <button type="button"
@@ -343,12 +343,12 @@
                         </div>
                         <div class=" mt-3 text-center">
                             <button type="submit"
-                                class="btn btn-submit bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
+                                class="btn btn-submit bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90" {{(!$setting) ? 'disabled' : ''}}>
                                 Save Margnis
                             </button>
                             <button type="button"
                                 class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90"
-                                onclick="print()">
+                                onclick="print()" {{($setting) ? '' : 'disabled'}}>
                                 Print Permit
                             </button>
                         </div>
