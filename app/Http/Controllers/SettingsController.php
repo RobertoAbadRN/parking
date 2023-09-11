@@ -8,6 +8,7 @@ use App\Models\Property;
 use App\Models\PropertySetting;
 use App\Models\visitorSetting;
 use App\Models\PermitSetting;
+use App\Models\PropertyLanguageSetting;
 use App\Models\Registration;
 
 class SettingsController extends Controller
@@ -52,8 +53,17 @@ class SettingsController extends Controller
 
     public function permit($property)
     {
-        //PropertySetting::where('property_id', $property)->first();
-        return view('settingss/permit', ['property' => Property::find($property)]);
+        $setting = PropertySetting::where('property_id', $property)->first() ?? null;
+        if(!$setting) {
+            $language = PropertyLanguageSetting::first()->toArray();
+            unset($language['id']);
+            unset($language['created_at']);
+            unset($language['updated_at']);
+            $data = array_merge($language, ['property_id' => $property, 'created_at'  => now(), 'updated_at'  => now()]);
+            PropertySetting::insert($data);
+            $setting = true;
+        }
+        return view('settingss/permit', ['property' => Property::find($property), 'setting' => $setting]);
     }
 
     public function permit_type($property)
