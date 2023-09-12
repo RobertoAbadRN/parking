@@ -330,6 +330,7 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
 
     public function update(Request $request, User $resident)
     {
+       
         $request->validate([
             'name' => 'required|string|max:255',
             'user' => 'required|string|max:255',
@@ -337,8 +338,10 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
             'reserved_space' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
+            'lease_expiration'=>'required',
             // Agrega aquí las validaciones para los demás campos
         ]);
+        //dd($request);
 
         $resident->update([
             'name' => $request->name,
@@ -350,9 +353,11 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
 
         // Actualiza los campos en la tabla departments relacionados con el usuario
         $department = Department::where('user_id', $resident->id)->firstOrFail();
+        //dd($department);
         $department->update([
             'apart_unit' => $request->apart_unit,
             'reserved_space' => $request->reserved_space,
+            'lease_expiration'=>$request->lease_expiration,
             // Actualiza aquí los demás campos en la tabla departments
         ]);
 

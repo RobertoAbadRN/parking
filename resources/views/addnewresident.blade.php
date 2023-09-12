@@ -11,20 +11,36 @@
 
 
                 @if (session('success'))
-                    <script>
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Éxito',
-                            text: '{{ session('success') }}',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'Aceptar'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '{{ route('login') }}';
-                            }
-                        });
-                    </script>
-                @endif
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Aceptar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '{{ route('login') }}';
+            }
+        });
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'Aceptar'
+        });
+    </script>
+@endif
+
+
+               
+
 
 
 
@@ -100,26 +116,17 @@
 
 
                     <div class="mb-4">
-
                         <label class="relative flex">
-
                             <input id="email"
                                 class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Email" type="email" name="email" value="{{ old('email') }}" />
-
+                                placeholder="Email" type="email" name="email" value="{{ old('email') }}"
+                                oninput="checkEmailAvailability(this.value)" />
                         </label>
-
-                        @if ($errors->has('email'))
-                            <span class="text-tiny+ text-error">{{ $errors->first('email') }}</span>
-                        @endif
-
-
-
                         <span id="email-error" class="text-tiny+ text-error"></span>
-
                     </div>
 
-                    
+
+
 
                     <div class="mb-4">
 
@@ -148,5 +155,23 @@
 
             </div>
         </div>
+        <script>
+            function checkEmailAvailability(email) {
+                axios.get(`/check-email/${email}`)
+                    .then(response => {
+                        const emailError = document.getElementById('email-error');
+                        if (response.data.exists) {
+                            emailError.textContent =
+                                'The email is already registered. Please check your email to complete the configuration.';
+                        } else {
+                            emailError.textContent = '';
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+        </script>
+
     </main>
 </x-base-layout>

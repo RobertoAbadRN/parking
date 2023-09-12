@@ -43,6 +43,9 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/addnewresident/{property_code}', [\App\Http\Controllers\RegistrationController::class, 'newresidet'])->name('addnewresident');    
     Route::post('/residentes/new', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('registerResidentNew');
+    
+    Route::get('/check-email/{email}', [\App\Http\Controllers\RegistrationController::class, 'checkEmail'])->name('checkEmail');
+   
 
 
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');

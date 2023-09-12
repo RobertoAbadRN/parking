@@ -14,8 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 class RegistrationController extends Controller
 {
@@ -277,93 +277,103 @@ class RegistrationController extends Controller
         $property = DB::table('properties')
             ->where('property_code', $property_code)
             ->first();
-    
-        if ($property) {
-            // Si se encuentra la propiedad, obtén su nombre y pásalo a la vista
+
+        // Debugging: Output the value of $property
+        //dd($property);
+
+        // Verifica if the property exists
+        if ($property !== null) {
+            //dd($property->id);
+
+            // Aquí obtén $property_name si es necesario, por ejemplo:
             $property_name = $property->name;
-        } else {
-            // Si no se encuentra la propiedad, muestra una notificación de error
-            \Session::flash('property_not_found', 'Property not found');
-            return redirect()->back();
+
+            return view('addnewresident', [
+                'property_code' => $property_code,
+                'property' => $property,
+                'property_name' => $property_name,
+            ]);
         }
-    
-        return view('addnewresident', [
-            'property_code' => $property_code,
-            'property_name' => $property_name,
-        ]);
+
+        // If the property does not exist, load the 'error' view with a message
+        return view('error', ['message' => 'The property does not exist.']);
     }
-    
 
     public function store(Request $request)
     {
-    dd($request);
+        //dd($request);
 
-    // Validar los datos del formulario
-    $request->validate([
-        'user' => 'required|string',
-        'name' => 'required|string',
-        'phone' => 'required|string',
-        'email' => 'required|email|unique:users,email',
-        'property_code' => 'required', // Asegúrate de que el name del select sea "property_id"
-        'apart_unit' => 'required|string',
-    ]);
-    dd($request);
-    // Crear un nuevo registro de usuario
-    $user = new User();
-    $user->name = $request->input('name');
-    $user->phone = $request->input('phone');
-    $user->email = $request->input('email');
-    $user->access_level = 'Resident';
-    $user->property_code = $request->input('property_code');
-    $user->banned = false;
-    $user->status = 'Pending';
-    $user->save();
+        // Validar los datos del formulario
+        $request->validate([
+            'user' => 'required|string',
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+            'property_code' => 'required', // Asegúrate de que el name del select sea "property_id"
+            'apart_unit' => 'required|string',
+        ]);
+        // dd($request);
+        // Crear un nuevo registro de usuario
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->phone = $request->input('phone');
+        $user->email = $request->input('email');
+        $user->access_level = 'Resident';
+        $user->property_code = $request->input('property_code');
+        $user->banned = false;
+        $user->status = 'Pending';
+        $user->save();
 
-    // Asignar el rol "Resident" al usuario
-    $user->assignRole('Resident');
+        // Asignar el rol "Resident" al usuario
+        $user->assignRole('Resident');
 
-    // Crear un nuevo registro de departamento y asociarlo al usuario
-    $department = new Department();
-    $department->user_id = $user->id;
-    $department->apart_unit = $request->input('apart_unit');
-    $department->property_code = $request->input('property_code');
-    $department->terms_agreement_status = 'pending';
-    $department->save();
+        // Crear un nuevo registro de departamento y asociarlo al usuario
+        $department = new Department();
+        $department->user_id = $user->id;
+        $department->apart_unit = $request->input('apart_unit');
+        $department->property_code = $request->input('property_code');
+        $department->terms_agreement_status = 'pending';
+        $department->save();
 
-    // Relacionar el usuario con la propiedad en la tabla intermedia user_properties
-    $property = Property::find($request->input('property_id'));
-    $user->properties()->attach($property);
+        // Relacionar el usuario con la propiedad en la tabla intermedia user_properties
+        $property = Property::find($request->input('property_id'));
+        $user->properties()->attach($property);
 
-    // Generar y almacenar el token único
-    $token = Str::random(40);
-    $department->agreement_token = $token;
-    $department->save();
+        // Generar y almacenar el token único
+        $token = Str::random(40);
+        $department->agreement_token = $token;
+        $department->save();
 
-    // Generar los enlaces para los términos y condiciones en inglés y español
-    $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
-    $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
+        // Generar los enlaces para los términos y condiciones en inglés y español
+        $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
+        $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
 
-    // Enviar un correo electrónico
-    Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
+        // Enviar un correo electrónico
+        Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
 
+        // Adjuntar un mensaje en la sesión para mostrar con SweetAlert
+        Session::flash('success', 'Resident registered successfully. Please communicate this to the management.');
 
+        // Obtener el valor de property_code
+        $property_code = $request->input('property_code');
+        //dd($property_code );
+        // Consulta el nombre de la propiedad, por ejemplo, desde una base de datos
+        $property_name = Property::where('property_code', $request->input('property_code'))->value('name');
 
-    // Adjuntar un mensaje en la sesión para mostrar con SweetAlert
-    Session::flash('success', 'Resident registered successfully. Please communicate this to the management.');
+        // Luego, pasa $property_name a la vista
+        return view('addnewresident', [
+            'property_code' => $request->input('property_code'),
+            'property_name' => $property_name,
+        ]);
 
-     // Obtener el valor de property_code
-     $property_code = $request->input('property_code');
-     //dd($property_code );
-     // Consulta el nombre de la propiedad, por ejemplo, desde una base de datos
-    $property_name = Property::where('property_code', $request->input('property_code'))->value('name');
+    }
 
+    public function checkEmail(Request $request, $email)
+    {
+        $user = User::where('email', $email)->first();
 
-     // Luego, pasa $property_name a la vista
-     return view('addnewresident', [
-        'property_code' => $request->input('property_code'),
-        'property_name' => $property_name,
-    ]);
-    
-}
-
+        return response()->json([
+            'exists' => $user !== null,
+        ]);
+    }
 }

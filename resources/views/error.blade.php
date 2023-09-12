@@ -8,9 +8,8 @@
     <p>{{ $message }}</p>
 </body>
 
-
-<!-- resources/views/sweet_alert.blade.php -->
-<script src="path/to/sweetalert.min.js"></script>
+ <!-- SweetAlert CDN -->
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script>
     swal.fire({
