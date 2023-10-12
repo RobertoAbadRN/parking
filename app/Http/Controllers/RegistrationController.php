@@ -311,18 +311,20 @@ class RegistrationController extends Controller
             'email' => 'required|email|unique:users,email',
             'property_code' => 'required', // Asegúrate de que el name del select sea "property_id"
             'apart_unit' => 'required|string',
+            'prefered_language' => 'required|string',
         ]);
         // dd($request);
         // Crear un nuevo registro de usuario
         $user = new User();
         $user->name = $request->input('name');
+        $user->user = $request->input('user');
         $user->phone = $request->input('phone');
         $user->email = $request->input('email');
         $user->access_level = 'Resident';
         $user->property_code = $request->input('property_code');
         $user->banned = false;
         $user->status = 'Pending';
-        $user->save();
+        $user->save(); 
 
         // Asignar el rol "Resident" al usuario
         $user->assignRole('Resident');
@@ -333,6 +335,8 @@ class RegistrationController extends Controller
         $department->apart_unit = $request->input('apart_unit');
         $department->property_code = $request->input('property_code');
         $department->terms_agreement_status = 'pending';
+        $department->reserved = '3';
+        $department->prefered_language = $request->input('prefered_language');
         $department->save();
 
         // Relacionar el usuario con la propiedad en la tabla intermedia user_properties

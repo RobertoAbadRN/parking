@@ -41,12 +41,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/registrations/vehicle', [\App\Http\Controllers\RegistrationController::class, 'registerVehicle'])->name('registrations.vehicle');
     Route::post('/registrations/visitor', [\App\Http\Controllers\RegistrationController::class, 'registerVisitor'])->name('registrations.visitor');
 
-    Route::get('/addnewresident/{property_code}', [\App\Http\Controllers\RegistrationController::class, 'newresidet'])->name('addnewresident');    
+    Route::get('/addnewresident/{property_code}', [\App\Http\Controllers\RegistrationController::class, 'newresidet'])->name('addnewresident');
     Route::post('/residentes/new', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('registerResidentNew');
-    
-    Route::get('/check-email/{email}', [\App\Http\Controllers\RegistrationController::class, 'checkEmail'])->name('checkEmail');
-   
 
+    Route::get('/check-email/{email}', [\App\Http\Controllers\RegistrationController::class, 'checkEmail'])->name('checkEmail');
 
     Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
     Route::get('/register', [\App\Http\Controllers\AuthController::class, 'registerView'])->name('registerView');
@@ -55,8 +53,7 @@ Route::middleware('guest')->group(function () {
         return view('errorregister');
     })->name('errorregister');
 
-    Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
-
+   
     /**
      * ==============================
      *       @Router - ForgotPassword
@@ -168,7 +165,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents', [RecidentsController::class, 'index'])->name('recidents');
     Route::get('/recidents/approve/{id}', [RecidentsController::class, 'approve'])->name('residents.approve');
     Route::get('/recidents/decline/{id}', [RecidentsController::class, 'decline'])->name('residents.decline');
-    Route::get('/residents/addresident', [RecidentsController::class, 'addResident'])->name('resident.addresident');
+    Route::get('/residents/addresident/{property_code}', [RecidentsController::class, 'addResident'])
+    ->name('resident.addresident');
+
     Route::post('/residents/addresident', [RecidentsController::class, 'Residentstore'])->name('resident.store');
     Route::get('/residents/{resident}/edit', [RecidentsController::class, 'edit'])->name('residents.edit');
     Route::post('/residents/{resident}/update', [RecidentsController::class, 'update'])->name('residents.update');
@@ -206,6 +205,8 @@ Route::middleware('auth')->group(function () {
     });
     Route::get('/visitors/addnewresident/{id}', [RecidentsController::class, 'addVisitorForm'])->name('addnewresident');
 
+    Route::get('/property/{propertyCode}/residents', [RecidentsController::class, 'showResidents'])->name('property.residents');
+
 
     /**
      * ==============================
@@ -223,7 +224,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/vehicles/excel/{property_code}', [VehiclesController::class, 'listvehicles_excel'])->name('listvehicles_excel');
     Route::get('/vehicles/{vehicle}/show', [VehiclesController::class, 'show'])->name('vehicles.show');
     Route::get('/vehicles/excelvehicles', [VehiclesController::class, 'excel_vehicles'])->name('excel_vehicles');
+    Route::post('/aprove/{vehicleId}/update-status', [VehiclesController::class, 'updateStatus'])
+        ->name('update.vehicle.status');
     Route::post('/suspend-vehicle/{id}', [VehiclesController::class, 'suspendVehicle'])->name('vehicles.suspend');
+    Route::post('/remocar-vehicle/{id}', [VehiclesController::class, 'suspendVehicle1'])->name('vehicles.suspend1');
+    Route::post('/vehicles/print-pdf', [VehiclesController::class, 'printPDF'])->name('vehicles.printPDF');
+
+
+
+
+
+
 
     /**
      * ==============================
@@ -299,7 +310,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/permit/types', [SettingsController::class, 'permitTypeSettingStore'])->name('settings.permit.type.store');
     Route::post('/settings/permit/margin', [SettingsController::class, 'permitMarginSettingStore'])->name('settings.permit.margin.store');
     Route::post('/settings/permit/print', [SettingsController::class, 'permitPrintSettingStore'])->name('settings.permit.print.store');
-
+    Route::post('/guardar-configuracion', [SettingsController::class, 'residentstore'])->name('resident.settings.store');
     /**
      * ==============================
      *       @Router - roles/
@@ -326,6 +337,19 @@ Route::middleware('auth')->group(function () {
     Route::get('connect-docusign', [DocusignController::class, 'connectDocusign'])->name('connect.docusign');
     Route::get('docusign/callback', [DocusignController::class, 'callback'])->name('docusign.callback');
     Route::get('sign-document', [DocusignController::class, 'signDocument'])->name('docusign.sign');
+
+     /**
+     * ==============================
+     *       @Router - search o buscador 
+     * ==============================
+     */
+    Route::post('/validate-property-code', [SearchController::class, 'validatePropertyCode'])->name('validate-property-code');
+    Route::get('/inspector', [SearchController::class, 'index'])->name('inspector');
+
+    Route::get('/search', [SearchController::class, 'search'])->name('inspector.search'); 
+    Route::get('/search-car', [SearchController::class, 'searchCar'])->name('car.search');
+
+
 
 });
 
@@ -357,12 +381,11 @@ Route::get('/error', function () {
     return view('error')->with('message', 'Invalid token'); // Puedes personalizar el mensaje de acuerdo a tus necesidades
 })->name('error-route');
 
-
-// rutas para los emails de los settings 
+// rutas para los emails de los settings
 Route::get('/email/edit/{property_code}', [EmailController::class, 'edit'])->name('email.edit');
 Route::post('/email/update', [EmailController::class, 'update'])->name('email.update');
-
-
+// rutas para los emails aprove 
+Route::post('/email/approve', [EmailController::class, 'approve'])->name('email.approve');
 
 /**
 

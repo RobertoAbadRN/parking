@@ -12,13 +12,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Auth;
 
 class PropertyController extends Controller
 {
    
     public function index()
-    {
-        // Obtén todas las propiedades y calcula el total de autos por cada una usando LEFT JOIN y subconsulta
+{
+    $user = Auth::user(); // Obtén el usuario autenticado
+
+    if ($user->hasRole('Company administrator')) {
+        // Si el usuario tiene el rol 'Company Administrator', puede ver todas las propiedades
         $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
             ->distinct() // Agregar el método distinct() para eliminar duplicados
             ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
@@ -28,10 +32,30 @@ class PropertyController extends Controller
                     ->selectRaw('count(*)');
             }, 'total_cars')
             ->get();
+    } elseif ($user->hasRole('Property manager')) {
+        // Si el usuario tiene el rol 'Property Manager', obtén su property_code
+        $propertyCode = $user->property_code;
 
-        // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
-        return view('properties.index', compact('properties'));
+        // Luego, puedes usar este property_code para filtrar la consulta de las propiedades
+        $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
+            ->where('properties.property_code', $propertyCode)
+            ->distinct() // Agregar el método distinct() para eliminar duplicados
+            ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+            ->selectSub(function ($query) {
+                $query->from('vehicles')
+                    ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
+                    ->selectRaw('count(*)');
+            }, 'total_cars')
+            ->get();
+    } else {
+        // Otros casos o roles desconocidos
+        abort(403, 'Acceso no autorizado');
     }
+
+    // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
+    return view('properties.index', compact('properties'));
+}
+
 
     public function create()
     {
@@ -278,11 +302,11 @@ class PropertyController extends Controller
     {
         $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
             ->join('departments', 'departments.user_id', '=', 'users.id')
-            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space' ,'departments.lease_expiration')
+            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space' ,'departments.lease_expiration','departments.prefered_language','departments.lease_expiration')
             ->where('vehicles.property_code', $property_code)
             ->groupBy('vehicles.id')
             ->get();
-        //dd($vehicles);
+       // dd($vehicles);
 
         // Obtener el atributo 'address' de la propiedad
         $property = Property::where('property_code', $property_code)->select('name as property_name', 'address')->first();

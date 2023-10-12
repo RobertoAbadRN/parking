@@ -9,10 +9,14 @@ use App\Models\Property;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -22,18 +26,44 @@ class VehiclesController extends Controller
 
     public function index()
     {
-        $propertiesWithTotalVehicles = Property::leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
-            ->select(
-                'properties.name as propertyname',
-                'properties.property_code',
-                DB::raw('SUM(CASE WHEN vehicles.permit_status != "no permit" THEN 1 ELSE 0 END) as total_vehicles'),
-                DB::raw('SUM(CASE WHEN vehicles.permit_status = "no permit" THEN 1 ELSE 0 END) as no_permit'),
-                DB::raw('SUM(CASE WHEN vehicles.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended'),
-                DB::raw('SUM(CASE WHEN vehicles.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
-            )
-            ->groupBy('properties.id', 'properties.name', 'properties.property_code')
-            ->get();
+        $user = Auth::user(); // Obtén el usuario autenticado
 
+        if ($user->hasRole('Company administrator')) {
+            // Si el usuario tiene el rol 'Company Administrator', puede ver todos los vehículos
+            $propertiesWithTotalVehicles = Property::leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+                ->select(
+                    'properties.name as propertyname',
+                    'properties.property_code',
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status != "no permit" THEN 1 ELSE 0 END) as total_vehicles'),
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status = "no permit" THEN 1 ELSE 0 END) as no_permit'),
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended'),
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
+                )
+                ->groupBy('properties.id', 'properties.name', 'properties.property_code')
+                ->get();
+        } elseif ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property Manager', obtén su property_code
+            $propertyCode = $user->property_code;
+
+            // Luego, puedes usar este property_code para filtrar la consulta de los vehículos
+            $propertiesWithTotalVehicles = Property::leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+                ->where('properties.property_code', $propertyCode)
+                ->select(
+                    'properties.name as propertyname',
+                    'properties.property_code',
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status != "no permit" THEN 1 ELSE 0 END) as total_vehicles'),
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status = "no permit" THEN 1 ELSE 0 END) as no_permit'),
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status = "suspended" THEN 1 ELSE 0 END) as suspended'),
+                    DB::raw('SUM(CASE WHEN vehicles.permit_status = "expired" THEN 1 ELSE 0 END) as expired')
+                )
+                ->groupBy('properties.id', 'properties.name', 'properties.property_code')
+                ->get();
+        } else {
+            // Otros casos o roles desconocidos
+            abort(403, 'Acceso no autorizado');
+        }
+
+        // Devuelve la vista 'vehicles.index' y pasa los datos de los registros como variable "propertiesWithTotalVehicles"
         return view('vehicles.index', compact('propertiesWithTotalVehicles'));
     }
 
@@ -92,6 +122,16 @@ class VehiclesController extends Controller
         $property_code = $request->input('property_code');
         $permit_status = 'pending'; // Establecer el estado del permiso como "pending"
 
+        // Obtiene el property_name según el property_code
+        $property = Property::where('property_code', $property_code)->first();
+
+        if (!$property) {
+            // Manejar el caso en el que el property_code no se encuentre en la base de datos
+            return redirect()->back()->with('error', 'Property not found for the given property_code.');
+        }
+
+        $property_name = $property->name;
+
         // Guardar en la tabla vehicles
         $vehicle = new Vehicle([
             'user_id' => $user_id,
@@ -113,6 +153,7 @@ class VehiclesController extends Controller
             'success' => 'Resident and vehicle registered successfully.',
             'user_id' => $user_id,
             'property_code' => $property_code,
+            'property_name' => $property_name,
             'permit_status' => $permit_status,
             'license_plate' => $license_plate,
             'vin' => $vin,
@@ -122,12 +163,13 @@ class VehiclesController extends Controller
             'color' => $color,
             'vehicle_type' => $vehicle_type,
             // Agrega cualquier otro dato que desees pasar a la vista aquí
-        ]); 
+        ]);
 
     }
 
     public function store(Request $request)
     {
+        // dd($request);
 
         // Validar los datos del formulario
         $validator = Validator::make($request->all(), [
@@ -155,7 +197,7 @@ class VehiclesController extends Controller
         // Obtener los datos enviados por el formulario
         $data = $request->only([
             'license_plate', 'user_id', 'apart_unit', 'vin', 'make', 'model', 'year', 'color',
-            'vehicle_type', 'property_code', 'permit_type', 'start_date', 'end_date', 'permit_status',
+            'vehicle_type', 'property_code', 'permit_type', 'start_date', 'end_date', 'permit_status', 'reserved_space',
         ]);
         //dd($data);
 
@@ -250,13 +292,12 @@ class VehiclesController extends Controller
         // Actualizar el valor 'reserved_space' en la tabla 'departments' asociado al usuario
         $user = $vehicle->user;
         $department = Department::where('user_id', $user->id)->first();
-        
+
         if ($department) {
             $department->reserved_space = $request->input('reserved_space');
             $department->lease_expiration = $end_date;
             $department->save();
         }
-        
 
         // Buscar la propiedad correspondiente en la base de datos
         $property = Property::where('property_code', $request->input('property_code'))->first();
@@ -420,17 +461,23 @@ class VehiclesController extends Controller
             ->leftJoin('departments', 'users.id', '=', 'departments.user_id')
             ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate', 'users.name', 'departments.apart_unit as unit_number')
             ->find($id);
-    
+
         // Obtén el valor de 'lease_expiration' como una cadena de texto desde la relación 'departments'
         $lease_expirationString = $vehicle->user->departments->first()->lease_expiration;
-    
+
         // Obtén el 'unit_number' directamente desde la consulta SQL
         $unit_number = $vehicle->unit_number;
-    
+
         $start_date = Carbon::parse($vehicle->created_at);
         $license_plate = $vehicle->license_plate;
-    
-        return view('vehicles.show', [
+
+        // Obtén el idioma preferido del usuario desde la tabla 'departments'
+        $preferedLanguage = $vehicle->user->departments->first()->prefered_language;
+
+        // Define el nombre de la vista según el idioma preferido
+        $viewName = $preferedLanguage === 'spanish' ? 'vehicles.showspanish' : 'vehicles.showenglish';
+
+        return view($viewName, [
             'vehicle' => $vehicle,
             'property_name' => $vehicle->property_name,
             'logo' => $vehicle->logo,
@@ -442,15 +489,9 @@ class VehiclesController extends Controller
             'unit_number' => $unit_number, // Agregar el número de departamento a la vista
         ]);
     }
-    
-    
-    
 
     public function excel_vehicles()
     {
-
-        // Create new Spreadsheet object
-
         // Crea una instancia de Spreadsheet
 
         $spreadsheet = new Spreadsheet();
@@ -538,6 +579,40 @@ class VehiclesController extends Controller
         if ($vehicle) {
             $vehicle->update(['permit_status' => 'suspended']);
 
+            // Obtener el usuario asociado al vehículo
+            $user = $vehicle->user;
+
+            // Verificar si se encontró un usuario
+            if ($user) {
+                // Realizar una consulta para obtener el nombre de la propiedad
+                $property_name = DB::table('users')
+                    ->join('properties', 'users.property_code', '=', 'properties.property_code')
+                    ->where('users.id', $user->id)
+                    ->value('properties.name');
+
+                // Envío del correo para el estado 'suspended' utilizando la vista "permit_suspended.blade.php"
+                Mail::send('emails.permit_suspended', ['property_name' => $property_name], function ($message) use ($user) {
+                    $message->to($user->email, $user->name)
+                        ->subject('Parking Permit Suspended');
+                });
+
+                return redirect()->back()->with('success', 'Vehicle suspended and email sent.');
+            } else {
+                // Si no se encuentra un usuario asociado al vehículo, redirigir con un mensaje de error
+                return redirect()->back()->with('error', 'Error suspending vehicle: User not found.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'Vehicle not found.');
+    }
+
+    public function suspendVehicle1($id)
+    {
+        $vehicle = Vehicle::find($id);
+
+        if ($vehicle) {
+            $vehicle->update(['permit_status' => 'suspended']);
+
             // Obtener todos los inspectores de estacionamiento y enviarles un correo electrónico
             $parkingInspectors = User::role('Parking inspector')->get();
 
@@ -550,23 +625,128 @@ class VehiclesController extends Controller
 
         return redirect()->back()->with('error', 'Vehicle not found.');
     }
+
     public function updateStatus(Request $request, $vehicleId)
     {
         try {
             // Encontrar el vehículo por su ID
             $vehicle = Vehicle::findOrFail($vehicleId);
 
-            // Actualizar el campo 'status' a 'approved'
-            $vehicle->status = 'approved';
+            // Actualizar el campo 'permit_status' a 'approved'
+            $vehicle->permit_status = 'approved';
             $vehicle->save();
 
-            // Enviar un mensaje a la vista usando with()
-            return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
+            // Obtener el usuario asociado al vehículo
+            $user = $vehicle->user;
 
+            // Verificar si se encontró un usuario
+            if ($user) {
+                // Realizar una consulta para obtener el nombre de la propiedad
+                $property_name = DB::table('users')
+                    ->join('properties', 'users.property_code', '=', 'properties.property_code')
+                    ->where('users.id', $user->id)
+                    ->value('properties.name');
+
+                // Envío del correo para el estado 'active'
+                Mail::send('emails.permit_active', ['property_name' => $property_name], function ($message) use ($user) {
+                    $message->to($user->email, $user->name)
+                        ->subject('Your Parking Permit is Active');
+                });
+
+                // Enviar un mensaje a la vista usando with()
+                return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
+            } else {
+                // Si no se encuentra un usuario asociado al vehículo, redirigir con un mensaje de error
+                return Redirect::back()->with('error_message', 'Error updating vehicle status: User not found');
+            }
         } catch (\Exception $e) {
             // Si ocurre un error, redirigir con un mensaje de error
-            return Redirect::back()->with('error_message', 'Error updating vehicle status');
+            return Redirect::back()->with('error_message', 'Error updating vehicle status: ' . $e->getMessage());
         }
+    }
+
+    public function printPDF(Request $request)
+    {
+        // Obtiene el ID del vehículo desde la solicitud POST
+        $vehicleId = $request->input('vehicle_id');
+
+        // Obtén los datos que deseas pasar a la vista utilizando la consulta
+        $vehicle = Vehicle::join('properties', 'vehicles.property_code', '=', 'properties.property_code')
+            ->join('users', 'vehicles.user_id', '=', 'users.id')
+            ->leftJoin('departments', 'users.id', '=', 'departments.user_id')
+            ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate', 'users.name', 'departments.apart_unit as unit_number', 'departments.prefered_language')
+            ->find($vehicleId);
+        //dd(  $vehicle);
+
+        // Asegúrate de que $vehicle no sea nulo antes de continuar
+        if (!$vehicle) {
+            // Manejar el caso en que el vehículo no se encuentra
+            abort(404);
+        }
+        $start_date = Carbon::parse($vehicle->created_at);
+        // Obtén el valor de 'lease_expiration' como una cadena de texto desde la relación 'departments'
+        $lease_expirationString = $vehicle->user->departments->first()->lease_expiration;
+        // Obtén el 'unit_number' directamente desde la consulta SQL
+        $unit_number = $vehicle->unit_number;
+
+        // Crea una instancia de Dompdf con opciones
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $options->setIsRemoteEnabled(true);
+        $dompdf = new Dompdf($options);
+
+        // Obtén la ruta relativa de la imagen desde el campo 'logo' en la base de datos
+        $imageRelativePath = $vehicle->logo;
+// Convierte la ruta relativa en una URL completa
+        $imageURL = asset($imageRelativePath);
+
+        // Verificar el idioma preferido y seleccionar la vista correspondiente
+        $preferredLanguage = $vehicle->prefered_language;
+
+        if ($preferredLanguage === 'english') {
+            // Renderiza la vista Blade como HTML
+            $html = view('vehicles.printinglish', [
+                'vehicle' => $vehicle,
+                'property_name' => $vehicle->property_name,
+                'license_plate' => $vehicle->license_plate,
+                'permit_type' => $vehicle->permit_type,
+                'logo' => $imageURL,
+                'start_date' => $start_date,
+                'end_date' => $lease_expirationString,
+                'name' => $vehicle->name,
+                'unit_number' => $unit_number,
+                // Agrega otras variables según sea necesario
+            ])->render();
+        } elseif ($preferredLanguage === 'spanish') {
+            $html = view('vehicles.printspanish', [
+                // ... Variables para la vista en español ...
+                'vehicle' => $vehicle,
+                'property_name' => $vehicle->property_name,
+                'license_plate' => $vehicle->license_plate,
+                'permit_type' => $vehicle->permit_type,
+                'logo' => $imageURL,
+                'start_date' => $start_date,
+                'end_date' => $lease_expirationString,
+                'name' => $vehicle->name,
+                'unit_number' => $unit_number,
+            ])->render();
+        }
+
+        // Carga el HTML en Dompdf
+        $dompdf->loadHtml($html);
+
+        // Establece el tamaño y orientación de la página (por ejemplo, A4)
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Renderiza el PDF
+        $dompdf->render();
+
+        // Devuelve el PDF como una respuesta para mostrarlo o descargarlo
+        return new Response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="tu-archivo.pdf"', // Abre en el visor de PDF en lugar de descargar
+        ]);
     }
 
 }

@@ -57,6 +57,7 @@
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 <!--PrintArea -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PrintArea/2.4.1/jquery.PrintArea.js"></script>
+
 </head>
 
 <body x-data x-bind="$store.global.documentBody"

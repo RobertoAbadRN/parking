@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class VisitorsController extends Controller
 {
@@ -33,28 +35,39 @@ class VisitorsController extends Controller
 
     public function show()
     {
-
-        $properties = Property::select('properties.name as nombre_propiedad', 'properties.property_code',
-
-            DB::raw('COUNT(visitorpasses.id) as pass_issued'),
-
-            DB::raw('SUM(CASE WHEN visitorpasses.status = "Active" THEN 1 ELSE 0 END) as active_passes'),
-
-            DB::raw('SUM(CASE WHEN visitorpasses.status = "Expired" THEN 1 ELSE 0 END) as expired_passes'),
-
-            DB::raw('SUM(CASE WHEN visitorpasses.status = "Invalid" THEN 1 ELSE 0 END) as invalid_passes'))
-
-            ->leftJoin('visitorpasses', 'properties.property_code', '=', 'visitorpasses.property_code')
-
-            ->groupBy('properties.name', 'properties.property_code')
-
-            ->get();
-
-        // Puedes pasar la colección con los resultados a la vista
-
-        return view('visitors/index', ['properties' => $properties]);
-
+        $user = Auth::user(); // Obtén el usuario autenticado
+    
+        if ($user->hasRole('Company administrator')) {
+            // Si el usuario tiene el rol 'Company Administrator', puede ver todos los detalles de las propiedades
+            $properties = Property::select('properties.name as nombre_propiedad', 'properties.property_code',
+                DB::raw('COUNT(visitorpasses.id) as pass_issued'),
+                DB::raw('SUM(CASE WHEN visitorpasses.status = "Active" THEN 1 ELSE 0 END) as active_passes'),
+                DB::raw('SUM(CASE WHEN visitorpasses.status = "Expired" THEN 1 ELSE 0 END) as expired_passes'),
+                DB::raw('SUM(CASE WHEN visitorpasses.status = "Invalid" THEN 1 ELSE 0 END) as invalid_passes'))
+                ->leftJoin('visitorpasses', 'properties.property_code', '=', 'visitorpasses.property_code')
+                ->groupBy('properties.name', 'properties.property_code')
+                ->get();
+        } elseif ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property Manager', verifica si su property_code coincide con el de la propiedad
+            $propertyCode = $user->property_code;
+            $properties = Property::select('properties.name as nombre_propiedad', 'properties.property_code',
+                DB::raw('COUNT(visitorpasses.id) as pass_issued'),
+                DB::raw('SUM(CASE WHEN visitorpasses.status = "Active" THEN 1 ELSE 0 END) as active_passes'),
+                DB::raw('SUM(CASE WHEN visitorpasses.status = "Expired" THEN 1 ELSE 0 END) as expired_passes'),
+                DB::raw('SUM(CASE WHEN visitorpasses.status = "Invalid" THEN 1 ELSE 0 END) as invalid_passes'))
+                ->where('properties.property_code', $propertyCode)
+                ->leftJoin('visitorpasses', 'properties.property_code', '=', 'visitorpasses.property_code')
+                ->groupBy('properties.name', 'properties.property_code')
+                ->get();
+        } else {
+            // Otros casos o roles desconocidos
+            abort(403, 'Acceso no autorizado');
+        }
+    
+        // Devuelve la vista 'visitors.index' y pasa los detalles de las propiedades a la vista
+        return view('visitors.index', ['properties' => $properties]);
     }
+    
 
     public function registerVisitorPass(Request $request)
     {
@@ -73,6 +86,7 @@ class VisitorsController extends Controller
             'valid_from' => 'required|date',
             'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
         ]);
+        //dd($validatedData);
 
         // Generate a unique 5-digit vp_code
         $vpCode = $this->generateUniqueVpCode();
@@ -89,7 +103,7 @@ class VisitorsController extends Controller
         $visitorPass->color = $validatedData['color'];
         $visitorPass->model = $validatedData['model'];
         $visitorPass->vehicle_type = $validatedData['vehicle_type'];
-        $visitorPass->valid_from = $validatedData['valid_from'];
+        $visitorPass->valid_from = Carbon::parse($validatedData['valid_from']);
 
         // Check if the vehicle already has an active pass (with a valid date range)
         $existingActivePass = VisitorPass::where('license_plate', $visitorPass->license_plate)
@@ -100,7 +114,7 @@ class VisitorsController extends Controller
 // The vehicle already has an active pass
             return redirect()->back()->with('error', 'Vehicle already has an active pass.');
         }
-
+      // dd($visitorPass);
         $visitorPass->save();
 
         // Fetch the latest registered visitor pass for display

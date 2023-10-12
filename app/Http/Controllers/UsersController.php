@@ -7,6 +7,7 @@ use App\Mail\NewUserNotification;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
@@ -19,32 +20,67 @@ class UsersController extends Controller
 
     public function index()
     {
-        $users = DB::table('users')
-            ->leftJoin('user_properties', 'users.id', '=', 'user_properties.user_id')
-            ->leftJoin('properties', 'user_properties.property_id', '=', 'properties.id')
-            ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
-            ->groupBy('users.id')
-            ->get();
+        $user = Auth::user(); // Obtén el usuario autenticado
+        $residentRoleId = DB::table('roles')->where('name', 'Resident')->value('id');
 
-        foreach ($users as $user) {
-            $roles = User::find($user->id)->getRoleNames(); // Obtener los roles del usuario
-            $user->roles = $roles->implode(', '); // Convertir los roles en una cadena separada por comas
+        if ($user->hasRole('Company administrator')) {
+            // Si el usuario tiene el rol 'Company Administrator', puede ver todos los usuarios excepto los 'Resident'
+            $users = DB::table('users')
+                ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->leftJoin('user_properties', 'users.id', '=', 'user_properties.user_id')
+                ->leftJoin('properties', 'user_properties.property_id', '=', 'properties.id')
+                ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
+                ->whereNotIn('users.id', function ($query) use ($residentRoleId) {
+                    $query->select('model_id')
+                        ->from('model_has_roles')
+                        ->where('role_id', $residentRoleId);
+                })
+                ->groupBy('users.id')
+                ->get();
+
+            foreach ($users as $user) {
+                $roles = User::find($user->id)->getRoleNames(); // Obtener los roles del usuario
+                $user->roles = $roles->implode(', '); // Convertir los roles en una cadena separada por comas
+            }
+        } elseif ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property Manager', obtén su property_code
+            $propertyCode = $user->property_code;
+
+            // Luego, puedes usar este property_code para filtrar la consulta de los usuarios
+            $users = DB::table('users')
+                ->leftJoin('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->leftJoin('user_properties', 'users.id', '=', 'user_properties.user_id')
+                ->leftJoin('properties', 'user_properties.property_id', '=', 'properties.id')
+                ->select('users.*', DB::raw('GROUP_CONCAT(properties.name SEPARATOR " || ") as property_name'))
+                ->where('properties.property_code', $propertyCode)
+                ->whereNotIn('users.id', function ($query) use ($residentRoleId) {
+                    $query->select('model_id')
+                        ->from('model_has_roles')
+                        ->where('role_id', $residentRoleId);
+                })
+                ->groupBy('users.id')
+                ->get();
+
+            foreach ($users as $user) {
+                $roles = User::find($user->id)->getRoleNames(); // Obtener los roles del usuario
+                $user->roles = $roles->implode(', '); // Convertir los roles en una cadena separada por comas
+            }
+        } else {
+            // Otros casos o roles desconocidos
+            abort(403, 'Acceso no autorizado');
         }
 
         return view('users.index', ['users' => $users]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-
         $properties = Property::all();
         $roles = Role::all();
-        //dd($roles);
+
+        // Define la variable $defaultPropertyCode aquí
+        $defaultProperty = 'A. Martinez Towing Company LLC';
+
         return view('users.adduser', compact('properties', 'roles'));
     }
 
@@ -65,27 +101,26 @@ class UsersController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
     public function store(Request $request)
     {
         // dd($request->all());
-        // Validar los datos del formulario
-        $validatedData = $request->validate([
-            'user' => 'required',
-            'name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email|unique:users,email', // Added unique validation rule
-            'password' => 'required',
-            //'access_level' => 'required',
-            'properties' => 'required|array',
-            'role' => 'required',
-        ]);
+          // Validar los datos del formulario
+    $validatedData = $request->validate([
+        'user' => 'required',
+        'name' => 'required',
+        'phone' => 'required',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required',
+        'role' => 'required',
+    ]);
+
+    // Obtener el valor del campo 'role'
+    $role = $request->role;
+
+    // Si el rol es 'Company administrator' o 'Parking inspector', no validar 'properties'
+    if ($role !== 'Company administrator' && $role !== 'Parking inspector') {
+        $validatedData['properties'] = 'required|array';
+    }
 
         // Obtener el correo electrónico y el usuario del formulario
         $correo = $validatedData['email'];
@@ -135,12 +170,6 @@ class UsersController extends Controller
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Property  $property
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $user = User::find($id);
@@ -163,13 +192,6 @@ class UsersController extends Controller
         return view('users.edituser', compact('user', 'properties', 'userRole', 'roles', 'userProperties'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Property  $property
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, User $user)
     {
         // dd($request->all());
@@ -197,12 +219,6 @@ class UsersController extends Controller
         return redirect()->route('users')->with('success_message', 'User updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Property  $property
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
         // Aquí puedes agregar la lógica para eliminar el usuario
@@ -213,9 +229,6 @@ class UsersController extends Controller
 
     public function list_users($propertyCode)
     {
-
-        // Create new Spreadsheet object
-        // Crea una instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $datos = User::join('properties', 'users.property_code', '=', 'properties.property_code')

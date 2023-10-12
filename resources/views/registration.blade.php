@@ -56,7 +56,7 @@
         <!-- Tabla con estilo y completamente responsive -->
         <div class="container">
             <table>
-                <thead>
+                <thead> 
                     <tr>
                         <th>Field</th>
                         <th>Value</th>
@@ -97,7 +97,7 @@
                     <tr>
                         <td colspan="2">
                             Your vehicle has been pre-registered for a parking permit.<br>
-                            Please visit Village at Piney Point office at your earliest convenience.<br>
+                            Please visit {{$property_name}} office at your earliest convenience.<br>
                             They will issue your permit.<br>
                             Thank you.
                         </td>

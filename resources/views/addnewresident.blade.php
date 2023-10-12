@@ -1,6 +1,6 @@
 <x-base-layout title="Register Resident">
     <main class="grid w-full grow grid-cols-1 place-items-center">
-        <div class="w-full max-w-[26rem] p-4 sm:px-5">
+        <div class="w-full max-w-[36rem] p-4 sm:px-5"> <!-- Aquí se cambió el ancho máximo -->         
             <div class="card mt-5 w-full rounded-lg p-5 lg:p-7">
                 <div class="mt-0 flex flex-col items-center space-y-2">
                     <img class="h-auto w-56" src="{{ asset('images/logo_icon.png') }}" alt="logo" />
@@ -11,38 +11,32 @@
 
 
                 @if (session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Éxito',
-            text: '{{ session('success') }}',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Aceptar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '{{ route('login') }}';
-            }
-        });
-    </script>
-@endif
+                    <script>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Éxito',
+                            text: '{{ session('success') }}',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '{{ route('login') }}';
+                            }
+                        });
+                    </script>
+                @endif
 
-@if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ session('error') }}',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Aceptar'
-        });
-    </script>
-@endif
-
-
-               
-
-
-
+                @if (session('error'))
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: '{{ session('error') }}',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    </script>
+                @endif
 
                 <form method="POST" action="{{ route('registerResidentNew') }}">
                     @csrf
@@ -50,108 +44,93 @@
                     <input type="hidden" name="property_code" value="{{ $property_code }}">
                     <input type="hidden" name="property_name" value="{{ $property_name }}">
 
-                    <div class="mb-0 pt-5">
-                        <label class="relative flex">
-
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Resident name" type="text" name="name" value="{{ old('name') }}" />
-
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                            Resident name:
                         </label>
-
+                        <input
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder-text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Resident name" type="text" name="name" value="{{ old('name') }}" />
                         @error('name')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
+                            <p class="text-tiny+ text-error">{{ $message }}</p>
                         @enderror
-
                     </div>
-                    <div class="mb-4 pt-5">
 
-                        <label class="relative flex">
-
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="UserName" type="text" name="user" value="{{ old('user') }}" />
-
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="user">
+                            Choose Username:
                         </label>
-
+                        <input
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder-text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Username" type="text" name="user" value="{{ old('user') }}" />
                         @error('user')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
+                            <p class="text-tiny+ text-error">{{ $message }}</p>
                         @enderror
-
                     </div>
 
                     <div class="mb-4">
-
-                        <label class="relative flex">
-
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Apart/unit" type="text" name="apart_unit"
-                                value="{{ old('apart_unit') }}" />
-
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="apart_unit">
+                            Apart/unit:
                         </label>
-
+                        <input
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder-text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Apart/unit" type="text" name="apart_unit"
+                            value="{{ old('apart_unit') }}" />
                         @error('apart_unit')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
+                            <p class="text-tiny+ text-error">{{ $message }}</p>
                         @enderror
-
                     </div>
 
                     <div class="mb-4">
-
-                        <label class="relative flex">
-
-                            <input
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Phone" type="text" name="phone" value="{{ old('phone') }}" />
-
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                            Phone:
                         </label>
-
+                        <input
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder-text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Phone" type="text" name="phone" value="{{ old('phone') }}" />
                         @error('phone')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
+                            <p class="text-tiny+ text-error">{{ $message }}</p>
                         @enderror
-
                     </div>
 
-
-
                     <div class="mb-4">
-                        <label class="relative flex">
-                            <input id="email"
-                                class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
-                                placeholder="Email" type="email" name="email" value="{{ old('email') }}"
-                                oninput="checkEmailAvailability(this.value)" />
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                            Email:
                         </label>
+                        <input id="email"
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder-text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Email" type="email" name="email" value="{{ old('email') }}"
+                            oninput="checkEmailAvailability(this.value)" />
                         <span id="email-error" class="text-tiny+ text-error"></span>
                     </div>
 
-
-
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="prefered_language">
+                            Preferred Language:
+                        </label>
+                        <select
+                            class="form-select mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            id="prefered_language" name="prefered_language">
+                            <option value="english">English</option>
+                            <option value="spanish">Spanish</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
 
                     <div class="mb-4">
-
-                        <label class="relative flex">
-
-                            <input type="hidden" name="access_level" value="Resident">
-
-                        </label>
-
-                        @error('access_level')
-                            <span class="text-tiny+ text-error">{{ $message }}</span>
-                        @enderror
-                    </div>
+                        <input type="hidden" name="access_level" value="Resident" />
+                    </div>                  
 
                     <div>
-
                         <button type="submit"
                             class="btn bg-warning ml-3 font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
-
-                            Submit
-
+                            Save
                         </button>
-
                     </div>
                 </form>
+
+
+
 
             </div>
         </div>

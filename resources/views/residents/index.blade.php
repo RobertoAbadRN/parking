@@ -47,7 +47,7 @@
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
             <div class="inline-flex space-x-2">
                 <div class="inline-flex space-x-4">
-                    <div class="inline-flex space-x-4">                     
+                    <div class="inline-flex space-x-4">
                         <a href="{{ route('addResidentvehicles', ['user_id' => $residentid]) }}"
                             class="btn bg-info font-medium text-white hover:bg-info-focus focus:bg-info-focus active:bg-info-focus/90"
                             style="width: auto; height: 40px;">
@@ -87,7 +87,7 @@
                                     <td>{{ $residentName }}</td>
                                     <td>{{ $residentDetails->apart_unit }}</td>
                                     <td>{{ $residentEmail }}</td>
-                                    <td>{{ $reservedSpace }}</td>
+                                    <td>{{ $residentDepartment->reserved }}</td>
                                     <td class="px-4 py-2">
                                         <button id="boton-modelo-{{ $residentid }}"
                                             class="btn bg-slate-150 font-medium text-slate-800 hover:bg-slate-200 focus:bg-slate-200 active:bg-slate-200/80 dark:bg-navy-500 dark:text-navy-50 dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90"
@@ -156,30 +156,31 @@
                                     <td>{{ $vehicle->permit_type }}</td>
                                     <td>{{ $vehicle->permit_status }}</td>
                                     <td>
-                                        <a href="{{ route('editResidentVehicle', ['id' => $vehicle->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+                                        <a href="{{ route('editResidentVehicle', ['id' => $vehicle->id]) }}"
+                                            class="text-blue-500 hover:text-blue-700 mr-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="#" class="text-green-500 hover:text-green-700 mr-2"
+                                        <!--<a href="#" class="text-green-500 hover:text-green-700 mr-2"
                                             onclick="window.print()">
                                             <i class="fas fa-print"></i>
-                                        </a>
+                                        </a> -->
                                         <a href="{{ route('deleteResidentVehicle', ['id' => $vehicle->id]) }}"
                                             class="text-red-500 hover:text-red-700 mr-2"
                                             onclick="event.preventDefault(); document.getElementById('delete-vehicle-form-{{ $vehicle->id }}').submit();">
-                                             <i class="fas fa-trash"></i>
-                                         </a>
-                                         
-                                         <form id="delete-vehicle-form-{{ $vehicle->id }}"
-                                               action="{{ route('deleteResidentVehicle', ['id' => $vehicle->id]) }}"
-                                               method="POST"
-                                               style="display: none;">
-                                             @csrf
-                                             @method('DELETE')
-                                         </form>
-                                         
-                                        <a href="#" class="text-blue-500 hover:text-blue-700">
-                                            <i class="fas fa-envelope"></i>
+                                            <i class="fas fa-trash"></i>
                                         </a>
+
+                                        <form id="delete-vehicle-form-{{ $vehicle->id }}"
+                                            action="{{ route('deleteResidentVehicle', ['id' => $vehicle->id]) }}"
+                                            method="POST" style="display: none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+
+                                        <!-- <a href="#" class="text-blue-500 hover:text-blue-700">
+    <i class="fas fa-envelope"></i>
+</a> -->
+
                                     </td>
                                     </td>
 

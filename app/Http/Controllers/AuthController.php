@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\property;
+use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -34,30 +34,34 @@ class AuthController extends Controller
     
         $validated = $validator->validated();
     
-        // Intentar autenticar por correo electrónico o nombre de usuario
+        // Attempt to authenticate by email or username
         $user = User::where(function ($query) use ($validated) {
             $query->where('email', $validated['login'])
                 ->orWhere('user', $validated['login']);
         })->first();
     
         if ($user && \Auth::attempt(['email' => $user->email, 'password' => $validated['password']])) {
-            // Usuario autenticado correctamente
+            // User authenticated successfully
             $user->update(['last_login' => now()]);
         
-            if ($user->hasRole('Resident')) {
-                // Si el usuario tiene el rol "Resident", redirige a la ruta de "recidents"
-                return redirect()->route('recidents'); // Asegúrate de que la ruta sea correcta
+            if ($user->hasRole('Parking inspector')) {
+                // If the user has the role "Parking inspector," redirect directly to the "inspector" route
+                return redirect()->route('inspector'); // Make sure the route is correctly defined
+            } elseif ($user->hasRole('Resident')) {
+                // If the user has the role "Resident," redirect to the "recidents" route
+                return redirect()->route('recidents'); // Make sure the route is correctly defined
             } else {
-                // Si el usuario tiene otros roles, redirige a la ruta "index" o cualquier otra que desees
-                return redirect()->route('index'); // Asegúrate de que la ruta sea correcta
+                // If the user has other roles, redirect to the "index" route or any other desired route
+                return redirect()->route('index'); // Make sure the route is correctly defined
             }
-        }        
+        }
     
         $validator->errors()->add(
-            'login', 'Usuario o contraseña incorrectos'
+            'login', 'Incorrect username or password'
         );
         return redirect()->back()->withErrors($validator)->withInput();
     }
+    
     
 
     public function registerView()
@@ -70,6 +74,7 @@ class AuthController extends Controller
             
             // Realiza una consulta para obtener la propiedad por su property_code
             $property = Property::where('property_code', $propertyCode)->first();
+           // dd( $property);
             
             if ($property) {
                 $propertyName = $property->name;

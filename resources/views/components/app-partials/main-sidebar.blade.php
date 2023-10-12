@@ -103,9 +103,9 @@
             @can('visitors')
                 <a href="{{ route('visitors_pass') }}"
                     class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'components' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
-                    x-tooltip.placement.right="'visitors_pass'">
+                    x-tooltip.placement.right="'Visitor’s Pass'">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
+                        xmlns="http://www.w3.org/2000/svg"> 
                         <path
                             d="M7 12C6.44772 12 6 11.5523 6 11C6 10.4477 6.44772 10 7 10H17C17.5523 10 18 10.4477 18 11C18 11.5523 17.5523 12 17 12L7 12Z"
                             fill="{{ $routePrefix === 'visitors_pass' ? '#007BFF' : '#F0AD4E' }}" />
@@ -166,6 +166,8 @@
                     </svg>
                 </a>
             @endcan
+
+            
 
 
         </div>

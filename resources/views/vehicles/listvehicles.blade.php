@@ -53,7 +53,7 @@
                                     d="M5 21.7715L7.80957 16.542L5.25977 11.75H7.20117L8.84863 14.9697L10.4619 11.75H12.3828L9.83301 16.6172L12.6426 21.7715H10.6396L8.81445 18.3057L6.98926 21.7715H5Z"
                                     fill="white" />
                             </svg>
-                        </a>
+                        </a>        
 
                     </div>
                 </div>
@@ -64,54 +64,55 @@
                     <table id="example" class="table-auto min-w-full">
                         <thead>
                             <tr>
-                                <th class="px-4 py-2">Create at</th>
-                                <th class="px-4 py-2">Resident Name</th>
-                                <th class="px-4 py-2">Aparment/Unit</th>
-                                <th class="px-4 py-2">License/Plate</th>
-                                <th class="px-4 py-2">Make</th>
-                                <th class="px-4 py-2">Model</th>
-                                <th class="px-4 py-2">Permit Type</th>
-                                <th class="px-4 py-2">#Reserved</th>
-                                <th class="px-4 py-2">Permit Status</th>
-                                <th class="px-4 py-2">E-mail</th>
-                                <th class="px-4 py-2">Phone</th>
-                                <th class="px-4 py-2">Type</th>
-                                <th class="px-4 py-2">Color</th>
-                                <th class="px-4 py-2">VIN</th>
-                                <th class="px-4 py-2">Actions</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Create at</th>
+                                <th class="px-4 py-2"style="font-size: 11px;">Resident Name</th>
+                                <th class="px-4 py-2"style="font-size: 11px;">Aparment/Unit</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">License/Plate</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Make</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Model</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Permit Type</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">#Reserved</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Permit Status</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Actions</th>                                
+                                <th class="px-4 py-2" style="font-size: 11px;">Language</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">E-mail</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Phone</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Type</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">Color</th>
+                                <th class="px-4 py-2" style="font-size: 11px;">VIN</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($vehicles as $vehicle)
                                 <tr>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ date('d/m/Y', strtotime($vehicle->created_at)) }}
 
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->resident_name }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->apart_unit }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->license_plate }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->make }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->model }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->permit_type }}
                                     </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         {{ $vehicle->reserved_space }}
                                     </td>
 
-
-                                    <td class="px-4 py-2 text-center">
+                                    <td>
                                         @php
                                             $currentDate = date('Y-m-d');
                                             $endDate = $vehicle->lease_expiration; // End date from the table (format: 'Y-m-d')
@@ -137,33 +138,40 @@
                                             @endif
                                         @endif
                                     </td>
-
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->email }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->phone }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->vehicle_type }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->color }}
-                                    </td>
-                                    <td class="px-4 py-2">
-                                        {{ $vehicle->vin }}
-                                    </td>
-                                    <td class="px-4 py-2">
+                                    <td>
                                         <div class="flex justify-center space-x-2">
+
+                                            <!-- Botón de aprobación -->
+                                            <form method="POST" action="{{ route('update.vehicle.status', ['vehicleId' => $vehicle->id]) }}">
+                                                @csrf <!-- Agrega el token CSRF para protección contra ataques CSRF -->
+                                            
+                                                <button type="submit" name="status" value="approved"
+                                                    class="btn h-8 w-8 p-0 text-green-500 hover:bg-green-200 focus:bg-green-200 active:bg-green-300 rounded-full">
+                                                    <i class="fas fa-check"></i> <!-- Icono de checkmark -->
+                                                </button>
+                                            </form>
+                                            
+                                            
+                                            <!-- Botón de rechazo -->
+                                            <form method="POST" action="{{ route('vehicles.suspend', ['id' => $vehicle->id]) }}">
+                                                @csrf
+                                                <button type="submit" class="btn h-8 w-8 p-0 text-red-500 hover:bg-red-200 focus:bg-red-200 active:bg-red-300 rounded-full">
+                                                    <i class="fas fa-times"></i> <!-- Icono de X roja -->
+                                                </button>
+                                            </form>
+                                            
+
 
                                             <a href="{{ route('edit.vehicle', ['id' => $vehicle->id, 'property_code' => $vehicle->property_code]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                 <i class="fa fa-edit"></i> <!-- Using the "edit" icon from FontAwesome -->
-                                             </a> 
+                                                <i class="fa fa-edit"></i>
+                                                <!-- Using the "edit" icon from FontAwesome -->
+                                            </a>
                                             <a href="{{ route('vehicles.show', ['vehicle' => $vehicle->id]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-print"></i>
                                             </a>
+
 
                                             <a href="{{ route('send.email', ['id' => $vehicle->id, 'property_code' => $property_code, 'email' => $vehicle->email]) }}"
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
@@ -219,6 +227,25 @@
                                         </div>
 
                                     </td>
+                                    <td>
+                                        {{ $vehicle->prefered_language }}
+                                    </td>
+                                    <td>
+                                        {{ $vehicle->email }}
+                                    </td>
+                                    <td>
+                                        {{ $vehicle->phone }}
+                                    </td>
+                                    <td>
+                                        {{ $vehicle->vehicle_type }}
+                                    </td>
+                                    <td>
+                                        {{ $vehicle->color }}
+                                    </td>
+                                    <td>
+                                        {{ $vehicle->vin }}
+                                    </td>
+
 
                                 </tr>
                             @endforeach
@@ -235,55 +262,55 @@
                 });
             });
         </script>
-       <script>
-        function sendSuspensionEmail(vehicleId) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'This will suspend the vehicle and send a notification email to parking inspectors!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, suspend it!',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Send AJAX request to suspend the vehicle and send the email
-                    axios.post(`/suspend-vehicle/${vehicleId}`)
+        <script>
+            function sendSuspensionEmail(vehicleId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will suspend the vehicle and send a notification email to parking inspectors!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, suspend it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to suspend the vehicle and send the email
+                        axios.post(`/remocar-vehicle/${vehicleId}`)
+                            .then(response => {
+                                // Handle the response if necessary
+                                Swal.fire('Success', 'Vehicle suspended and email sent.', 'success')
+                                    .then(() => {
+                                        if (response.data === 'success') {
+                                            // Reload the chat section using AJAX
+                                            reloadChatSection();
+                                        }
+                                    });
+                            })
+                            .catch(error => {
+                                // Handle the error if necessary
+                                Swal.fire('Error', 'An error occurred while processing the request.', 'error');
+                            });
+                    }
+                });
+            }
+
+            function reloadChatSection() {
+                // Use AJAX to reload the chat section
+                var chatSection = document.getElementById('chat-section'); // Replace with the actual ID of the chat section
+                if (chatSection) {
+                    axios.get('/get-chat-section') // Replace with the actual endpoint to fetch the chat section content
                         .then(response => {
-                            // Handle the response if necessary
-                            Swal.fire('Success', 'Vehicle suspended and email sent.', 'success')
-                                .then(() => {
-                                    if (response.data === 'success') {
-                                        // Reload the chat section using AJAX
-                                        reloadChatSection();
-                                    }
-                                });
+                            chatSection.innerHTML = response.data; // Update the chat section content
                         })
                         .catch(error => {
-                            // Handle the error if necessary
-                            Swal.fire('Error', 'An error occurred while processing the request.', 'error');
+                            console.error('Error reloading chat section:', error);
                         });
                 }
-            });
-        }
-    
-        function reloadChatSection() {
-            // Use AJAX to reload the chat section
-            var chatSection = document.getElementById('chat-section'); // Replace with the actual ID of the chat section
-            if (chatSection) {
-                axios.get('/get-chat-section') // Replace with the actual endpoint to fetch the chat section content
-                    .then(response => {
-                        chatSection.innerHTML = response.data; // Update the chat section content
-                    })
-                    .catch(error => {
-                        console.error('Error reloading chat section:', error);
-                    });
             }
-        }
-    </script>
-    
-    
+        </script>
+
+
 
     </main>
 </x-app-layout>

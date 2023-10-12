@@ -7,12 +7,43 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VisitorPass;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
 
     public function dashboardsCrmAnalytics()
     {
+        $user = Auth::user(); // Obtén el usuario autenticado
+        $propertyNames = []; // Inicializa $propertyNames como un array vacío
+        $properties = []; // Inicializa $properties como un array vacío
+        $totalVehiclesByProperty = []; // Inicializa un array para almacenar la suma de autos por propiedad
+        $totalVisitorsByProperty =[];
+        if ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property manager', obten su property_code
+            $propertyCode = $user->property_code;
+
+            // Luego, puedes usar este property_code para obtener los nombres y direcciones de las propiedades
+            $properties = Property::where('property_code', $propertyCode)->get();
+
+            // Calcula la suma de autos por propiedad
+            $totalVehiclesByProperty = DB::table('vehicles')
+                ->select('property_code', DB::raw('SUM(1) as total_vehicles'))
+                ->where('property_code', $propertyCode)
+                ->groupBy('property_code')
+                ->pluck('total_vehicles', 'property_code')
+                ->toArray();
+
+            // Calcular el total de visitantes por propiedad
+            $totalVisitorsByProperty = VisitorPass::select('property_code', DB::raw('COUNT(*) as total_visitors'))
+                ->groupBy('property_code')
+                ->pluck('total_visitors', 'property_code')
+                ->toArray();
+        }
+
+// Puedes usar $propertyData como necesites en tu vista
+
         // Calculate the total count of vehicles
         $totalVehicles = Vehicle::count();
         $recidentsCount = User::where('access_level', 'Resident')->count();
@@ -58,7 +89,6 @@ class HomeController extends Controller
 
         $residentUsersCount = User::where('access_level', 'Resident')->count();
 
-
         return view('home.dashboards-crm-analytics', compact(
             'totalVehicles',
             'recidentsCount',
@@ -93,6 +123,11 @@ class HomeController extends Controller
             'companyAdministratorCount',
 
             'residentUsersCount',
+            'propertyNames',
+            'properties',
+
+            'totalVehiclesByProperty',
+            'totalVisitorsByProperty',
         ));
     }
 

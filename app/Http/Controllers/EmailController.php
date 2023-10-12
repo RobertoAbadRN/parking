@@ -16,6 +16,7 @@ use App\Models\EmailSetting;
 use App\Models\DefaultEmailSetting;
 
 
+
 // Import the Resident model
 
 class EmailController extends Controller
@@ -37,17 +38,33 @@ class EmailController extends Controller
     public function sendMassEmail(Request $request)
     {
         $selectedResidents = $request->input('selectedResidents', []);
-
+        $propertyCode = $request->input('propertyCode');
+    
+        // Verificar si existe una configuración de correo para el property_code
+        $emailSetting = EmailSetting::where('property_code', $propertyCode)->first();
+    
+        // Si no se encuentra una configuración, usa la vista por defecto
+        $view = $emailSetting ? 'emails.massdinamic' : 'emails.mass';
+    
         // Obtener detalles de los residentes seleccionados
         $residents = User::whereIn('id', $selectedResidents)->get();
-
-        // Envío de correos
+    
+        // Iterar sobre los residentes y enviar correos
         foreach ($residents as $resident) {
-            Mail::to($resident->email)->send(new MassEmail($resident));
+            // Enviar el correo utilizando Mail::send
+            Mail::send($view, ['resident' => $resident, 'emailSetting' => $emailSetting], function ($message) use ($resident) {
+                $message->to($resident->email)->subject('Asunto de tu correo aquí');
+            });
         }
-
+    
         return response()->json(['message' => 'Emails sent successfully.']);
     }
+    
+    
+    
+    
+    
+    
 
     public function sendExpiredEmail(Request $request, $id)
     {
@@ -118,35 +135,42 @@ public function edit(Request $request, $property_code)
     // Si no se encuentra la configuración en la tabla `emails_settings`, intenta obtener los valores predeterminados
     if (!$emailSetting) {
         $defaultEmailSetting = DefaultEmailSetting::first();
-     
 
-        // Pasa los datos a la vista, dependiendo de si se encontró o no la configuración
+        // Determina cuál es el tab activo actualmente (por ejemplo, a través de un parámetro en la URL o algún otro método)
+        $activeTab = $request->query('active_tab', 1);
+
+        // Pasa los datos a la vista, dependiendo de si se encontró o no la configuración y cuál es el tab activo
         return view('settingss.emails', [
             'property' => $property, // Pasamos la propiedad a la vista
             'emailSetting' => $defaultEmailSetting ?? null,
+            'property_code' => $property_code,
+            'activeTab' => $activeTab, // Pasamos el tab activo a la vista
         ]);
     }
 
     // Si se encontró la configuración en la tabla `emails_settings`, pasa los datos a la vista
-    return view('settingss.emails', compact('property', 'emailSetting'));
+    return view('settingss.emails', compact('property', 'emailSetting', 'property_code'));
 }
+
 
 public function update(Request $request)
 {
     // Validar los datos del formulario si es necesario
     $request->validate([
         'email_content' => 'required',
+        'property_code' => 'required', // Agrega una validación para property_code
     ]);
 
-    // Obtener la configuración de correo electrónico existente
-    $emailSetting = EmailSetting::where('property_code', auth()->user()->property_code)->first();
+    // Obtener el property_code del formulario
+    $property_code = $request->input('property_code');
 
-    // Verificar si $emailSetting es nulo
-    if ($emailSetting === null) {
-        // Si es nulo, crea una nueva instancia de EmailSetting
+    // Buscar la configuración de correo electrónico existente por property_code
+    $emailSetting = EmailSetting::where('property_code', $property_code)->first();
+
+    // Si no se encuentra la configuración, crea una nueva instancia
+    if (!$emailSetting) {
         $emailSetting = new EmailSetting();
-        // Asigna el código de propiedad del usuario autenticado
-        $emailSetting->property_code = auth()->user()->property_code;
+        $emailSetting->property_code = $property_code;
     }
 
     // Actualizar la configuración de correo electrónico
@@ -154,10 +178,7 @@ public function update(Request $request)
     $emailSetting->save();
 
     // Redirigir de vuelta con un mensaje de éxito
-    return redirect()->route('email.edit', ['property_code' => $emailSetting->property_code])->with('success_message', 'Configuración de correo electrónico actualizada correctamente.');
-
+    return redirect()->route('email.edit', ['property_code' => $property_code])->with('success_message', 'Configuración de correo electrónico actualizada correctamente.');
 }
-
-
 
 }

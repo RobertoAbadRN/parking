@@ -13,8 +13,6 @@
                     Add Vehicle 
                 </h2>
 
-                
-
             </div>
             <div class="flex justify-center space-x-2">
                 <h2 class="text-xl font-medium text-slate-700 line-clamp-1 dark:text-navy-50">
@@ -105,13 +103,22 @@
                             @endforeach
                         </select>
                     </label>
+                    <label class="block">
+                        <span class="font-medium text-slate-600 dark:text-navy-100">Reserved Space</span>
+                        <input
+                            class="form-input mt-1.5 w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Reserved Space" type="text" name="reserved_space" />
+                    </label>
 
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">Start Date</span>
                         <span class="relative mt-1.5 flex">
-                            <input id="start_date_input" name="start_date" x-init="$el._x_flatpickr = flatpickr($el)"
-                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                placeholder="Start Date:..." type="text" />
+                            <input id="start_date_input" name="start_date" x-init="$el._x_flatpickr = flatpickr($el, {
+                                minDate: 'today', // Establece la fecha mínima como hoy
+                                dateFormat: 'Y-m-d', // Formato de fecha deseado
+                            })"
+                            class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="Start Date:..." type="text" />
                             <span
                                 class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200"
@@ -122,13 +129,18 @@
                             </span>
                         </span>
                     </label>
+                    
+                    
 
                     <label class="block pt-4">
                         <span class="font-medium text-slate-600 dark:text-navy-100">End Date</span>
                         <span class="relative mt-1.5 flex">
-                            <input id="end_date_input" name="end_date" x-init="$el._x_flatpickr = flatpickr($el)"
-                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                placeholder="End Date:..." type="text" />
+                            <input id="end_date_input" name="end_date" x-init="$el._x_flatpickr = flatpickr($el, {
+                                minDate: 'today', // Establece la fecha mínima como hoy
+                                dateFormat: 'Y-m-d', // Formato de fecha deseado
+                            })"
+                            class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                            placeholder="End Date:..." type="text" />
                             <span
                                 class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200"
@@ -139,6 +151,7 @@
                             </span>
                         </span>
                     </label>
+                    
 
                     <div class="grid grid-cols-2 gap-4 pt-10">
                         <button type="button" onclick="setDateRange(30)"

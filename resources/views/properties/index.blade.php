@@ -21,7 +21,7 @@
                 <li class="flex items-center space-x-2">
 
                     <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#">ALL PROPERTIES LIST</a>
+                        href="#">LIST OF ALL PROPERTIES </a>
 
                     <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Mail\SignAgreement;
+use App\Models\AppSetting;
 use App\Models\Department;
 use App\Models\Property;
 use App\Models\ResidentUpload;
@@ -15,6 +16,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -24,67 +26,88 @@ class RecidentsController extends Controller
     public function index()
     {
         $user = Auth::user(); // Obtén el usuario autenticado
-        if ($user->hasRole('Property manager')) {
-            // Si el usuario tiene el rol 'Property manager', mostrar la vista de admin
-            $residents = User::select(
-                'users.*',
-                'departments.apart_unit',
-                'departments.lease_expiration',
-                'departments.reserved_space',
-                'departments.reserved_spacevisitors',
-                'departments.property_code',
-                'departments.permit_status',
-                'departments.terms_agreement_status',
-                'departments.agreement_token',
-                'departments.id as department_id',
-                'departments.date_status'
-            )
-                ->join('departments', 'users.id', '=', 'departments.user_id')
-                ->with('department.property') // Cargar la relación property
+
+        if ($user->hasRole('Company administrator')) {
+            $properties = Property::select('properties.*', DB::raw('COALESCE(COUNT(users.id), 0) as user_count'))
+                ->selectRaw('SUM(CASE WHEN users.status = "Pending" THEN 1 ELSE 0 END) as pending_count')
+                ->selectRaw('SUM(CASE WHEN users.status = "Approved" THEN 1 ELSE 0 END) as approved_count')
+                ->selectRaw('SUM(CASE WHEN users.status = "Suspended" THEN 1 ELSE 0 END) as suspended_count')
+                ->leftJoin('users', function ($join) {
+                    $join->on('properties.property_code', '=', 'users.property_code')
+                        ->where('users.access_level', '=', 'Resident');
+                })
+                ->groupBy('properties.id')
                 ->get();
 
-            return view('residents.index-admin', compact('residents'));
-        } elseif ($user->hasRole('Resident')) {
+            return view('residents.index-admin', compact('properties'));
+        } elseif ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property Manager', obtener su property_code
+            $propertyCode = $user->property_code;
+
+            // Obtener los datos de la propiedad a la que pertenece el Property Manager
+            $properties = DB::table('properties')
+                ->leftJoin('users', function ($join) {
+                    $join->on('properties.property_code', '=', 'users.property_code')
+                        ->where('users.access_level', '=', 'Resident');
+                })
+                ->where('properties.property_code', $propertyCode) // Filtrar por property_code del Property Manager
+                ->select(
+                    'properties.name',
+                    'properties.property_code',
+                    DB::raw('COUNT(DISTINCT users.id) as user_count'),
+                    DB::raw('SUM(CASE WHEN users.status = "approved" THEN 1 ELSE 0 END) as approved_count'),
+                    DB::raw('SUM(CASE WHEN users.status = "suspended" THEN 1 ELSE 0 END) as suspended_count'),
+                    DB::raw('SUM(CASE WHEN users.status = "pending" THEN 1 ELSE 0 END) as pending_count')
+                )
+                ->groupBy('properties.property_code', 'properties.name')
+                ->get();
+
+            return view('residents.index-admin', compact('properties'));
+        }
+
+        // Resto de tu código aquí...
+
+        elseif ($user->hasRole('Resident')) {
             // Si el usuario tiene el rol 'Resident', obtener su nombre y detalles de vehículos
-            $residentid = $user->id;
-            $residentName = $user->name; // Asumiendo que el campo es 'name' en la tabla 'users'
+            $residentid = $user->id; // Agregar esta línea para obtener el ID del residente
+            $residentName = $user->name;
             $residentEmail = $user->email;
-            $reservedSpace = $user->department->reserved_space;
-            // Obtener los detalles de los residentes desde la tabla 'departments'
-            $residentDetails = User::join('departments', 'users.id', '=', 'departments.user_id')
-                ->where('users.id', $user->id) // Filtrar por el ID del usuario autenticado
-                ->select(
-                    'departments.apart_unit',
-                    'departments.lease_expiration',
-                    'departments.reserved_space',
-                    'departments.reserved_spacevisitors',
-                    'departments.property_code',
-                    'departments.permit_status',
-                    'departments.terms_agreement_status',
-                    'departments.agreement_token',
-                    'departments.id as department_id',
-                    'departments.date_status'
-                )
-                ->first();
-
-            // Obtener los vehículos del residente desde la tabla 'vehicles'
-            $residentVehicles = User::join('vehicles', 'users.id', '=', 'vehicles.user_id')
-                ->where('users.id', $user->id) // Filtrar por el ID del usuario autenticado
-                ->select(
-                    'vehicles.license_plate',
-                    'vehicles.make',
-                    'vehicles.model',
-                    'vehicles.permit_type',
-                    'vehicles.permit_status',
-                    'vehicles.id'
-                )
-                ->get();
-
-            return view('residents.index', compact('residentName', 'residentid', 'reservedSpace', 'residentEmail', 'residentDetails', 'residentVehicles'));
+            $residentDetails = $user->department; // Relación 'department' ya cargada desde la autenticación
+            $residentVehicles = $user->vehicles; // Relación 'vehicles' ya cargada desde la autenticación
+            $residentDepartment = $user->department;
+            return view('residents.index', compact('residentid', 'residentName', 'residentEmail', 'residentDetails', 'residentVehicles', 'residentDepartment'));
         } else {
             // Otros casos o roles desconocidos
-            abort(403, 'Acceso no autorizado');
+            abort(403, 'Unauthorized access');
         }
+
+    }
+
+    public function showResidents($propertyCode)
+    {
+        // Obtén todos los residentes que coincidan con el property_code y access_level = "Resident"
+        $residents = DB::table('users')
+            ->leftJoin('departments', 'users.id', '=', 'departments.user_id')
+            ->where('users.property_code', $propertyCode)
+            ->where('users.access_level', 'Resident')
+            ->select('users.*', 'departments.apart_unit', 'departments.lease_expiration', 'departments.id as department_id', 'departments.reserved_space', 'departments.reserved_spacevisitors', 'departments.reserved', 'departments.terms_agreement_status', 'departments.date_status')
+            ->get();
+
+        // Obtén el nombre de la propiedad relacionada con el property_code
+        $property = Property::where('property_code', $propertyCode)->first();
+
+        // Accede al nombre de la propiedad
+        $propertyName = $property->name;
+        $propertyId = $property->id;
+        // dd($propertyId);
+        // Consulta los valores de vehicles_per_apartment y reserved_spot_per_apartment desde app_settings
+        $appSettings = AppSetting::where('property_code', $propertyId)->first();
+        //dd($appSettings);
+        $vehiclesPerApartment = $appSettings ? $appSettings->vehicles_per_apartment : null;
+        $reservedSpotPerApartment = $appSettings ? $appSettings->reserved_spot_per_apartment : null;
+        //dd($reservedSpotPerApartment);
+
+        return view('residents.residentslist', compact('residents', 'propertyName', 'propertyCode', 'vehiclesPerApartment', 'reservedSpotPerApartment'));
     }
 
     public function import()
@@ -183,154 +206,172 @@ class RecidentsController extends Controller
         return view('residents.import-uploaded-files-id', compact('resident_upload_file'));
     }
 
-    /**
-
-     * Show the form for creating a new resource.
-
-     *
-
-     * @return \Illuminate\Http\Response
-
-     */
-
-    public function addResident()
+    public function addResident($property_code)
     {
+        // Obtén el id correspondiente al property_code
+        $property = Property::where('property_code', $property_code)->first();
+
+        if (!$property) {
+            // Manejo de error si no se encuentra la propiedad con el property_code dado
+            abort(404);
+        }
+
+        // Obtén todos los demás properties
         $properties = Property::all();
-        return view('residents.addresident', compact('properties'));
+
+        return view('residents.addresident', compact('properties', 'property_code', 'property'));
     }
 
     public function approve(Request $request, $id)
     {
         $resident = User::find($id);
         if ($resident) {
-            $resident->status = "Approve";
+            $resident->status = "Approved";
             $resident->save();
         }
-        return redirect()->route('recidents')->with('success', 'Resident approved successfully!');
+
+        // Puedes obtener el propertyCode desde el modelo $resident si es relevante
+        $propertyCode = $resident->property_code;
+
+        // Obtener los detalles necesarios para el correo electrónico
+        $user = $resident; // Esto asume que $user contiene los detalles necesarios para el correo electrónico
+        $token = Str::random(40);
+        $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
+        $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
+
+        // Enviar un correo electrónico al residente aprobado
+        Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
+
+        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])
+            ->with('success_message', 'Resident approved successfully!');
     }
+
     public function decline(Request $request, $id)
     {
         $resident = User::find($id);
         if ($resident) {
-            $resident->status = "Decline";
+            $resident->status = "Declined"; // Cambia "Decline" a "Declined"
             $resident->save();
         }
-        return redirect()->route('recidents')->with('success', 'Resident rejected successfully!');
+
+        // Puedes obtener el propertyCode desde el modelo $resident si es relevante
+        $propertyCode = $resident->property_code;
+
+        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])
+            ->with('error-message', 'Resident rejected successfully!');
     }
-
-    /**
-
-     * Store a newly created resource in storage.
-
-     *
-
-     * @param  \Illuminate\Http\Request  $request
-
-     * @return \Illuminate\Http\Response
-
-     */
 
     public function residentStore(Request $request)
     {
+        //dd($request);
         // Validar los datos del formulario
         $request->validate([
-            'user' => 'required|string',
             'name' => 'required|string',
-            'phone' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'property_id' => 'required', // Asegúrate de que el name del select sea "property_id"
+            'user' => 'required|string',
             'apart_unit' => 'required|string',
             'reserved_space' => 'required|string',
+            'phone' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
+            'property_id' => 'required',
             'lease_expiration' => 'required|date',
+            'prefered_language' => 'required',
         ]);
+        //dd($request);
+        // Busca un usuario existente con el mismo correo electrónico
+        $existingUser = User::where('email', $request->input('email'))->first();
 
-        // Crear un nuevo registro de usuario
-        $user = new User();
-        $user->name = $request->input('name');
-        $user->phone = $request->input('phone');
-        $user->email = $request->input('email');
-        $user->password = bcrypt($request->input('password'));
-        $user->access_level = 'Resident';
-        $user->property_code = $request->input('property_code');
-        $user->banned = false;
-        $user->status = 'Pending';
-        $user->save();
+        if ($existingUser) {
+            // Si el usuario existe, actualiza sus datos
+            $user = $existingUser;
+            $user->name = $request->input('name');
+            $user->user = $request->input('user');
+            $user->property_code = $request->input('property_code');
+            $user->phone = $request->input('phone');
+            $user->password = bcrypt($request->input('password')); // Opcional, actualiza la contraseña si es necesario
+            $user->save();
+        } else {
+            // Crear un nuevo registro de usuario
+            $user = new User();
+            $user->name = $request->input('name');
+            $user->user = $request->input('user');
+            $user->phone = $request->input('phone');
+            $user->email = $request->input('email');
+            $user->password = bcrypt($request->input('password'));
+            $user->access_level = 'Resident';
+            $user->property_code = $request->input('property_code');
+            $user->banned = false;
+            $user->status = 'Pending';
+            $user->save();
 
-        // Asignar el rol "Resident" al usuario
-        $user->assignRole('Resident');
+            // Asignar el rol "Resident" al usuario
+            $user->assignRole('Resident');
+        }
+        // Verifica si el usuario ya tiene un departamento asociado
+        $existingDepartment = Department::where('user_id', $user->id)->first();
+        if ($existingDepartment) {
+            // Si ya tiene un departamento, actualiza sus datos
+            $department = $existingDepartment;
+            $department->apart_unit = $request->input('apart_unit');
+            $department->reserved = $request->input('reserved_space');
+            $department->property_code = $request->input('property_code');
+            $department->terms_agreement_status = 'pending';
+            $department->lease_expiration = $request->input('lease_expiration');
+            $department->prefered_language = $request->input('prefered_language');
+            $department->save();
+        } else {
 
-        // Crear un nuevo registro de departamento y asociarlo al usuario
-        $department = new Department();
-        $department->user_id = $user->id;
-        $department->apart_unit = $request->input('apart_unit');
-        $department->reserved_space = $request->input('reserved_space');
-        $department->property_code = $request->input('property_code');
-        $department->terms_agreement_status = 'pending';
-        $department->lease_expiration = $request->input('lease_expiration');
-        $department->save();
+            // Crear un nuevo registro de departamento y asociarlo al usuario
+            $department = new Department();
+            $department->user_id = $user->id;
+            $department->apart_unit = $request->input('apart_unit');
+            $department->reserved = $request->input('reserved_space');
+            $department->property_code = $request->input('property_code');
+            $department->terms_agreement_status = 'pending';
+            $department->lease_expiration = $request->input('lease_expiration');
+            $department->prefered_language = $request->input('prefered_language');
+            $department->save();
+        }
 
-        // Relacionar el usuario con la propiedad en la tabla intermedia user_properties
+        // Obtener la propiedad
         $property = Property::find($request->input('property_id'));
-        $user->properties()->attach($property);
+
+// Verificar si ya existe la relación
+        if (!$user->properties->contains($property->id)) {
+            // Si no existe, entonces la agregamos
+            $user->properties()->attach($property);
+        }
 
         // Generar y almacenar el token único
         $token = Str::random(40);
         $department->agreement_token = $token;
         $department->save();
 
-      // Generar los enlaces para los términos y condiciones en inglés y español
-$linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
-$linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
+        // Generar los enlaces para los términos y condiciones en inglés y español
+        $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
+        $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
 
-// Enviar un correo electrónico
-Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
+        // Enviar un correo electrónico
+        Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
 
+        $propertyCode = $request->input('property_code');
+        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])->with('success_message', 'Resident registered successfully!');
 
-        return redirect()->route('recidents')->with('success', 'Resident registered successfully!');
     }
-
-    /**
-
-     * Show the form for editing the specified resource.
-
-     *
-
-     * @param  \App\Models\Property  $property
-
-     * @return \Illuminate\Http\Response
-
-     */
 
     public function edit(User $resident)
     {
         $departments = Department::where('user_id', $resident->id)->get();
-
+        //dd($departments);
         $propertyCodes = $departments->pluck('property_code')->toArray();
 
         $properties = Property::all(); // Obtén todas las propiedades
-        //dd($properties);
 
         return view('residents.editresident', compact('resident', 'departments', 'properties'));
     }
 
-    /**
-
-     * Update the specified resource in storage.
-
-     *
-
-     * @param  \Illuminate\Http\Request  $request
-
-     * @param  \App\Models\Property  $property
-
-     * @return \Illuminate\Http\Response
-
-     */
-
     public function update(Request $request, User $resident)
     {
-       
         $request->validate([
             'name' => 'required|string|max:255',
             'user' => 'required|string|max:255',
@@ -338,11 +379,13 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
             'reserved_space' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
-            'lease_expiration'=>'required',
+            'lease_expiration' => 'required',
             // Agrega aquí las validaciones para los demás campos
         ]);
-        //dd($request);
 
+        //dd( $request);
+
+        // Actualiza los campos en la tabla users relacionados con el usuario
         $resident->update([
             'name' => $request->name,
             'user' => $request->user,
@@ -353,28 +396,15 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
 
         // Actualiza los campos en la tabla departments relacionados con el usuario
         $department = Department::where('user_id', $resident->id)->firstOrFail();
-        //dd($department);
         $department->update([
             'apart_unit' => $request->apart_unit,
-            'reserved_space' => $request->reserved_space,
-            'lease_expiration'=>$request->lease_expiration,
+            'reserved' => $request->reserved_space,
+            'lease_expiration' => $request->lease_expiration,
             // Actualiza aquí los demás campos en la tabla departments
         ]);
-
-        return redirect()->route('recidents')->with('success', 'Resident updated successfully.');
+        $propertyCode = $request->input('property_code');
+        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])->with('success_message', 'Resident registered successfully!');
     }
-
-    /**
-
-     * Remove the specified resource from storage.
-
-     *
-
-     * @param  \App\Models\Property  $property
-
-     * @return \Illuminate\Http\Response
-
-     */
 
     public function destroy(User $resident)
     {
@@ -430,10 +460,10 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
 
     public function updateReservedSpace(Request $request, $departmentId)
     {
+        //dd($departmentId);
         $request->validate([
             'reserved_space' => 'required|numeric|min:0',
         ]);
-        //dd($request);
 
         // Actualiza el valor en la tabla de departamentos
         $department = Department::findOrFail($departmentId);
@@ -441,8 +471,14 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
         $department->update([
             'reserved_space' => $request->reserved_space,
         ]);
+        $department = Department::findOrFail($departmentId);
 
-        return redirect()->route('recidents')->with('success-message', 'Valor reservado actualizado correctamente.');
+        // Accede al valor de property_code desde el departamento
+        $propertyCode = $department->property_code;
+
+        // Tu lógica para actualizar el espacio reservado aquí
+
+        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])->with('success_message', 'Reserved value updated successfully.');
     }
 
     public function updateReservedSpaceVisitors(Request $request, $departmentId)
@@ -459,7 +495,14 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
             'reserved_spacevisitors' => $request->reserved_spacevisitors,
         ]);
 
-        return redirect()->route('recidents')->with('success-message', 'Valor reservado para visitantes actualizado correctamente.');
+        $department = Department::findOrFail($departmentId);
+
+        // Accede al valor de property_code desde el departamento
+        $propertyCode = $department->property_code;
+
+        // Tu lógica para actualizar el espacio reservado aquí
+
+        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])->with('success_message', 'Reserved value updated successfully.');
     }
 
     public function downloadTermsPdf($userId)
@@ -742,56 +785,52 @@ Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish
         return redirect()->back()->with('error-message', 'Failed to send email.');
     }
 
-
     public function editResidentVehicle($id)
-{
-    $vehicle = Vehicle::find($id);
+    {
+        $vehicle = Vehicle::find($id);
 
-    if (!$vehicle) {
+        if (!$vehicle) {
+            return redirect()->back()->with('error-message', 'Vehicle not found.');
+        }
+
+        return view('residents.editvehiclesresidents', compact('vehicle')); // Reemplaza 'vehicles.edit' con la ruta de tu vista de edición
+    }
+
+    public function updateResidentVehicle(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'license_plate' => 'required',
+            'vin' => 'required',
+            'make' => 'required',
+            'model' => 'required',
+            'year' => 'required|integer',
+            'color' => 'required',
+            'vehicle_type' => 'required',
+            'permit_type' => 'required',
+        ]);
+
+        $vehicle = Vehicle::find($id);
+
+        if (!$vehicle) {
+            return redirect()->back()->with('error-message', 'Vehicle not found.');
+        }
+
+        // Actualizar los datos del vehículo con los valores validados
+        $vehicle->update($validatedData);
+
+        return redirect()->route('recidents')->with('success_message', 'Vehicle updated successfully.');
+    }
+
+    public function deleteResidentVehicle($id)
+    {
+        $vehicle = Vehicle::find($id);
+
+        if ($vehicle) {
+            $vehicle->delete();
+            return redirect()->back()->with('success_message', 'Vehicle deleted successfully.');
+        }
+
         return redirect()->back()->with('error-message', 'Vehicle not found.');
     }
-
-    return view('residents.editvehiclesresidents', compact('vehicle')); // Reemplaza 'vehicles.edit' con la ruta de tu vista de edición
-}
-
-
-public function updateResidentVehicle(Request $request, $id)
-{
-    $validatedData = $request->validate([
-        'license_plate' => 'required',
-        'vin' => 'required',
-        'make' => 'required',
-        'model' => 'required',
-        'year' => 'required|integer',
-        'color' => 'required',
-        'vehicle_type' => 'required',
-        'permit_type' => 'required',
-    ]);
-
-    $vehicle = Vehicle::find($id);
-
-    if (!$vehicle) {
-        return redirect()->back()->with('error-message', 'Vehicle not found.');
-    }
-
-    // Actualizar los datos del vehículo con los valores validados
-    $vehicle->update($validatedData);
-
-    return redirect()->route('recidents')->with('success_message', 'Vehicle updated successfully.');
-}
-
-public function deleteResidentVehicle($id)
-{
-    $vehicle = Vehicle::find($id);
-
-    if ($vehicle) {
-        $vehicle->delete();
-        return redirect()->back()->with('success_message', 'Vehicle deleted successfully.');
-    }
-
-    return redirect()->back()->with('error-message', 'Vehicle not found.');
-}
-
-
 
 }
