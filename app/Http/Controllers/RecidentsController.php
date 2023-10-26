@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Mail\SignAgreement;
 use App\Models\AppSetting;
 use App\Models\Department;
+use App\Models\EmailRegisterVehicle;
+use App\Models\EmailWelcome;
 use App\Models\Property;
 use App\Models\ResidentUpload;
 use App\Models\ResidentUploadFile;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Models\VisitorPass;
+use App\Models\EmailExpired;
+
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Http\Request;
@@ -224,42 +228,116 @@ class RecidentsController extends Controller
 
     public function approve(Request $request, $id)
     {
+        // Busca al residente por su ID
         $resident = User::find($id);
+    
+        // Verifica si se encontró al residente
         if ($resident) {
+            // Cambia el estado del residente a "Approved"
             $resident->status = "Approved";
             $resident->save();
+    
+            // Genera y almacena el token único
+            $token = Str::random(40);
+    
+            // Obtiene el departamento del residente
+            $department = $resident->department;
+    
+            // Verifica si se encontró el departamento
+            if ($department) {
+                // Asigna el token al departamento
+                $department->agreement_token = $token;
+                $department->save();
+    
+                // Genera los enlaces para los términos y condiciones en inglés y español
+                $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
+                $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
+    
+                // Obtiene el código de propiedad del usuario
+                $userPropertyCode = $resident->property_code;
+    
+                // Verifica si existe una configuración de correo personalizada para el código de propiedad
+                $emailSetting = EmailWelcome::where('property_code', $userPropertyCode)->first();
+    
+                // Obtiene el contenido del correo desde el campo email_content
+                $emailContent = $emailSetting ? $emailSetting->email_content : '';
+    
+                // Obtiene la plantilla de correo a utilizar
+                $emailTemplate = $emailSetting ? 'emails.settingsSignAgreement' : 'emails.sign-agreement-default';
+    
+                // Obtiene el nombre de la propiedad
+                $property_name = Property::where('property_code', $userPropertyCode)->value('name');
+    
+                // Envía el correo electrónico
+                Mail::send($emailTemplate, [
+                    'user' => $resident,
+                    'property_name' => $property_name,
+                    'emailSetting' => $emailSetting,
+                    'linkEnglish' => $linkEnglish,
+                    'linkSpanish' => $linkSpanish,
+                    'emailContent' => $emailContent,
+                ], function ($message) use ($resident) {
+                    $message->to($resident->email, $resident->name)
+                        ->subject('Your Email Subject Here'); // Reemplaza 'Your Email Subject Here' con el asunto deseado
+                });
+    
+                // Redirige con un mensaje de éxito
+                return redirect()->route('property.residents', ['propertyCode' => $userPropertyCode])
+                    ->with('success_message', 'Resident approved successfully!');
+            }
         }
-
-        // Puedes obtener el propertyCode desde el modelo $resident si es relevante
-        $propertyCode = $resident->property_code;
-
-        // Obtener los detalles necesarios para el correo electrónico
-        $user = $resident; // Esto asume que $user contiene los detalles necesarios para el correo electrónico
-        $token = Str::random(40);
-        $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
-        $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
-
-        // Enviar un correo electrónico al residente aprobado
-        Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
-
-        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])
-            ->with('success_message', 'Resident approved successfully!');
+    
+        // Maneja el caso en el que no se encuentra al residente o departamento
+        return redirect()->back()->with('error_message', 'Resident not found or department not assigned.');
     }
+    
 
     public function decline(Request $request, $id)
     {
-        $resident = User::find($id);
-        if ($resident) {
-            $resident->status = "Declined"; // Cambia "Decline" a "Declined"
-            $resident->save();
+        try {
+            $resident = User::find($id);
+            if ($resident) {
+                $resident->status = "Declined"; // Cambia "Decline" a "Declined"
+                $resident->save();
+            }
+    
+            // Obtener el propertyCode desde el modelo $resident
+            $propertyCode = $resident->property_code;
+           // dd($propertyCode);
+    
+            // Verificar si existe una configuración de correo para el property_code
+            $emailSetting = EmailExpired::where('property_code', $propertyCode)->first();
+          //dd($emailSetting);
+            // Determinar la plantilla de correo a utilizar
+            $emailTemplate = $emailSetting ? 'emails.permit_expired_settings' : 'emails.permit_expired_default';
+       //dd($emailTemplate );
+            // Realizar una consulta para obtener el nombre de la propiedad
+            $property_name = DB::table('users')
+                ->join('properties', 'users.property_code', '=', 'properties.property_code')
+                ->where('users.id', $resident->id)
+                ->value('properties.name');
+    
+            // Envío del correo
+Mail::send($emailTemplate, [
+    'resident' => $resident,
+    'user' => $resident,  // Aquí pasamos $resident como $user
+    'property_name' => $property_name,
+    'emailSetting' => $emailSetting,
+], function ($message) use ($resident) {
+    $message->to($resident->email, $resident->name)
+        ->subject('Your Application has been Declined');
+});
+
+    
+            return redirect()->route('property.residents', ['propertyCode' => $propertyCode])
+                ->with('error-message', 'Resident rejected successfully!');
+        } catch (\Exception $e) {
+            // Si ocurre un error, redirigir con un mensaje de error
+            return redirect()->route('property.residents', ['propertyCode' => $propertyCode])
+                ->with('error-message', 'Error declining the resident: ' . $e->getMessage());
         }
-
-        // Puedes obtener el propertyCode desde el modelo $resident si es relevante
-        $propertyCode = $resident->property_code;
-
-        return redirect()->route('property.residents', ['propertyCode' => $propertyCode])
-            ->with('error-message', 'Resident rejected successfully!');
     }
+    
 
     public function residentStore(Request $request)
     {
@@ -335,8 +413,9 @@ class RecidentsController extends Controller
 
         // Obtener la propiedad
         $property = Property::find($request->input('property_id'));
+        $propertyCode = $property->property_code;
 
-// Verificar si ya existe la relación
+        // Verificar si ya existe la relación
         if (!$user->properties->contains($property->id)) {
             // Si no existe, entonces la agregamos
             $user->properties()->attach($property);
@@ -351,8 +430,32 @@ class RecidentsController extends Controller
         $linkEnglish = route('terms-and-conditions-english', ['token' => $token, 'language' => 'english']);
         $linkSpanish = route('terms-and-conditions-spanish', ['token' => $token, 'language' => 'spanish']);
 
-        // Enviar un correo electrónico
-        Mail::to($user->email)->send(new SignAgreement($user, $linkEnglish, $linkSpanish, $token));
+// Acceder al valor de property_code desde el usuario
+        $userPropertyCode = $user->property_code;
+
+// Verificar si existe una configuración de correo personalizada para el property_code
+        $emailSetting = EmailWelcome::where('property_code', $userPropertyCode)->first();
+// Obtener el contenido del correo desde el campo email_content
+        $emailContent = $emailSetting ? $emailSetting->email_content : '';
+
+// Obtener la plantilla de correo a utilizar
+        $emailTemplate = $emailSetting ? 'emails.settingsSignAgreement' : 'emails.sign-agreement-default';
+        $property_name = DB::table('users')
+            ->join('properties', 'users.property_code', '=', 'properties.property_code')
+            ->where('users.id', $user->id)
+            ->value('properties.name');
+
+        Mail::send($emailTemplate, [
+            'user' => $user,
+            'property_name' => $property_name,
+            'emailSetting' => $emailSetting,
+            'linkEnglish' => $linkEnglish,
+            'linkSpanish' => $linkSpanish,
+            'emailContent' => $emailContent,
+        ], function ($message) use ($user) {
+            $message->to($user->email, $user->name)
+                ->subject('Your Email Subject Here'); // Cambia 'Your Email Subject Here' al asunto deseado
+        });
 
         $propertyCode = $request->input('property_code');
         return redirect()->route('property.residents', ['propertyCode' => $propertyCode])->with('success_message', 'Resident registered successfully!');
@@ -452,7 +555,7 @@ class RecidentsController extends Controller
             $resident->status = $status;
             $resident->save();
 
-            return redirect()->back()->with('success', 'Status updated successfully.');
+            return redirect()->back()->with('success_message', 'Status updated successfully.');
         } else {
             return redirect()->back()->with('error', 'Resident not found with ID: ' . $residentId);
         }
@@ -577,7 +680,7 @@ class RecidentsController extends Controller
         $validatedData = $request->validate([
             'property_code' => 'required',
             'user_id' => 'required',
-            'license_plate' => 'required',
+            'license_plate' => 'required|unique:vehicles,license_plate,NULL,id,property_code,' . $request->input('property_code'),
             'vin' => 'required',
             'make' => 'required',
             'model' => 'required',
@@ -587,18 +690,16 @@ class RecidentsController extends Controller
             'permit_type' => 'required',
         ]);
 
-        // Obtener el usuario con su departamento usando un join
         $user = User::join('departments', 'users.id', '=', 'departments.user_id')
             ->where('users.id', $request->input('user_id'))
             ->select('users.*', 'departments.reserved_space as reserved_spaces')
             ->firstOrFail();
 
         $reservedSpaces = $user->reserved_spaces;
-        //dd($reservedSpaces);
 
         // Contar la cantidad de vehículos registrados por el usuario
         $registeredVehiclesCount = Vehicle::where('user_id', $user->id)->count();
-        //dd( $registeredVehiclesCount);
+
         if ($registeredVehiclesCount >= $reservedSpaces) {
             return redirect()->back()->with('error-message', 'You have reached the maximum number of registered vehicles.');
         }
@@ -606,13 +707,18 @@ class RecidentsController extends Controller
         // Crear un nuevo registro de vehículo residente en la base de datos
         $vehicle = Vehicle::create($validatedData);
 
-        // Envío del correo para estado 'pending to approve'
-        Mail::send('emails.pending_approval', ['property_name' => $user->property_name], function ($message) use ($user) {
+        // Verificar si existe una configuración de correo personalizada para la propiedad en emails_registervehicle
+        $emailSetting = EmailRegisterVehicle::where('property_code', $user->property_code)->first();
+
+        // Determinar la plantilla de correo a utilizar
+        $emailTemplate = $emailSetting ? 'emails.custom_register_vehicle' : 'emails.pending_approval';
+
+        Mail::send($emailTemplate, ['user' => $user, 'emailSetting' => $emailSetting, 'property_name' => $user->property_name], function ($message) use ($user) {
             $message->to($user->email, $user->name)
                 ->subject('Pending Vehicle Approval');
         });
 
-        return redirect()->route('recidents')->with('success-message', 'Resident vehicle added successfully.');
+        return redirect()->route('recidents')->with('success_message', 'Resident vehicle added successfully.');
     }
 
     public function showAddVisitorForm($user_id)
@@ -832,5 +938,21 @@ class RecidentsController extends Controller
 
         return redirect()->back()->with('error-message', 'Vehicle not found.');
     }
+
+
+    public function deleteMessage($id)
+    {
+        $upload = ResidentUpload::findOrFail($id);
+    
+        // Eliminar los registros relacionados en la tabla resident_upload_files
+        $upload->relatedFiles()->delete();
+    
+        // Ahora eliminar el registro en la tabla resident_uploads
+        $upload->delete();
+    
+        return redirect()->back()->with('success_message', 'Upload deleted successfully');
+    }
+    
+
 
 }

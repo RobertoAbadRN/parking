@@ -99,7 +99,7 @@ class SettingsController extends Controller
         'notify_on_tenants_info' => 'YES',
         'maximum_of_changes_allowed' => 3,
         'reserved_spot_allow' => 'YES',
-        'reserved_spot_per_apartment' => 3,
+        'reserved_spot_per_apartment' => 3, 
     ];
 
     // Merge the default form values with the existing values
@@ -448,6 +448,7 @@ class SettingsController extends Controller
         $request->merge(['start_date' => $request->has('start_date') ? true : false]);
         $request->merge(['end_date' => $request->has('end_date') ? true : false]);
         $request->merge(['logo' => $request->has('logo') ? true : false]);
+        $request->merge(['nickname' => $request->has('nick') ? true : false]);
 
         $settingLanguage = PropertySetting::where('property_id', $request->property_id)->first();
         $settingLanguage = $settingLanguage ? $settingLanguage->update($request->except(['_token'])) : false;

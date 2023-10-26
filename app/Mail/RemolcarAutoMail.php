@@ -33,7 +33,7 @@ class RemolcarAutoMail extends Mailable
     public function build()
     {
         return $this->view('emails.remolcar_auto')
-            ->subject('Dacor de remolcar el auto')
+            ->subject('Notice of Towing Vehicle')
             ->with([
                 'licensePlate' => $this->licensePlate,
             ]);

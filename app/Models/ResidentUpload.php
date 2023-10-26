@@ -11,4 +11,9 @@ class ResidentUpload extends Model {
         'file_extension',
         'file_path'
     ];
+    public function relatedFiles()
+{
+    return $this->hasMany(ResidentUploadFile::class, 'upload_id');
+}
+
 }

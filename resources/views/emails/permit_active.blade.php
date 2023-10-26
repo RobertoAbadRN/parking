@@ -22,5 +22,5 @@
         <p style="font-size: 16px; color: #555555;">Sinceramente,<br>Su Equipo de Administración de la Propiedad</p>
     </div>
 </body>
-</html>
+</html> 
 

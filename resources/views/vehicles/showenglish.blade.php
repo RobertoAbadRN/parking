@@ -1,3 +1,133 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+    }
+
+    /* Estilos para la tabla principal */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td {
+        vertical-align: top;
+    }
+
+
+
+    /* Estilos para la primera columna */
+    .column1 {
+        width: 50%;
+        padding: 20px;
+        background-color: #f0f0f0;
+    }
+
+    .column1 .card-content {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .property-name {
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .permit-type {
+        font-size: 14px;
+        color: #555;
+        text-align: center;
+    }
+
+
+
+
+    .license-plate {
+        font-size: 16px;
+        font-weight: bold;
+        border: 1px solid #000;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-top: -20px;
+        /* Ajusta el valor negativo según cuánto quieras subir el span */
+    }
+
+
+    .date {
+        font-size: 12px;
+        color: #777;
+    }
+
+    /* Estilos para la segunda columna */
+    .column2 {
+        width: 50%;
+        padding: 20px;
+    }
+
+    .instructions h2 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .instructions ol {
+        list-style-type: decimal;
+        padding-left: 20px;
+    }
+
+    .instructions li {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 0px;
+    }
+
+    .flex {
+        display: flex;
+        align-items: center;
+        /* Centrar verticalmente */
+    }
+
+    .flex img {
+        margin-right: 0px;
+        /* Agregar margen a la derecha de la imagen */
+    }
+
+    .flex-container {
+        display: flex;
+        justify-content: center;
+        /* Centrar horizontalmente */
+        align-items: center;
+        /* Centrar verticalmente */
+        height: 200vh;
+        /* Establecer la altura del contenedor (ajusta según tus necesidades) */
+    }
+
+
+    .logo {
+        width: 50px;
+        /* Ancho de la imagen */
+        height: auto;
+        /* Altura automática para mantener la proporción */
+        margin-right: 20px;
+        /* Margen derecho para separar la imagen del texto */
+    }
+
+    .signature-line-top {
+        border-top: 0px solid #000;
+        /* Color y estilo de la línea de separación superior */
+        height: 10px;
+        /* Altura de la línea de separación superior (ajústala según tus necesidades) */
+    }
+
+    .signature-line {
+        border-top: 1px solid #000;
+        /* Color y estilo de la línea de firma */
+        height: 1px;
+        /* Altura de la línea de firma (ajústala según tus necesidades) */
+    }
+</style>
 <x-app-layout title="Invoice 2" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center justify-between py-5 lg:py-6">
@@ -28,7 +158,7 @@
 
         </div>
 
-        
+
 
         <div class="grid grid-cols-1" id="document">
             <div class="card px-5 py-12 sm:px-18">
@@ -37,33 +167,81 @@
 
                         <div class="p-4 bg-neutral-300">
                             <div class="card px-5 py-8 sm:px-8 bg-white rounded-lg shadow-md w-80 h-48 mx-auto">
-                                <div class="mb-2">
+                                @if (is_null($propertySetting) || is_null($propertySetting->name))
                                     <p class="text-lg text-center font-semibold">{{ $property_name }}</p>
-                                </div>
+                                @else
+                                    @if ($propertySetting->name === '1')
+                                        <p class="text-lg text-center font-semibold">{{ $property_name }}</p>
+                                    @elseif ($propertySetting->name === 0)
+                                        <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                    @endif
+                                @endif
+
 
                                 <div class="mb-2">
-                                    <p class="text-sm text-center text-gray-500">{{ $permit_type }}</p>
+                                    @if (is_null($propertySetting) || is_null($propertySetting->type))
+                                        <p class="text-sm text-center text-gray-500">{{ $permit_type }}</p>
+                                    @else
+                                        @if ($propertySetting->type === '1')
+                                            <p class="text-sm text-center text-gray-500">{{ $permit_type }}</p>
+                                        @elseif ($propertySetting->type === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                        @endif
+                                    @endif
                                 </div>
 
                                 <div class="flex items-center justify-center mb-2">
-                                    @if ($logo)
-                                        <img src="{{ asset($logo) }}" alt="Logo Resident" class="w-12 h-12 mr-2">
+                                    @if (is_null($propertySetting) || is_null($propertySetting->logo))
+                                        @if ($logo)
+                                            <img src="{{ asset($logo) }}" alt="Logo Resident" class="w-12 h-12 mr-2">
+                                        @else
+                                            <img src="{{ asset('favicon.png') }}" alt="Logo por defecto"
+                                                class="w-12 h-12 mr-2">
+                                        @endif
                                     @else
-                                        <img src="{{ asset('favicon.png') }}" alt="Logo por defecto"
-                                            class="w-12 h-12 mr-2">
+                                        @if ($propertySetting->logo === '1')
+                                            @if ($logo)
+                                                <img src="{{ asset($logo) }}" alt="Logo Resident"
+                                                    class="w-12 h-12 mr-2">
+                                            @else
+                                                <img src="{{ asset('favicon.png') }}" alt="Logo por defecto"
+                                                    class="w-12 h-12 mr-2">
+                                            @endif
+                                        @elseif ($propertySetting->logo === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->logo es igual a "0" -->
+                                        @endif
                                     @endif
 
-                                    <span
-                                        class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
+                                    @if (is_null($propertySetting) || is_null($propertySetting->license))
+                                        <span
+                                            class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
+                                    @else
+                                        @if ($propertySetting->license === '1')
+                                            <span
+                                                class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
+                                        @elseif ($propertySetting->license === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                        @endif
+                                    @endif
                                 </div>
 
 
                                 <div class="text-center">
-                                    <p class="mb-2 text-xs font-semibold">
-                                        From: {{ $start_date->format('d/m/Y') }} To:
-                                        {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
-                                    </p>
-
+                                    @if (is_null($propertySetting) || is_null($propertySetting->start_date))
+                                        <p class="mb-2 text-xs font-semibold">
+                                            From: {{ $start_date->format('d/m/Y') }} To:
+                                            {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
+                                        </p>
+                                    @else
+                                        @if ($propertySetting->start_date === '1')
+                                            <p class="mb-2 text-xs font-semibold">
+                                                From: {{ $start_date->format('d/m/Y') }} To:
+                                                {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
+                                            </p>
+                                        @elseif ($propertySetting->license === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>

@@ -5,26 +5,22 @@
         <div class="flex pt-4">
             <a href="/">
                 <img class="h-11 w-11 transition-transform duration-500 ease-in-out hover:rotate-[360deg]"
-                @if(empty($vehicle->logo))
-                <img src="{{ asset('favicon.png') }}" alt="Logo por defecto" />
+                    @if (empty($vehicle->logo)) <img src="{{ asset('favicon.png') }}" alt="Logo por defecto" />
             @else
-                <img src="{{ asset($vehicle->logo) }}" alt="Logo del vehículo" />
-            @endif
-            
-            </a>
+                <img src="{{ asset($vehicle->logo) }}" alt="Logo del vehículo" /> @endif
+                    </a>
         </div>
 
         <!-- Main Sections Links -->
         <div class="is-scrollbar-hidden flex grow flex-col space-y-4 overflow-y-auto pt-6">
-            
+
             <!-- Dashobards -->
             @can('dashboards/crm-analytics')
                 <a href="{{ route('dashboards/crm-analytics') }}"
                     class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'dashboards' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                     x-tooltip.placement.right="'Dashboards'">
                     <!-- Change the fill color to blue for the active icon -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd"
                             d="M4.18753 11.3788C4.03002 11.759 4 11.9533 4 12V20.0018C4 20.5529 4.44652 21 5 21H8V15C8 13.8954 8.89543 13 10 13H14C15.1046 13 16 13.8954 16 15V21H19C19.5535 21 20 20.5529 20 20.0018V12C20 11.9533 19.97 11.759 19.8125 11.3788C19.6662 11.0256 19.4443 10.5926 19.1547 10.1025C18.5764 9.1238 17.765 7.97999 16.8568 6.89018C15.9465 5.79788 14.9639 4.78969 14.0502 4.06454C13.5935 3.70204 13.1736 3.42608 12.8055 3.2444C12.429 3.05862 12.1641 3 12 3C11.8359 3 11.571 3.05862 11.1945 3.2444C10.8264 3.42608 10.4065 3.70204 9.94978 4.06454C9.03609 4.78969 8.05348 5.79788 7.14322 6.89018C6.23505 7.97999 5.42361 9.1238 4.8453 10.1025C4.55568 10.5926 4.33385 11.0256 4.18753 11.3788ZM10.3094 1.45091C10.8353 1.19138 11.4141 1 12 1C12.5859 1 13.1647 1.19138 13.6906 1.45091C14.2248 1.71454 14.7659 2.07921 15.2935 2.49796C16.3486 3.33531 17.4285 4.45212 18.3932 5.60982C19.3601 6.77001 20.2361 8.0012 20.8766 9.08502C21.1963 9.62614 21.4667 10.1462 21.6602 10.6134C21.8425 11.0535 22 11.5467 22 12V20.0018C22 21.6599 20.6557 23 19 23H16C14.8954 23 14 22.1046 14 21V15H10V21C10 22.1046 9.10457 23 8 23H5C3.34434 23 2 21.6599 2 20.0018V12C2 11.5467 2.15748 11.0535 2.33982 10.6134C2.53334 10.1462 2.80369 9.62614 3.12345 9.08502C3.76389 8.0012 4.63995 6.77001 5.60678 5.60982C6.57152 4.45212 7.65141 3.33531 8.70647 2.49796C9.2341 2.07921 9.77521 1.71454 10.3094 1.45091Z"
                             fill="{{ $routePrefix === 'dashboards' ? '#007BFF' : '#F0AD4E' }}" />
@@ -84,28 +80,34 @@
 
 
 
-            @can('vehicles')
-                <a href="{{ route('vehicles') }}"
-                    class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'forms' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
-                    x-tooltip.placement.right="'Vehicles'">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                            d="M2.90255 9.3983L2.8906 9.40627C2.3342 9.7772 2 10.4017 2 11.0704V19C2 19.5523 2.44772 20 3 20H4C4.55228 20 5 19.5523 5 19V18H19V19C19 19.5523 19.4477 20 20 20H21C21.5523 20 22 19.5523 22 19V11.0704C22 10.4017 21.6658 9.7772 21.1094 9.40627L21.0974 9.3983C21.4619 9.1878 21.792 8.98103 21.8561 8.88889C22.0108 8.66667 22.0819 8 21.8561 8H20L18.8292 5.65836C18.321 4.64201 17.2822 4 16.1459 4H7.8541C6.71779 4 5.679 4.64201 5.17082 5.65836L4 8H2.14388C1.91814 8 1.9892 8.66667 2.14388 8.88889C2.20802 8.98103 2.5381 9.1878 2.90255 9.3983ZM6.10196 6.05882L4.39216 9.26471C4.21453 9.59776 4.45587 10 4.83333 10H19.1667C19.5441 10 19.7855 9.59776 19.6078 9.26471L17.898 6.05882C17.5505 5.4071 16.872 5 16.1333 5H7.86667C7.12805 5 6.44955 5.4071 6.10196 6.05882ZM3 13.0799V11.8705C3 11.4846 3.41861 11.2442 3.75194 11.4386L7.09077 13.3863C7.5509 13.6547 7.32817 14.3607 6.79731 14.3164L3.91695 14.0764C3.39866 14.0332 3 13.6 3 13.0799ZM21 11.8705V13.0799C21 13.6 20.6013 14.0332 20.083 14.0764L17.2027 14.3164C16.6718 14.3607 16.4491 13.6547 16.9092 13.3863L20.2481 11.4386C20.5814 11.2442 21 11.4846 21 11.8705Z"
-                            fill="{{ $routePrefix === 'vehicles' ? '#007BFF' : '#F0AD4E' }}" />
-                    </svg>
-                </a>
-            @endcan
+            <!-- vehicles -->
+@can('vehicles')
+<a href="{{ route('vehicles') }}"
+    class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'forms' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
+    x-tooltip.placement.right="'Vehicles'"
+    fill="{{ request()->is('vehicles*') ? '#007BFF' : '#F0AD4E' }}"
+>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M2.90255 9.3983L2.8906 9.40627C2.3342 9.7772 2 10.4017 2 11.0704V19C2 19.5523 2.44772 20 3 20H4C4.55228 20 5 19.5523 5 19V18H19V19C19 19.5523 19.4477 20 20 20H21C21.5523 20 22 19.5523 22 19V11.0704C22 10.4017 21.6658 9.7772 21.1094 9.40627L21.0974 9.3983C21.4619 9.1878 21.792 8.98103 21.8561 8.88889C22.0108 8.66667 22.0819 8 21.8561 8H20L18.8292 5.65836C18.321 4.64201 17.2822 4 16.1459 4H7.8541C6.71779 4 5.679 4.64201 5.17082 5.65836L4 8H2.14388C1.91814 8 1.9892 8.66667 2.14388 8.88889C2.20802 8.98103 2.53810 9.1878 2.90255 9.3983ZM6.10196 6.05882L4.39216 9.26471C4.21453 9.59776 4.45587 10 4.83333 10H19.1667C19.5441 10 19.7855 9.59776 19.6078 9.26471L17.8980 6.05882C17.5505 5.40710 16.8720 5 16.1333 5H7.86667C7.12805 5 6.44955 5.40710 6.10196 6.05882ZM3 13.0799V11.8705C3 11.4846 3.41861 11.2442 3.75194 11.4386L7.09077 13.3863C7.55090 13.6547 7.32817 14.3607 6.79731 14.3164L3.91695 14.0764C3.39866 14.0332 3 13.6 3 13.0799ZM21 11.8705V13.0799C21 13.6 20.6013 14.0332 20.0830 14.0764L17.2027 14.3164C16.6718 14.3607 16.4491 13.6547 16.9092 13.3863L20.2481 11.4386C20.5814 11.2442 21 11.4846 21 11.8705Z"
+            fill="{{ request()->is('vehicles*') ? '#007BFF' : '#F0AD4E' }}" />
+    </svg>
+</a>
+@endcan
 
 
 
-            <!-- visitors_pass -->
+
             @can('visitors')
                 <a href="{{ route('visitors_pass') }}"
                     class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ $routePrefix === 'components' ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
-                    x-tooltip.placement.right="'Visitor’s Pass'">
+                    x-tooltip.placement.right="'Visitor’s Pass'"
+                    @if (request()->is('visitors_pass*')) fill="#007BFF"
+                @else
+                    fill="#F0AD4E" @endif>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg"> 
+                        xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M7 12C6.44772 12 6 11.5523 6 11C6 10.4477 6.44772 10 7 10H17C17.5523 10 18 10.4477 18 11C18 11.5523 17.5523 12 17 12L7 12Z"
                             fill="{{ $routePrefix === 'visitors_pass' ? '#007BFF' : '#F0AD4E' }}" />
@@ -118,6 +120,7 @@
                     </svg>
                 </a>
             @endcan
+
 
 
 
@@ -141,9 +144,9 @@
                 <a href="{{ route('settings') }}"
                     class="flex h-11 w-11 items-center justify-center rounded-lg outline-none transition-colors duration-200 {{ request()->is('settings*') ? 'text-primary hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:bg-navy-600 bg-primary/10 dark:text-accent-light dark:hover:bg-navy-450 dark:focus:bg-navy-450 dark:active:bg-navy-450/90' : 'hover:bg-primary/20 focus:bg-primary/20 active:bg-primary/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25' }}"
                     x-tooltip.placement.right="'Settings'">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="{{ request()->is('settings*') ? '#007BFF' : '#F0AD4E' }}"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="{{ request()->is('settings*') ? '#007BFF' : '#F0AD4E' }}" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path
                             d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
@@ -167,7 +170,7 @@
                 </a>
             @endcan
 
-            
+
 
 
         </div>

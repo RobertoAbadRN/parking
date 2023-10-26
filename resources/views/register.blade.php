@@ -1,5 +1,4 @@
 <x-base-layout title="Register" is-sidebar-open="true" is-header-blur="true">
-
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
 
         <div class="flex flex-col items-center py-5 lg:py-6">
@@ -15,8 +14,8 @@
                 <p class="text-slate-600 dark:text-navy-300">Property Address:</p>
                 <p class="text-lg font-semibold text-slate-800 dark:text-navy-50">{{ $propertyAddress }}</p>
             </div>
-        </div>       
-        
+        </div>
+
 
         <div class="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6">
 
@@ -51,56 +50,41 @@
 
                 <div class="max-w-5xl">
 
-                    <div class="mt-5">
+                    <div class="mt-0">
 
                         <div x-data="{ activeTab: 'tabHome' }" class="tabs flex flex-col">
 
                             <div
                                 class="is-scrollbar-hidden overflow-x-auto rounded-lg bg-slate-200 text-slate-600 dark:bg-navy-800 dark:text-navy-200">
 
-                                <div class="tabs-list flex px-1.5 py-1">
+                                <div class="tabs-list flex px-1.5 py-0">
+                                    <div class="md:flex md:space-x-4 md:space-y-0">
+                                        <button @click="activeTab = 'tabHome'"
+                                            :class="activeTab === 'tabHome' ?
+                                                'bg-primary shadow dark:bg-navy-500 dark:text-navy-100 px-2 py-1 text-sm' :
+                                                'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100 px-2 py-1 text-sm'"
+                                            class="btn shrink-0 space-x-2 font-medium">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                            </svg>
+                                            <span>RESIDENT VEHICLE REGISTRATION</span>
+                                        </button>
 
-                                    <button @click="activeTab = 'tabHome'"
-                                        :class="activeTab === 'tabHome' ?
-                                        
-                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                        
-                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                        class="btn shrink-0 space-x-2 px-3 py-1.5 font-medium">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-
-                                        </svg>
-
-                                        <span> RESIDENT VEHICLE
-
-                                            REGISTRATION</span>
-
-                                    </button>
-
-                                    <button @click="activeTab = 'tabProfile'"
-                                        :class="activeTab === 'tabProfile' ?
-                                        
-                                            'bg-white shadow dark:bg-navy-500 dark:text-navy-100' :
-                                        
-                                            'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100'"
-                                        class="btn shrink-0 space-x-2 px-3 py-1.5 font-medium">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-
-                                        </svg>
-
-                                        <span>VISITORS PASS REGISTRATION</span>
-
-                                    </button>
+                                        <button @click="activeTab = 'tabProfile'"
+                                            :class="activeTab === 'tabProfile' ?
+                                                'bg-primary shadow dark:bg-navy-500 dark:text-navy-100 px-2 py-1 text-sm' :
+                                                'hover:text-slate-800 focus:text-slate-800 dark:hover:text-navy-100 dark:focus:text-navy-100 px-2 py-1 text-sm'"
+                                            class="btn shrink-0 space-x-2 font-medium">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            <span>VISITORS PASS REGISTRATION</span>
+                                        </button>
+                                    </div>
 
                                 </div>
 
@@ -293,11 +277,9 @@
                                                 <label for="year" class="form-label">Year / Año</label>
                                                 <input type="number"
                                                     class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                    id="year" name="year" required max="{{ date('Y') }}">
+                                                    id="year" name="year" required
+                                                    max="{{ date('Y') }}">
                                             </div>
-
-
-
 
                                             <div class="mb-3">
                                                 <label for="make" class="form-label">Make / Marca</label>
@@ -318,6 +300,7 @@
                                                     class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                                     id="color" name="color" required>
                                             </div>
+
                                             <div class="mb-3">
                                                 <label for="vehicle_type" class="form-label">Vehicle Type / Tipo de
                                                     Vehículo</label>
@@ -334,25 +317,46 @@
                                             </div>
 
 
+                                            <label for="vehicle_type" class="form-label">Valid From:</label>
                                             <label class="relative flex mb-3">
-                                                <input x-data="{ maxDate: new Date().setDate(new Date().getDate() + 7) }"
-                                                       x-init="$el._x_flatpickr = flatpickr($el, {
-                                                           enableTime: true,
-                                                           dateFormat: 'Y-m-d h:i K',
-                                                           time_24hr: false,
-                                                           minDate: 'today',
-                                                           maxDate: maxDate // Configura la fecha máxima
-                                                       })"
-                                                       class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
-                                                       placeholder="Choose date and time..." type="text"
-                                                       name="valid_from" />
-                                            
+                                                <input x-data="{
+                                                    currentDate: new Date(),
+                                                    maxDate: new Date().setDate(new Date().getDate() + 7),
+                                                    initFlatpickr: function() {
+                                                        this.$el._x_flatpickr = flatpickr(this.$el, {
+                                                            enableTime: true,
+                                                            dateFormat: 'Y-m-d H:i',
+                                                            time_24hr: true,
+                                                            minDate: this.currentDate,
+                                                            maxDate: this.maxDate,
+                                                            minTime: this.currentDate.getHours() + ':' + (this.currentDate.getMinutes() < 10 ? '0' : '') + this.currentDate.getMinutes(),
+                                                            onChange: this.updateMinTime.bind(this)
+                                                        });
+                                                    },
+                                                    updateMinTime: function(selectedDates, dateStr, instance) {
+                                                        if (this.currentDate.toISOString().split('T')[0] === dateStr.split(' ')[0]) {
+                                                            instance.set('minTime', this.currentDate.getHours() + ':' + (this.currentDate.getMinutes() < 10 ? '0' : '') + this.currentDate.getMinutes());
+                                                        } else {
+                                                            instance.set('minTime', '00:01');
+                                                        }
+                                                    }
+                                                }" x-init="initFlatpickr()"
+                                                class="form-input peer w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 pl-9 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
+                                                placeholder="Choose date and time..." type="text"
+                                                name="valid_from" />
                                                 <span class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
+                                                    <!-- Icono de calendario -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                     </svg>
                                                 </span>
                                             </label>
+                                            @if ($errors->has('valid_from'))
+                                                <span class="text-red-500 text-sm">{{ $errors->first('valid_from') }}</span>
+                                            @endif
+                                            
+
+
 
                                             <button type="submit"
                                                 class="px-4 py-2 bg-yellow-500 text-white w-full font-semibold rounded hover:bg-yellow-600">Submit
@@ -380,7 +384,5 @@
         </div>
 
         </div>
-
-    </main>
 
 </x-base-layout>

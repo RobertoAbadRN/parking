@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Mail\NewUserNotification;
+use App\Models\EmailWelcomeManager;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -103,71 +104,105 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-          // Validar los datos del formulario
-    $validatedData = $request->validate([
-        'user' => 'required',
-        'name' => 'required',
-        'phone' => 'required',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required',
-        'role' => 'required',
-    ]);
 
-    // Obtener el valor del campo 'role'
-    $role = $request->role;
+        //dd($request);
+        try {
+            // Validación de los datos del formulario
+            $validator = Validator::make($request->all(),[
+                // ... (tu validación aquí)
+                'user' => 'required',
+                'name' => 'required',
+                'phone' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required',
+                'role' => 'required',
+            ]);
 
-    // Si el rol es 'Company administrator' o 'Parking inspector', no validar 'properties'
-    if ($role !== 'Company administrator' && $role !== 'Parking inspector') {
-        $validatedData['properties'] = 'required|array';
-    }
+            // Obtener el valor del campo 'role'
+            // $role = $request->role;
+            //dd($role);
+            // Obtener el valor del campo 'role'
+            $roleId = $request->role;
 
-        // Obtener el correo electrónico y el usuario del formulario
-        $correo = $validatedData['email'];
-        $user = $validatedData['user'];
-        $role = $request->role; // Get the selected role
-        // Generar la contraseña sin encriptar
-        $plainPassword = $validatedData['password'];
+            // Obtener el objeto del rol
+            $role = Role::findById($roleId);
 
-        // Enviar el correo al usuario
-        // Send the appropriate email to the user based on their role
-        if ($role === 'Property manager') {
-            Mail::to($correo)->send(new PropertyManagerNotification(User::make($validatedData), $plainPassword));
-        } else {
-            Mail::to($correo)->send(new NewUserNotification(User::make($validatedData), $plainPassword));
-        }
+            // Obtener el nombre del rol
+            $roleName = $role->name;
 
-        // Encriptar la contraseña antes de asignarla al campo 'password' del modelo User
-        $validatedData['password'] = bcrypt($validatedData['password']);
+            //dd($roleName); // Mostrará el nombre del rol
+            // Si el rol es 'Company administrator' o 'Parking inspector', no validar 'properties'
+            if ($roleName !== 'Company administrator' && $roleName !== 'Parking inspector') {
+                $validatedData['properties'] = 'required|array';
 
-        // Crear el usuario en la base de datos
-        // Crear el usuario en la base de datos y asignar el valor de 'banned' directamente
-        $user = User::create([
-            'user' => $validatedData['user'],
-            'name' => $validatedData['name'],
-            'phone' => $validatedData['phone'],
-            'email' => $validatedData['email'],
-            'password' => bcrypt($validatedData['password']), // Asegúrate de encriptar la contraseña
-            // 'access_level' => $validatedData['access_level'],
-            'banned' => '1',
-        ]);
+                // Obtener los códigos de propiedad del formulario
+                $propertyCodes = $request->input('properties');
+                // Obtén los IDs de las propiedades basándote en los códigos de propiedad
+                $propertyIds = Property::whereIn('property_code', $propertyCodes)->pluck('id')->toArray();
 
-        // Asignación del rol
-        $user->assignRole($request->role);
+                // Verificar si algún código de propiedad existe en la tabla emails_welcome_manager
+                $hasCustomTemplate = EmailWelcomeManager::whereIn('property_code', $propertyCodes)->exists();
+            } else {
+                // Si el rol es 'Company administrator' o 'Parking inspector', no verificamos propiedades
+                $hasCustomTemplate = false;
+            }
+            // Ejecutar la validación
+            $validatedData = $validator->validate();
+// Obtener el correo electrónico y el usuario del formulario
+            $correo = $validatedData['email'];
+            $user = $validatedData['user'];
 
-        $propertyCodes = $request->input('selected_properties');
-        $propertyCodesArray = explode(',', $propertyCodes);
+// Generar la contraseña sin encriptar
+            $plainPassword = $validatedData['password'];
+
+// Determinar la plantilla de correo a utilizar
+            $emailTemplate = $hasCustomTemplate ? 'emails.new_user_notification_settings' : 'emails.new_user_notification';
+
+// Enviar el correo al usuario
+            if ($role === 'Property manager') {
+                Mail::to($correo)->send(new PropertyManagerNotification(User::make($validatedData), $plainPassword, $emailTemplate));
+            } else {
+                Mail::to($correo)->send(new NewUserNotification(User::make($validatedData), $plainPassword, $emailTemplate));
+            }
+
+            // Encriptar la contraseña antes de asignarla al campo 'password' del modelo User
+            $validatedData['password'] = bcrypt($validatedData['password']);
+            // Crear el usuario en la base de datos
+            $user = User::create([
+                'user' => $validatedData['user'],
+                'name' => $validatedData['name'],
+                'phone' => $validatedData['phone'],
+                'email' => $validatedData['email'],
+                'password' => bcrypt($validatedData['password']),
+                'banned' => '1',
+            ]);
+
+            // Asignación del rol
+            $user->assignRole($request->role);
+
+            $propertyCodes = $request->input('selected_properties');
+            $propertyCodesArray = explode(',', $propertyCodes);
 //dd($propertyCodesArray);
 
-        $propertyIds = Property::whereIn('property_code', $propertyCodesArray)->pluck('id')->toArray();
+            $propertyIds = Property::whereIn('property_code', $propertyCodesArray)->pluck('id')->toArray();
 //dd($propertyIds);
 
-// Attach the properties to the user
-        $user->properties()->attach($propertyIds);
+            if (!$user) {
+                throw new Exception('Error creating user');
+            }
 
-// Redireccionar a una página de éxito o mostrar un mensaje de éxito
-        return redirect()->route('users')->with('success_message', 'User created successfully!');
+            // ... (resto de tu código)
 
+            // Attach the properties to the user
+            $user->properties()->attach($propertyIds);
+
+            // Redireccionar a una página de éxito o mostrar un mensaje de éxito
+            return redirect()->route('users')->with('success_message', 'User created successfully!');
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return redirect()->route('users')->with('error_message', 'Error creating user: ' . $e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -205,12 +240,16 @@ class UsersController extends Controller
             'role' => 'required',
 
         ]);
-
+        //dd($validatedData);
         $user->user = $validatedData['user'];
         $user->name = $validatedData['name'];
         $user->phone = $validatedData['phone'];
         $user->email = $validatedData['email'];
         //$user->access_level = $validatedData['access_level'];
+        // Obtén los IDs de las propiedades del request.
+        $propertyIds = $request->input('properties');
+        // Consulta la tabla de propiedades para obtener los códigos de propiedad.
+        $propertyCodes = Property::whereIn('id', $propertyIds)->pluck('property_code');
 
         $user->save();
         $user->properties()->sync($request->properties); // Actualizar las propiedades del usuario.

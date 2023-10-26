@@ -7,7 +7,7 @@
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
 
                 <a
-                    class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Documets
+                    class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Settings
 
                 </a>
 

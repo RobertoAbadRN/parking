@@ -1,3 +1,133 @@
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+  }
+
+  /* Estilos para la tabla principal */
+  table {
+      width: 100%;
+      border-collapse: collapse;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+
+
+  /* Estilos para la primera columna */
+  .column1 {
+      width: 50%;
+      padding: 20px;
+      background-color: #f0f0f0;
+  }
+
+  .column1 .card-content {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .property-name {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+  }
+
+  .permit-type {
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+  }
+
+
+
+
+  .license-plate {
+      font-size: 16px;
+      font-weight: bold;
+      border: 1px solid #000;
+      padding: 5px 10px;
+      border-radius: 4px;
+      margin-top: -20px;
+      /* Ajusta el valor negativo según cuánto quieras subir el span */
+  }
+
+
+  .date {
+      font-size: 12px;
+      color: #777;
+  }
+
+  /* Estilos para la segunda columna */
+  .column2 {
+      width: 50%;
+      padding: 20px;
+  }
+
+  .instructions h2 {
+      font-size: 18px;
+      font-weight: bold;
+  }
+
+  .instructions ol {
+      list-style-type: decimal;
+      padding-left: 20px;
+  }
+
+  .instructions li {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 0px;
+  }
+
+  .flex {
+      display: flex;
+      align-items: center;
+      /* Centrar verticalmente */
+  }
+
+  .flex img {
+      margin-right: 0px;
+      /* Agregar margen a la derecha de la imagen */
+  }
+
+  .flex-container {
+      display: flex;
+      justify-content: center;
+      /* Centrar horizontalmente */
+      align-items: center;
+      /* Centrar verticalmente */
+      height: 200vh;
+      /* Establecer la altura del contenedor (ajusta según tus necesidades) */
+  }
+
+
+  .logo {
+      width: 50px;
+      /* Ancho de la imagen */
+      height: auto;
+      /* Altura automática para mantener la proporción */
+      margin-right: 20px;
+      /* Margen derecho para separar la imagen del texto */
+  }
+
+  .signature-line-top {
+      border-top: 0px solid #000;
+      /* Color y estilo de la línea de separación superior */
+      height: 10px;
+      /* Altura de la línea de separación superior (ajústala según tus necesidades) */
+  }
+
+  .signature-line {
+      border-top: 1px solid #000;
+      /* Color y estilo de la línea de firma */
+      height: 1px;
+      /* Altura de la línea de firma (ajústala según tus necesidades) */
+  }
+</style>
 <x-app-layout title="Factura 2" is-header-blur="true">
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center justify-between py-5 lg:py-6">
@@ -28,40 +158,91 @@
         <div class="grid grid-cols-1" id="document">
             <div class="card px-5 py-12 sm:px-18">
 
-
                 <div class="container mx-auto">
                     <div class="grid grid-cols-2 gap-4">
 
+
                         <div class="p-4 bg-neutral-300">
                             <div class="card px-5 py-8 sm:px-8 bg-white rounded-lg shadow-md w-80 h-48 mx-auto">
+                                @if (is_null($propertySetting) || is_null($propertySetting->name))
+                                <p class="text-lg text-center font-semibold">{{ $property_name }}</p> 
+                                @else
+                                    @if ($propertySetting->name === '1')
+                                        <p class="text-lg text-center font-semibold">{{ $property_name }}</p>
+                                    @elseif ($propertySetting->name === 0)
+                                        <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                    @endif
+                                @endif
+
+
                                 <div class="mb-2">
-                                    <p class="text-lg text-center font-semibold">{{ $property_name }}</p>
-                                </div>
-                                
-                                <div class="mb-2">
+                                    @if (is_null($propertySetting) || is_null($propertySetting->type))
                                     <p class="text-sm text-center text-gray-500">{{ $permit_type }}</p>
-                                </div>                                                               
+                                    @else
+                                       
+                                        @if ($propertySetting->type === '1')
+                                        <p class="text-sm text-center text-gray-500">{{ $permit_type }}</p>
+                                        @elseif ($propertySetting->type === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                        @endif
+                                    @endif
+                                </div>
 
                                 <div class="flex items-center justify-center mb-2">
-                                    @if ($logo)
-                                    <img src="{{ asset($logo) }}" alt="Logo Resident" class="w-12 h-12 mr-2">
-                                @else
-                                    <img src="{{ asset('favicon.png') }}" alt="Logo por defecto" class="w-12 h-12 mr-2">
-                                @endif
-                                
-                                    <span class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
+                                    @if (is_null($propertySetting) || is_null($propertySetting->logo))
+                                        @if ($logo)
+                                            <img src="{{ asset($logo) }}" alt="Logo Resident" class="w-12 h-12 mr-2">
+                                        @else
+                                            <img src="{{ asset('favicon.png') }}" alt="Logo por defecto"
+                                                class="w-12 h-12 mr-2">
+                                        @endif
+                                    @else
+                                       
+                                        @if ($propertySetting->logo === '1')
+                                            @if ($logo)
+                                                <img src="{{ asset($logo) }}" alt="Logo Resident"
+                                                    class="w-12 h-12 mr-2">
+                                            @else
+                                                <img src="{{ asset('favicon.png') }}" alt="Logo por defecto"
+                                                    class="w-12 h-12 mr-2">
+                                            @endif
+                                        @elseif ($propertySetting->logo === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->logo es igual a "0" -->
+                                        @endif
+                                    @endif
+
+                                    @if (is_null($propertySetting) || is_null($propertySetting->license))
+                                        <span class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
+                                    @else
+                                        @if ($propertySetting->license === '1')
+                                        <span class="border border-black text-black px-2 py-1 rounded">{{ $license_plate }}</span>
+                                        @elseif ($propertySetting->license === 0)
+                                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                        @endif
+                                    @endif
                                 </div>
-                                
+
 
                                 <div class="text-center">
+                                    @if (is_null($propertySetting) || is_null($propertySetting->start_date))
                                     <p class="mb-2 text-xs font-semibold">
-                                        Desde: {{ $start_date->format('d/m/Y') }} Hasta: {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
-                                    </p>                                                                      
-
+                                        From: {{ $start_date->format('d/m/Y') }} To:
+                                        {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
+                                    </p>
+                                    @else
+                                    @if ($propertySetting->start_date === "1")
+                                    <p class="mb-2 text-xs font-semibold">
+                                        From: {{ $start_date->format('d/m/Y') }} To:
+                                        {{ Carbon\Carbon::parse($end_date)->format('d/m/Y') }}
+                                    </p>
+                                    @elseif ($propertySetting->license === 0)
+                                    <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                @endif
+                                @endif
                                 </div>
                             </div>
                         </div>
-
+                         
 
                         <div class="p-4">
                             <div class="">
@@ -69,8 +250,10 @@
                                 <ol class="list-decimal pl-4">
                                     <li class="mb-2">Limpie el área donde se colocará la etiqueta.</li>
                                     <li class="mb-2">Separe la etiqueta del documento por las perforaciones.</li>
-                                    <li class="mb-2">Despegue el revestimiento que cubre el borde azul de la etiqueta.</li>
-                                    <li class="mb-2">Coloque la etiqueta en la ventana sobre la pegatina de registro/inspección del vehículo y alísela suavemente contra el vidrio.</li>
+                                    <li class="mb-2">Despegue el revestimiento que cubre el borde azul de la etiqueta.
+                                    </li>
+                                    <li class="mb-2">Coloque la etiqueta en la ventana sobre la pegatina de
+                                        registro/inspección del vehículo y alísela suavemente contra el vidrio.</li>
                                 </ol>
                             </div>
                         </div>
@@ -79,19 +262,39 @@
                 </div>
 
                 <div class=" p-6">
+                    
                     <h2 class="text-2xl font-semibold mb-6">Acuerdo</h2>
                     <p>Este Acuerdo es un anexo y forma parte del Contrato de Arrendamiento de Apartamento, celebrado y
                         firmado entre 3rd. Street Apartments y el/los Residente(s) que se detallan a continuación:</p>
                     <p>Al firmar este anexo, yo/nosotros aceptamos lo siguiente:</p>
 
                     <ul class="list-disc ml-6 mb-6">
-                        <li>Entiendo que se emitirá un permiso de estacionamiento para cada apartamento. Los permisos de estacionamiento no se emitirán a los ocupantes. Acepto colocar el permiso de estacionamiento justo encima de las pegatinas de inspección/registro de mi vehículo.</li>
-                        <li>Entiendo que cada permiso está designado para un vehículo específico y no puede transferirse a otro vehículo. Comprendo que el permiso asignado se basa en la información de la matrícula del vehículo. También acepto que, si obtengo un vehículo nuevo, debo devolver el antiguo permiso.</li>
-                        <li>El permiso de estacionamiento vencerá el último día del contrato de arrendamiento actual. Comprendo que debo renovar mi permiso de estacionamiento cuando venza mi contrato de arrendamiento actual. También entiendo que se requiere evidencia de registro de vehículo y evidencia de seguro de vehículo válido antes de que se emitan y/o renueven los permisos.</li>
-                        <li>Entiendo que los visitantes no pueden estacionar dentro de las puertas de acceso en ningún momento. Todo el estacionamiento para visitantes está designado fuera de las puertas en todo momento. Comprendo que cualquier vehículo estacionado en el estacionamiento designado para Futuros Residentes fuera de las puertas de acceso debe moverse durante el horario de oficina cada día.</li>
-                        <li>Entiendo que no puedo estacionar barcos, remolques, vehículos recreativos o vehículos comerciales en la propiedad, en ningún lugar ni en ningún momento. Los vehículos deben conducirse de forma regular y no pueden dejarse abandonados o inoperables en ningún momento.</li>
-                        <li>Entiendo que si se remolca un vehículo, puedo contactar a la Compañía de Remolque A. Martinez LLC, las 24 horas del día, al 832-374-7703.</li>
-                        <li>Si un vehículo se estaciona dentro de las puertas sin permiso, puedo contactar directamente al servicio de remolque para que retire el vehículo. Todos los vehículos remolcados serán a cargo del propietario/operador del vehículo.</li>
+                        <li>Entiendo que se emitirá un permiso de estacionamiento para cada apartamento. Los permisos de
+                            estacionamiento no se emitirán a los ocupantes. Acepto colocar el permiso de estacionamiento
+                            justo encima de las pegatinas de inspección/registro de mi vehículo.</li>
+                        <li>Entiendo que cada permiso está designado para un vehículo específico y no puede transferirse
+                            a otro vehículo. Comprendo que el permiso asignado se basa en la información de la matrícula
+                            del vehículo. También acepto que, si obtengo un vehículo nuevo, debo devolver el antiguo
+                            permiso.</li>
+                        <li>El permiso de estacionamiento vencerá el último día del contrato de arrendamiento actual.
+                            Comprendo que debo renovar mi permiso de estacionamiento cuando venza mi contrato de
+                            arrendamiento actual. También entiendo que se requiere evidencia de registro de vehículo y
+                            evidencia de seguro de vehículo válido antes de que se emitan y/o renueven los permisos.
+                        </li>
+                        <li>Entiendo que los visitantes no pueden estacionar dentro de las puertas de acceso en ningún
+                            momento. Todo el estacionamiento para visitantes está designado fuera de las puertas en todo
+                            momento. Comprendo que cualquier vehículo estacionado en el estacionamiento designado para
+                            Futuros Residentes fuera de las puertas de acceso debe moverse durante el horario de oficina
+                            cada día.</li>
+                        <li>Entiendo que no puedo estacionar barcos, remolques, vehículos recreativos o vehículos
+                            comerciales en la propiedad, en ningún lugar ni en ningún momento. Los vehículos deben
+                            conducirse de forma regular y no pueden dejarse abandonados o inoperables en ningún momento.
+                        </li>
+                        <li>Entiendo que si se remolca un vehículo, puedo contactar a la Compañía de Remolque A.
+                            Martinez LLC, las 24 horas del día, al 832-374-7703.</li>
+                        <li>Si un vehículo se estaciona dentro de las puertas sin permiso, puedo contactar directamente
+                            al servicio de remolque para que retire el vehículo. Todos los vehículos remolcados serán a
+                            cargo del propietario/operador del vehículo.</li>
                     </ul>
 
 
@@ -122,8 +325,10 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                 </div>
+
+                
             </div>
         </div>
         <script>
@@ -131,7 +336,7 @@
             document.getElementById('print-pdf-form').addEventListener('submit', function(event) {
                 // Evita que el formulario se envíe de manera predeterminada
                 event.preventDefault();
-    
+
                 // Realiza una solicitud POST al servidor
                 axios.post(this.action, new FormData(this), {
                         responseType: 'blob', // Indica que esperas una respuesta binaria (archivo)
@@ -142,10 +347,10 @@
                             type: 'application/pdf'
                         });
                         const url = window.URL.createObjectURL(blob);
-    
+
                         // Abre la URL en una nueva ventana o pestaña
                         window.open(url);
-    
+
                         // Liberar la URL cuando no se necesite más (opcional)
                         window.URL.revokeObjectURL(url);
                     })

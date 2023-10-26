@@ -10,6 +10,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 class VisitorsController extends Controller
 {
@@ -72,7 +73,6 @@ class VisitorsController extends Controller
     public function registerVisitorPass(Request $request)
     {
         //dd($request);
-        // Validar los datos ingresados en el formulario
         $validatedData = $request->validate([
             'property_code' => 'required',
             'visitor_name' => 'required|string',
@@ -83,7 +83,23 @@ class VisitorsController extends Controller
             'color' => 'required|string',
             'model' => 'required|string',
             'vehicle_type' => 'required|string',
-            'valid_from' => 'required|date',
+            'valid_from' => [
+                'required',
+                'date_format:Y-m-d H:i', // Asegurándose de que la fecha sigue el formato específico
+                function ($attribute, $value, $fail) {
+                    try {
+                        $validFrom = Carbon::createFromFormat('Y-m-d H:i', $value);
+                        $now = Carbon::now();
+    
+                        if ($validFrom->isToday() && $validFrom->lt($now)) {
+                            return $fail('The time must be later than the current time..');
+                        }
+                    } catch (\Exception $e) {
+                        // En caso de que la fecha no se pueda parsear correctamente
+                        return $fail('The date format is invalid.');
+                    }
+                },
+            ],
             'user_id' => 'required|exists:users,id', // Asegura que el user_id exista en la tabla users
         ]);
         //dd($validatedData);
@@ -148,6 +164,7 @@ class VisitorsController extends Controller
             ->select(
                 'visitorpasses.id',
                 'visitorpasses.valid_from',
+                'visitorpasses.vp_code',
                 'visitorpasses.license_plate',
                 'visitorpasses.make',
                 'visitorpasses.model',

@@ -181,6 +181,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/recidents/import/uploaded-files/{upload_id}', [RecidentsController::class, 'import_uploaded_files'])->name('residents.import.uploaded.files');
     Route::get('/recidents/import/uploaded-files/{upload_id}/{file_id}', [RecidentsController::class, 'import_uploaded_files_id'])->name('residents.import.uploaded.files.id');
     Route::post('/recidents/import/upload', [RecidentsController::class, 'import_upload'])->name('residents.import.upload');
+ 
+
+   // routes/web.php
+    Route::delete('/residents/{resident}/delete', [RecidentsController::class, 'deleteMessage'])->name('upload.destroy');
+
+
+
     Route::post('/update-reserved-space/{departmentId}', [RecidentsController::class, 'updateReservedSpace'])->name('update_reserved_space');
     Route::get('/download-terms-pdf/{resident}', [RecidentsController::class, 'downloadTermsPDF'])->name('download.terms.pdf');
     Route::post('/update_reserved_space_visitors/{departmentId}', [RecidentsController::class, 'updateReservedSpaceVisitors'])->name('update_reserved_space_visitors');
@@ -231,7 +238,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/vehicles/print-pdf', [VehiclesController::class, 'printPDF'])->name('vehicles.printPDF');
 
 
-
+ 
 
 
 
@@ -384,8 +391,40 @@ Route::get('/error', function () {
 // rutas para los emails de los settings
 Route::get('/email/edit/{property_code}', [EmailController::class, 'edit'])->name('email.edit');
 Route::post('/email/update', [EmailController::class, 'update'])->name('email.update');
-// rutas para los emails aprove 
-Route::post('/email/approve', [EmailController::class, 'approve'])->name('email.approve');
+
+// rutas para los emails aprove
+Route::get('/obtener-email-approve/{property_code}', [EmailController::class, 'approveVehicle'])->name('obtener-email-approve');
+Route::post('/email/updateapprove', [EmailController::class, 'updateapprove'])->name('email.approve');
+
+// rutas para los emails suspende
+Route::get('/obtener-email-suspend/{property_code}', [EmailController::class, 'suspendEmail'])->name('obtener-email-suspend');
+Route::post('/email/updatesuspend', [EmailController::class, 'updatesuspendEmail'])->name('email.suspend');
+
+
+// rutas para los emails Register
+Route::get('/obtener-email-register/{property_code}', [EmailController::class, 'registerEmail'])->name('obtener-email-register');
+Route::post('/email/updateregister', [EmailController::class, 'updateregisterEmail'])->name('email.register');
+
+
+
+// rutas para los emails expired
+Route::get('/obtener-email-expired/{property_code}', [EmailController::class, 'expiredEmail'])->name('obtener-email-expired');
+Route::post('/email/updateexpired', [EmailController::class, 'updateexpiredEmail'])->name('email.expired');
+
+
+// rutas para los emails welcome mail 
+Route::get('/obtener-email-welcome/{property_code}', [EmailController::class, 'welcomeEmail'])->name('obtener-email-welcome');
+Route::post('/email/updatewelcome', [EmailController::class, 'updatewelcomeEmail'])->name('email.welcome');
+
+
+
+
+// rutas para los emails welcome manager
+Route::get('/obtener-email-welcome-manager/{property_code}', [EmailController::class, 'welcomeManagerEmail'])->name('obtener-email-welcome-manager');
+Route::post('/email/welcome-manage', [EmailController::class, 'updatewelcomemanageEmail'])->name('email.welcomemanage');
+
+
+
 
 /**
 

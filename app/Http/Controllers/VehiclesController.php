@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\RemolcarAutoMail;
 use App\Models\Department;
+use App\Models\EmailAproved;
+use App\Models\EmailSuspend;
 use App\Models\Property;
+use App\Models\PropertySetting;
 use App\Models\User;
 use App\Models\Vehicle;
 use Carbon\Carbon;
@@ -454,13 +457,24 @@ class VehiclesController extends Controller
         return $response;
 
     }
+
     public function show($id)
     {
         $vehicle = Vehicle::join('properties', 'vehicles.property_code', '=', 'properties.property_code')
             ->join('users', 'vehicles.user_id', '=', 'users.id')
             ->leftJoin('departments', 'users.id', '=', 'departments.user_id')
-            ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate', 'users.name', 'departments.apart_unit as unit_number')
+            ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate', 'vehicles.permit_type', 'users.name', 'departments.apart_unit as unit_number')
             ->find($id);
+
+        $code = $vehicle->property_code;
+        $property = Property::where('property_code', $code)->first();
+        $propertySetting = null; // Inicializa como null por defecto.
+
+        if ($property) {
+            $propertyId = $property->id;
+
+            $propertySetting = PropertySetting::where('property_id', $propertyId)->first();
+        }
 
         // Obtén el valor de 'lease_expiration' como una cadena de texto desde la relación 'departments'
         $lease_expirationString = $vehicle->user->departments->first()->lease_expiration;
@@ -487,6 +501,7 @@ class VehiclesController extends Controller
             'permit_type' => $vehicle->permit_type,
             'name' => $vehicle->name,
             'unit_number' => $unit_number, // Agregar el número de departamento a la vista
+            'propertySetting' => $propertySetting, // Agrega el objeto $propertySetting a la vista
         ]);
     }
 
@@ -572,40 +587,6 @@ class VehiclesController extends Controller
 
     }
 
-    public function suspendVehicle($id)
-    {
-        $vehicle = Vehicle::find($id);
-
-        if ($vehicle) {
-            $vehicle->update(['permit_status' => 'suspended']);
-
-            // Obtener el usuario asociado al vehículo
-            $user = $vehicle->user;
-
-            // Verificar si se encontró un usuario
-            if ($user) {
-                // Realizar una consulta para obtener el nombre de la propiedad
-                $property_name = DB::table('users')
-                    ->join('properties', 'users.property_code', '=', 'properties.property_code')
-                    ->where('users.id', $user->id)
-                    ->value('properties.name');
-
-                // Envío del correo para el estado 'suspended' utilizando la vista "permit_suspended.blade.php"
-                Mail::send('emails.permit_suspended', ['property_name' => $property_name], function ($message) use ($user) {
-                    $message->to($user->email, $user->name)
-                        ->subject('Parking Permit Suspended');
-                });
-
-                return redirect()->back()->with('success', 'Vehicle suspended and email sent.');
-            } else {
-                // Si no se encuentra un usuario asociado al vehículo, redirigir con un mensaje de error
-                return redirect()->back()->with('error', 'Error suspending vehicle: User not found.');
-            }
-        }
-
-        return redirect()->back()->with('error', 'Vehicle not found.');
-    }
-
     public function suspendVehicle1($id)
     {
         $vehicle = Vehicle::find($id);
@@ -626,11 +607,66 @@ class VehiclesController extends Controller
         return redirect()->back()->with('error', 'Vehicle not found.');
     }
 
+    public function suspendVehicle($id)
+    {
+        // Encontrar el vehículo por su ID
+        $vehicle = Vehicle::find($id);
+
+        // Verificar si el vehículo existe
+        if (!$vehicle) {
+            return redirect()->back()->with('error', 'Vehicle not found.');
+        }
+
+        // Acceder al valor de property_code desde el vehículo
+        $propertyCode = $vehicle->property_code;
+
+        // Verificar si existe una configuración de correo para el property_code
+        $emailSetting = EmailSuspend::where('property_code', $propertyCode)->first();
+
+        // Obtener el usuario asociado al vehículo
+        $user = $vehicle->user;
+
+        // Verificar si se encontró un usuario
+        if ($user) {
+            // Realizar una consulta para obtener el nombre de la propiedad
+            $property_name = DB::table('users')
+                ->join('properties', 'users.property_code', '=', 'properties.property_code')
+                ->where('users.id', $user->id)
+                ->value('properties.name');
+
+            // Determinar la plantilla de correo a utilizar
+            $emailTemplate = $emailSetting ? 'emails.permitdinamic_suspended' : 'emails.permit_suspended';
+
+            // Envío del correo
+            Mail::send($emailTemplate, [
+                'user' => $user,
+                'property_name' => $property_name,
+                'emailSetting' => $emailSetting,
+            ], function ($message) use ($user) {
+                $message->to($user->email, $user->name)
+                    ->subject('Parking Permit Suspended');
+            });
+
+            // Actualizar el estado del permiso a 'suspended'
+            $vehicle->update(['permit_status' => 'suspended']);
+
+            return redirect()->back()->with('success_message', 'Vehicle suspended and email sent.');
+        } else {
+            // Si no se encuentra un usuario asociado al vehículo, redirigir con un mensaje de error
+            return redirect()->back()->with('error_message', 'Error suspending vehicle: User not found.');
+        }
+    }
+
     public function updateStatus(Request $request, $vehicleId)
     {
         try {
             // Encontrar el vehículo por su ID
             $vehicle = Vehicle::findOrFail($vehicleId);
+            // Acceder al valor de property_code desde el vehículo
+            $propertyCode = $vehicle->property_code;
+
+            // Verificar si existe una configuración de correo para el property_code
+            $emailSetting = EmailAproved::where('property_code', $propertyCode)->first();
 
             // Actualizar el campo 'permit_status' a 'approved'
             $vehicle->permit_status = 'approved';
@@ -639,26 +675,29 @@ class VehiclesController extends Controller
             // Obtener el usuario asociado al vehículo
             $user = $vehicle->user;
 
-            // Verificar si se encontró un usuario
-            if ($user) {
-                // Realizar una consulta para obtener el nombre de la propiedad
-                $property_name = DB::table('users')
-                    ->join('properties', 'users.property_code', '=', 'properties.property_code')
-                    ->where('users.id', $user->id)
-                    ->value('properties.name');
+            // Determinar la plantilla de correo a utilizar
+            $emailTemplate = $emailSetting ? 'emails.permitdinamic_active' : 'emails.permit_active';
 
-                // Envío del correo para el estado 'active'
-                Mail::send('emails.permit_active', ['property_name' => $property_name], function ($message) use ($user) {
-                    $message->to($user->email, $user->name)
-                        ->subject('Your Parking Permit is Active');
-                });
+            // Realizar una consulta para obtener el nombre de la propiedad
+            $property_name = DB::table('users')
+                ->join('properties', 'users.property_code', '=', 'properties.property_code')
+                ->where('users.id', $user->id)
+                ->value('properties.name');
 
-                // Enviar un mensaje a la vista usando with()
-                return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
-            } else {
-                // Si no se encuentra un usuario asociado al vehículo, redirigir con un mensaje de error
-                return Redirect::back()->with('error_message', 'Error updating vehicle status: User not found');
-            }
+            $resident = $user; // Esto es un ejemplo, asegúrate de obtener el residente correcto
+
+            // Envío del correo
+            Mail::send($emailSetting ? 'emails.permitdinamic_active' : 'emails.permit_active', [
+                'resident' => $resident,
+                'property_name' => $property_name, // Siempre pasamos $property_name
+                'emailSetting' => $emailSetting, // Pasamos $emailSetting solo si está definido
+            ], function ($message) use ($user) {
+                $message->to($user->email, $user->name)
+                    ->subject('Your Parking Permit is Active');
+            });
+
+            // Enviar un mensaje a la vista usando with()
+            return Redirect::back()->with('success_message', 'Vehicle status updated to Approved');
         } catch (\Exception $e) {
             // Si ocurre un error, redirigir con un mensaje de error
             return Redirect::back()->with('error_message', 'Error updating vehicle status: ' . $e->getMessage());
@@ -676,7 +715,18 @@ class VehiclesController extends Controller
             ->leftJoin('departments', 'users.id', '=', 'departments.user_id')
             ->select('vehicles.*', 'properties.name as property_name', 'properties.logo', 'vehicles.license_plate', 'users.name', 'departments.apart_unit as unit_number', 'departments.prefered_language')
             ->find($vehicleId);
-        //dd(  $vehicle);
+        // dd(  $vehicle);
+
+        $code = $vehicle->property_code;
+        $property = Property::where('property_code', $code)->first();
+        $propertySetting = null; // Inicializa como null por defecto.
+
+        if ($property) {
+            $propertyId = $property->id;
+
+            $propertySetting = PropertySetting::where('property_id', $propertyId)->first();
+           // dd($propertySetting);
+        }
 
         // Asegúrate de que $vehicle no sea nulo antes de continuar
         if (!$vehicle) {
@@ -716,6 +766,7 @@ class VehiclesController extends Controller
                 'end_date' => $lease_expirationString,
                 'name' => $vehicle->name,
                 'unit_number' => $unit_number,
+                'propertySetting' => $propertySetting, // Agrega el objeto $propertySetting a la vista
                 // Agrega otras variables según sea necesario
             ])->render();
         } elseif ($preferredLanguage === 'spanish') {
@@ -730,6 +781,7 @@ class VehiclesController extends Controller
                 'end_date' => $lease_expirationString,
                 'name' => $vehicle->name,
                 'unit_number' => $unit_number,
+                'propertySetting' => $propertySetting, // Agrega el objeto $propertySetting a la vista
             ])->render();
         }
 

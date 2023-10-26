@@ -30,7 +30,7 @@
             <div class="col-span-12 sm:col-span-10">
                 <div class="card p-4 sm:p-5">
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100">
-                        Edit User
+                        Edit Resident
                     </p>
                     <form>
                         @csrf
@@ -38,8 +38,8 @@
                             $file_data = json_decode($resident_upload_file->file_data);
                         @endphp
 
-                        <div class="mb-4">
-                            <label class="relative flex">
+                        <div class="mb-4 mt-3">
+                            <label for="email" class="block text-sm text-gray-600">Resident Name</label>
                                 <input
                                     disabled
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
@@ -54,7 +54,7 @@
                             @enderror
                         </div>
                         <div class="mb-4">
-                            <label class="relative flex">
+                            <span>Apart/unit:</span>
                                 <input
                                     disabled
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
@@ -64,12 +64,13 @@
                                     value="{{ $file_data->apartment }}"
                                 />
                             </label>
-                            @error('name')
+                            @error('apartment')
                                 <span class="text-tiny+ text-error">{{ $message }}</span>
                             @enderror
                         </div>
 
                         <div class="mb-4">
+                            <span>Email:</span>
                             <label class="relative flex">
                                 <input
                                     disabled
@@ -86,7 +87,8 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="relative flex">
+                            <label>
+                            <span>Phone:</span>
                                 <input
                                     disabled
                                     class="form-input peer w-full rounded-lg bg-slate-150 px-3 py-2 pl-9 ring-primary/50 placeholder:text-slate-400 hover:bg-slate-200 focus:ring dark:bg-navy-900/90 dark:ring-accent/50 dark:placeholder:text-navy-300 dark:hover:bg-navy-900 dark:focus:bg-navy-900"
@@ -102,6 +104,7 @@
                         </div>
 
                         <div class="mb-4">
+                            <span>Lease Expiration:</span>
                             <label class="relative flex">
                                 <input
                                     disabled
@@ -121,9 +124,9 @@
                             <button type="button" class="btn bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90" onclick="window.location.href='{{ route('residents.import.uploaded') }}'">
                                 Cancel
                             </button>
-                            <!-- <button type="submit" class="btn bg-primary ml-3 font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90">
-                                Update
-                            </button> -->
+                            <button type="submit" class="btn bg-primary ml-3 font-medium text-white hover:bg-primary-focus focus:bg-primary-focus active:bg-primary-focus/90">
+                                Save
+                            </button>
                         </div>
                     </form>
                 </div>

@@ -6,7 +6,7 @@
 
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
 
-                DASHBOARD
+                Add Vehicle
 
             </h2>
 
@@ -18,128 +18,11 @@
 
             <ul class="hidden flex-wrap items-center space-x-2 sm:flex">
 
-                <li class="flex items-center space-x-2">
-
-                    <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#">Users</a>
-
-                    <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-
-                    </svg>
-
-                </li>
-
-                <li>Add New auto</li>
+                
 
             </ul>
 
         </div>
-
-
-
-        <template x-if="$store.breakpoints.isXs">
-
-            <div x-data="{ isStuck: false }" class="pb-6" x-intersect:enter.full.margin.-60px.0.0.0="isStuck = false"
-                x-intersect:leave.full.margin.-60px.0.0.0="isStuck = true">
-
-                <div :class="isStuck && 'fixed right-0 top-[60px] w-full z-10'">
-
-                    <div class="transition-all duration-200"
-                        :class="isStuck && 'py-2.5 px-4 bg-white dark:bg-navy-700 shadow-lg relative'">
-
-                        <ol class="steps with-space-line">
-
-                            <li class="step before:bg-primary dark:before:bg-accent">
-
-                                <div class="step-header rounded-full bg-primary text-white dark:bg-accent">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                        fill="currentColor">
-
-                                        <path fill-rule="evenodd"
-                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                            clip-rule="evenodd" />
-
-                                    </svg>
-
-                                </div>
-
-                                <h3 class="text-xs font-medium text-slate-700 dark:text-navy-100">
-
-                                    Create Account
-
-                                </h3>
-
-                            </li>
-
-                            <li class="step before:bg-primary dark:before:bg-accent">
-
-                                <div class="step-header rounded-full bg-primary text-white dark:bg-accent">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                        fill="currentColor">
-
-                                        <path fill-rule="evenodd"
-                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                            clip-rule="evenodd" />
-
-                                    </svg>
-
-                                </div>
-
-                                <h3 class="text-xs font-medium text-slate-700 dark:text-navy-100">
-
-                                    Select Service
-
-                                </h3>
-
-                            </li>
-
-                            <li class="step before:bg-slate-200 dark:before:bg-navy-500">
-
-                                <div class="step-header rounded-full bg-primary text-white dark:bg-accent">
-
-                                    3
-
-                                </div>
-
-                                <h3 class="text-xs font-medium text-slate-700 dark:text-navy-100">
-
-                                    Address
-
-                                </h3>
-
-                            </li>
-
-                            <li class="step before:bg-slate-200 dark:before:bg-navy-500">
-
-                                <div
-                                    class="step-header rounded-full bg-slate-200 text-slate-800 dark:bg-navy-500 dark:text-white">
-
-                                    4
-
-                                </div>
-
-                                <h3 class="text-xs font-medium text-slate-700 dark:text-navy-100">
-
-                                    Review
-
-                                </h3>
-
-                            </li>
-
-                        </ol>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </template>
 
         <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
 
@@ -148,7 +31,7 @@
                 <div class="card p-4 sm:p-5">
 
                     <p class="text-base font-medium text-slate-700 dark:text-navy-100 mb-5">
-                        Add New auto
+                        Add Vehicle
                     </p>
                     @if(session('error-message'))
                     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -182,6 +65,10 @@
                                 class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 required>
 
+                                @error('license_plate')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
+
                         </div>
 
                         <div class="mb-3">
@@ -191,6 +78,9 @@
                             <input type="text" name="vin" id="vin"
                                 class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 required>
+                                @error('vin')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
 
                         </div>
 
@@ -202,6 +92,10 @@
                                 class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 required>
 
+                                @error('make')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
+
                         </div>
 
                         <div class="mb-3">
@@ -211,6 +105,9 @@
                             <input type="text" name="model" id="model"
                                 class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 required>
+                                @error('model')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
 
                         </div>
 
@@ -221,6 +118,9 @@
                             <input type="number" name="year" id="year"
                                 class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 required>
+                                @error('year')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
 
                         </div>
 
@@ -231,7 +131,9 @@
                             <input type="text" name="color" id="color"
                                 class="form-input w-full rounded-lg border border-slate-300 bg-transparent px-3 py-2 placeholder:text-slate-400/70 hover:border-slate-400 focus:border-primary dark:border-navy-450 dark:hover:border-navy-400 dark:focus:border-accent"
                                 required>
-
+                                @error('color')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
 
 
@@ -255,6 +157,9 @@
                                 <option value="Motorcycle">Motorcycle</option>
 
                             </select>
+                            @error('vehicle_type')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
 
                         </label>
                         <label class="block pt-4 mb-5">
@@ -269,6 +174,10 @@
                                     <option value="{{ $permitType }}">{{ $permitType }}</option>
                                 @endforeach
                             </select>
+
+                            @error('permit_type')
+                            <span class="text-red-500">{{ $message }}</span>
+                        @enderror
                         </label>
 
 

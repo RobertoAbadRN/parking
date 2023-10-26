@@ -20,8 +20,6 @@
             vertical-align: top;
         }
 
-
-
         /* Estilos para la primera columna */
         .column1 {
             width: 50%;
@@ -48,9 +46,6 @@
             text-align: center;
         }
 
-
-
-
         .license-plate {
             font-size: 16px;
             font-weight: bold;
@@ -60,7 +55,6 @@
             margin-top: -20px;
             /* Ajusta el valor negativo según cuánto quieras subir el span */
         }
-
 
         .date {
             font-size: 12px;
@@ -142,14 +136,60 @@
             <!-- Primera columna -->
             <td class="column1">
                 <div class="card-content">
-                    <p class="property-name">{{ $property_name }}</p>
-                    <p class="permit-type">{{ $permit_type }}</p>
-                    <div class="flex-container">
-                        <img src="https://amartineztowingop.com/images/logo/UvTKfVgTtJbgRcIgA4L9VO6R8vZUD3QUIf5f8zN8.png"
-                            class="logo" />
-                        <span class="license-plate">{{ $license_plate }}</span>
+                    @if (is_null($propertySetting) || is_null($propertySetting->name))
+                        <p class="property-name">{{ $property_name }}</p>
+                    @else
+                        @if ($propertySetting->name === '1')
+                            <p class="property-name">{{ $property_name }}</p>
+                        @elseif ($propertySetting->name === 0)
+                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                        @endif
+                    @endif
+
+                    <div class="mb-2">
+                        @if (is_null($propertySetting) || is_null($propertySetting->type))
+                            <p class="permit-type">{{ $permit_type }}</p>
+                        @else
+                            @if ($propertySetting->type === '1')
+                                <p class="permit-type">{{ $permit_type }}</p>
+                            @elseif ($propertySetting->type === 0)
+                                <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                            @endif
+                        @endif
+
+
+                        <div class="flex-container">
+                            @if (is_null($propertySetting) || is_null($propertySetting->logo))
+                                <img src="https://amartineztowingop.com/images/logo/UvTKfVgTtJbgRcIgA4L9VO6R8vZUD3QUIf5f8zN8.png"
+                                    class="logo" />
+                            @else
+                                @if ($propertySetting->logo === '1')
+                                    <img src="https://amartineztowingop.com/images/logo/UvTKfVgTtJbgRcIgA4L9VO6R8vZUD3QUIf5f8zN8.png"
+                                        class="logo" />
+                                @elseif ($propertySetting->logo === 0)
+                                    <!-- No se muestra nada cuando $propertySetting->logo es igual a "0" -->
+                                @endif
+                            @endif
+
+                            @if (is_null($propertySetting) || is_null($propertySetting->license))
+                                <span class="license-plate">{{ $license_plate }}</span>
+                            @else
+                                @if ($propertySetting->license === '1')
+                                    <span class="license-plate">{{ $license_plate }}</span>
+                                @elseif ($propertySetting->license === 0)
+                                    <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                @endif
+                            @endif
+
+                        </div>
                     </div>
-                    <p class="date">From: {{ $start_date }} To: {{ $end_date }}</p>
+                    <?php
+                    $start_date = date_create($start_date); // Convierte la cadena en un objeto DateTime
+                    $end_date = date_create($end_date); // Convierte la cadena en un objeto DateTime
+                    ?>
+
+                    <p class="date">From: {{ $start_date->format('d-m-Y') }} To: {{ $end_date->format('d-m-Y') }}</p>
+
                 </div>
             </td>
             <!-- Segunda columna -->

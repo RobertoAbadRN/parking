@@ -6,7 +6,7 @@
 
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
 
-                Dashboards
+                LIST OF VISITOR'S PASS: {{ $property->name }}
 
             </h2>
 
@@ -15,24 +15,6 @@
                 <div class="h-full w-px bg-slate-300 dark:bg-navy-600"></div>
 
             </div>
-
-            <ul class="hidden flex-wrap items-center space-x-2 sm:flex">
-
-                <li class="flex items-center space-x-2">
-
-                    <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent"
-                        href="#"> LIST OF VISITOR'S PASS: {{ $property->name }}</a>
-
-                    <svg x-ignore xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-
-                    </svg>
-
-                </li>
-
-            </ul>
 
         </div>
 
@@ -179,7 +161,9 @@
 
                                 <th class="px-4 py-2">Phone</th>
 
+                                
                                 <th class="px-4 py-2">Type</th>
+                                <th class="px-4 py-2">vp code</th>
 
                                 <th class="px-4 py-2">Status</th>
 
@@ -254,6 +238,11 @@
                                         {{ $visitor->vehicle_type }}
 
                                     </td>
+                                    <td class="px-4 py-2">
+
+                                        {{ $visitor->vp_code }}
+
+                                    </td>
 
                                     <td
                                         class="px-4 py-2 @if ($visitor->valid_from >= now()) bg-green-100 text-green-800 @else bg-red-100 text-red-800 @endif">
@@ -268,7 +257,7 @@
 
                                         <div x-data="{ visitorData: {} }">
                                             <div class="flex space-x-2">
-                                    
+
                                                 <a @click="visitorData = {
                                                     validFrom: '{{ $visitor->valid_from }}',
                                                     licensePlate: '{{ $visitor->license_plate }}',
@@ -283,29 +272,31 @@
                                                     residentName: '{{ $visitor->resident_name }}',  
                                                     status: '{{ $visitor->status }}'
                                                 }; printVisitorDetails(visitorData)"
-                                                class="flex items-center text-info hover:text-info">
+                                                    class="flex items-center text-info hover:text-info">
                                                     <i class="fas fa-print mr-1"></i>
                                                 </a>
-                                    
-                                                <form action="{{ route('delete-visitor', ['id' => $visitor->id]) }}" method="POST" class="flex items-center text-red-500 hover:text-red-600">
+
+                                                <form action="{{ route('delete-visitor', ['id' => $visitor->id]) }}"
+                                                    method="POST"
+                                                    class="flex items-center text-red-500 hover:text-red-600">
                                                     @csrf
                                                     @method('DELETE')
-                                                    
+
                                                     <button type="submit" class="focus:outline-none">
                                                         <i class="fas fa-trash mr-1"></i>
                                                     </button>
                                                 </form>
-                                                
-                                                
-                                    
+
+
+
                                             </div>
-                                            
+
                                             <!-- Tu script para printVisitorDetails aquí -->
-                                    
+
                                         </div>
-                                    
+
                                     </td>
-                                    
+
                                 </tr>
                             @endforeach
 

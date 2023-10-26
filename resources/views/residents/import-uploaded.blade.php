@@ -2,7 +2,8 @@
     <main class="main-content w-full px-[var(--margin-x)] pb-8">
         <div class="flex items-center space-x-4 py-5 lg:py-6">
             <h4 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-xl">
-                <a class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Residents
+                <a
+                    class="text-primary transition-colors hover:text-primary-focus dark:text-accent-light dark:hover:text-accent">Residents
                 </a>
 
             </h4>
@@ -40,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($resident_uploads as $resident_upload)
+                            @foreach ($resident_uploads as $resident_upload)
                                 <tr>
                                     <td class="px-4 py-2">
                                         {{ $resident_upload->id }}
@@ -52,13 +53,20 @@
                                         {{ $resident_upload->file_name }}
                                     </td>
                                     <td class="px-4 py-2">
-                                        <a href="{{ route('residents.import.uploaded.files', ['upload_id' => $resident_upload->id]) }}" class="text-blue-500 hover:text-blue-700 mr-2">
+                                        <a href="{{ route('residents.import.uploaded.files', ['upload_id' => $resident_upload->id]) }}"
+                                            class="text-blue-500 hover:text-blue-700 mr-2">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="#" class="text-green-500 hover:text-green-700 mr-2" onclick="window.print()">
-                                            <i class="fas fa-print"></i>
-                                        </a>
+
+                                        <form action="{{ route('upload.destroy', $resident_upload->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="text-red-500 hover:text-red-700 mr-2" onclick="confirmDeletion(event, this.closest('form'))">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>
@@ -73,6 +81,23 @@
                     responsive: true
                 });
             });
+
+            function confirmDeletion(event, form) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            }
         </script>
     </main>
 </x-app-layout>

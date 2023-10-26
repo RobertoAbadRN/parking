@@ -21,9 +21,9 @@ class SignAgreement extends Mailable {
         $this->token = $token;
     }
 
-    public function build()
+    public function build() 
     {
-        return $this->view('emails.sign-agreement')
+        return $this->view('emails.sign-agreement-default')
                     ->with([
                     'user' => $this->user,
                     'englishLink' => $this->englishLink,

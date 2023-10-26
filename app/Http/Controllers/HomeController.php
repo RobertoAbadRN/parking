@@ -16,6 +16,7 @@ class HomeController extends Controller
     public function dashboardsCrmAnalytics()
     {
         $user = Auth::user(); // Obtén el usuario autenticado
+        //dd($user);
         $propertyNames = []; // Inicializa $propertyNames como un array vacío
         $properties = []; // Inicializa $properties como un array vacío
         $totalVehiclesByProperty = []; // Inicializa un array para almacenar la suma de autos por propiedad
@@ -23,6 +24,7 @@ class HomeController extends Controller
         if ($user->hasRole('Property manager')) {
             // Si el usuario tiene el rol 'Property manager', obten su property_code
             $propertyCode = $user->property_code;
+          
 
             // Luego, puedes usar este property_code para obtener los nombres y direcciones de las propiedades
             $properties = Property::where('property_code', $propertyCode)->get();

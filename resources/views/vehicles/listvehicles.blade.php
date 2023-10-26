@@ -12,7 +12,8 @@
             </div>
         </div>
         @if (session('success_message'))
-            <div id="success-message" class="alert flex rounded-lg border border-success px-4 py-4 text-success sm:px-5">
+            <div id="success-message"
+                class="alert flex rounded-lg border border-success px-4 py-4 text-success sm:px-5">
                 {{ session('success_message') }}
             </div>
         @endif
@@ -53,7 +54,7 @@
                                     d="M5 21.7715L7.80957 16.542L5.25977 11.75H7.20117L8.84863 14.9697L10.4619 11.75H12.3828L9.83301 16.6172L12.6426 21.7715H10.6396L8.81445 18.3057L6.98926 21.7715H5Z"
                                     fill="white" />
                             </svg>
-                        </a>        
+                        </a>
 
                     </div>
                 </div>
@@ -73,14 +74,14 @@
                                 <th class="px-4 py-2" style="font-size: 11px;">Permit Type</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">#Reserved</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">Permit Status</th>
-                                <th class="px-4 py-2" style="font-size: 11px;">Actions</th>                                
+                                <th class="px-4 py-2" style="font-size: 11px;">Actions</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">Language</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">E-mail</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">Phone</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">Type</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">Color</th>
                                 <th class="px-4 py-2" style="font-size: 11px;">VIN</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -142,24 +143,49 @@
                                         <div class="flex justify-center space-x-2">
 
                                             <!-- Botón de aprobación -->
-                                            <form method="POST" action="{{ route('update.vehicle.status', ['vehicleId' => $vehicle->id]) }}">
+                                            <form method="POST"
+                                                action="{{ route('update.vehicle.status', ['vehicleId' => $vehicle->id]) }}">
                                                 @csrf <!-- Agrega el token CSRF para protección contra ataques CSRF -->
-                                            
+
                                                 <button type="submit" name="status" value="approved"
                                                     class="btn h-8 w-8 p-0 text-green-500 hover:bg-green-200 focus:bg-green-200 active:bg-green-300 rounded-full">
                                                     <i class="fas fa-check"></i> <!-- Icono de checkmark -->
                                                 </button>
                                             </form>
-                                            
-                                            
+
+
                                             <!-- Botón de rechazo -->
-                                            <form method="POST" action="{{ route('vehicles.suspend', ['id' => $vehicle->id]) }}">
+                                            <form method="POST"
+                                                action="{{ route('vehicles.suspend', ['id' => $vehicle->id]) }}">
                                                 @csrf
-                                                <button type="submit" class="btn h-8 w-8 p-0 text-red-500 hover:bg-red-200 focus:bg-red-200 active:bg-red-300 rounded-full">
+                                                <button type="submit"
+                                                    class="btn h-8 w-8 p-0 text-red-500 hover:bg-red-200 focus:bg-red-200 active:bg-red-300 rounded-full">
                                                     <i class="fas fa-times"></i> <!-- Icono de X roja -->
                                                 </button>
                                             </form>
-                                            
+
+                                            @if ($vehicle->permit_status === 'suspended')
+                                                <form method="POST"
+                                                    action="{{ route('vehicles.suspend1', ['id' => $vehicle->id]) }}"
+                                                    class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">
+                                                        <i class="fa fa-ban"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form method="POST"
+                                                    action="{{ route('vehicles.suspend1', ['id' => $vehicle->id]) }}"
+                                                    class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="btn h-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
+                                                        <i class="fa fa-ban"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+
 
 
                                             <a href="{{ route('edit.vehicle', ['id' => $vehicle->id, 'property_code' => $vehicle->property_code]) }}"
@@ -171,32 +197,12 @@
                                                 class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
                                                 <i class="fa fa-print"></i>
                                             </a>
-
-
-                                            <a href="{{ route('send.email', ['id' => $vehicle->id, 'property_code' => $property_code, 'email' => $vehicle->email]) }}"
-                                                class="btn h-8 w-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                <i class="fa fa-envelope"></i>
-                                            </a>
-
-
                                             <a href="{{ route('vehicles.destroy', ['vehicle' => $vehicle->id, 'property_code' => $property_code]) }}"
                                                 class="btn h-8 w-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
                                                 onclick="event.preventDefault(); showConfirmation('{{ $vehicle->id }}');">
                                                 <i class="fa fa-trash-alt"></i>
                                             </a>
-                                            @if ($vehicle->permit_status === 'suspended')
-                                                <a href="#"
-                                                    class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25"
-                                                    onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
-                                                    <i class="fa fa-ban"></i>
-                                                </a>
-                                            @else
-                                                <a href="#"
-                                                    class="btn h-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25"
-                                                    onclick="event.preventDefault(); sendSuspensionEmail('{{ $vehicle->id }}');">
-                                                    <i class="fa fa-ban"></i>
-                                                </a>
-                                            @endif
+
 
 
                                             <script>

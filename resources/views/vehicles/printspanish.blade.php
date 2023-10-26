@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>español</title>
     <style>
-          body {
+        body {
             font-family: Arial, sans-serif;
             font-size: 15px;
         }
@@ -143,15 +143,62 @@
             <!-- Primera columna -->
             <td class="column1">
                 <div class="card-content">
-                    <p class="property-name">{{ $property_name }}</p>
-                    <p class="permit-type">{{ $permit_type }}</p>
-                    <div class="flex-container">
-                        <img src="https://amartineztowingop.com/images/logo/UvTKfVgTtJbgRcIgA4L9VO6R8vZUD3QUIf5f8zN8.png"
-                            class="logo" />
-                        <span class="license-plate">{{ $license_plate }}</span>
+                    @if (is_null($propertySetting) || is_null($propertySetting->name))
+                        <p class="property-name">{{ $property_name }}</p>
+                    @else
+                        @if ($propertySetting->name === '1')
+                            <p class="property-name">{{ $property_name }}</p>
+                        @elseif ($propertySetting->name === 0)
+                            <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                        @endif
+                    @endif
+
+                    <div class="mb-2">
+                        @if (is_null($propertySetting) || is_null($propertySetting->type))
+                            <p class="permit-type">{{ $permit_type }}</p>
+                        @else
+                            @if ($propertySetting->type === '1')
+                                <p class="permit-type">{{ $permit_type }}</p>
+                            @elseif ($propertySetting->type === 0)
+                                <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                            @endif
+                        @endif
+
+
+                        <div class="flex-container">
+                            @if (is_null($propertySetting) || is_null($propertySetting->logo))
+                                <img src="https://amartineztowingop.com/images/logo/UvTKfVgTtJbgRcIgA4L9VO6R8vZUD3QUIf5f8zN8.png"
+                                    class="logo" />
+                            @else
+                                @if ($propertySetting->logo === '1')
+                                    <img src="https://amartineztowingop.com/images/logo/UvTKfVgTtJbgRcIgA4L9VO6R8vZUD3QUIf5f8zN8.png"
+                                        class="logo" />
+                                @elseif ($propertySetting->logo === 0)
+                                    <!-- No se muestra nada cuando $propertySetting->logo es igual a "0" -->
+                                @endif
+                            @endif
+
+                            @if (is_null($propertySetting) || is_null($propertySetting->license))
+                                <span class="license-plate">{{ $license_plate }}</span>
+                            @else
+                                @if ($propertySetting->license === '1')
+                                    <span class="license-plate">{{ $license_plate }}</span>
+                                @elseif ($propertySetting->license === 0)
+                                    <!-- No se muestra nada cuando $propertySetting->name es igual a "0" -->
+                                @endif
+                            @endif
+
+                        </div>
+
+                        <?php
+                        $start_date = date_create($start_date); // Convierte la cadena en un objeto DateTime
+                        $end_date = date_create($end_date); // Convierte la cadena en un objeto DateTime
+                        ?>
+
+                        <p class="date">From: {{ $start_date->format('d-m-Y') }} To: {{ $end_date->format('d-m-Y') }}
+                        </p>
+
                     </div>
-                    <p class="date">From: {{ $start_date }} To: {{ $end_date }}</p>
-                </div>
             </td>
             <!-- Segunda columna -->
             <td class="column2">
@@ -161,10 +208,11 @@
                         <li>Limpie el área donde se colocará la calcomanía.</li>
                         <li>Separe la calcomanía del documento en las perforaciones.</li>
                         <li>Despegue el forro que cubre el borde azul de la calcomanía.</li>
-                        <li>Coloque la calcomanía en la ventana sobre la calcomanía de registro/inspección y alise suavemente la calcomanía contra el vidrio.</li>
+                        <li>Coloque la calcomanía en la ventana sobre la calcomanía de registro/inspección y alise
+                            suavemente la calcomanía contra el vidrio.</li>
                     </ol>
                 </div>
-            </td>            
+            </td>
         </tr>
     </table>
 
@@ -172,18 +220,35 @@
     <!-- Acuerdo de permiso -->
     <div class="agreement">
         <h2>Permit Agreement</h2>
-        <p>Este acuerdo es un anexo y forma parte del Contrato de Arrendamiento de Apartamento, celebrado entre el número 1011 de la calle W10, y el/los Residente(s) mencionado(s) a continuación:</p>
+        <p>Este acuerdo es un anexo y forma parte del Contrato de Arrendamiento de Apartamento, celebrado entre el
+            número 1011 de la calle W10, y el/los Residente(s) mencionado(s) a continuación:</p>
         <p>Al firmar este anexo, yo/nosotros aceptamos lo siguiente:</p>
         <ul>
-            <li>Comprendo que se emitirá un permiso de estacionamiento para cada arrendatario. Los permisos de estacionamiento no se emitirán a ocupantes. Acepto colocar el permiso de estacionamiento justo encima de las calcomanías de Inspección/Registro de mi vehículo.</li>
-            <li>Entiendo que cada permiso está designado para un vehículo específico y no se puede transferir a otro vehículo. Comprendo que el permiso asignado se basa en la información de la placa de matrícula del vehículo. También acepto que si obtengo un nuevo vehículo, estoy de acuerdo en devolver el permiso antiguo.</li>
-            <li>El permiso de estacionamiento vencerá el último día del contrato de arrendamiento actual. Comprendo que debo renovar mi permiso de estacionamiento cuando expire mi contrato de arrendamiento actual. También entiendo que se requiere evidencia de registro del vehículo y prueba de seguro de vehículo válido antes de emitir o renovar permisos.</li>
-            <li>Comprendo que los visitantes no pueden estacionarse dentro de las puertas de acceso en ningún momento. El estacionamiento para visitantes está designado fuera de las puertas en todo momento. Entiendo que cualquier vehículo estacionado en el área designada de Estacionamiento para Futuros Residentes fuera de las puertas de acceso debe ser movido durante las horas de oficina todos los días.</li>
-            <li>Entiendo que no puedo estacionar barcos, remolques, vehículos recreativos o vehículos comerciales en la propiedad, en ningún lugar o en ningún momento. Los vehículos deben ser utilizados de manera regular y no pueden quedar abandonados o inoperables.</li>
-            <li>Entiendo que si se remolca un vehículo, puedo contactar a A. Martinez Towing Company LLC las 24 horas del día al 832-374-7703.</li>
-            <li>Si un vehículo se estaciona dentro de las puertas sin permiso, puedo contactar directamente al servicio de remolque para que retire el vehículo. Todos los gastos de remolque correrán por cuenta del propietario u operador del vehículo.</li>
+            <li>Comprendo que se emitirá un permiso de estacionamiento para cada arrendatario. Los permisos de
+                estacionamiento no se emitirán a ocupantes. Acepto colocar el permiso de estacionamiento justo encima de
+                las calcomanías de Inspección/Registro de mi vehículo.</li>
+            <li>Entiendo que cada permiso está designado para un vehículo específico y no se puede transferir a otro
+                vehículo. Comprendo que el permiso asignado se basa en la información de la placa de matrícula del
+                vehículo. También acepto que si obtengo un nuevo vehículo, estoy de acuerdo en devolver el permiso
+                antiguo.</li>
+            <li>El permiso de estacionamiento vencerá el último día del contrato de arrendamiento actual. Comprendo que
+                debo renovar mi permiso de estacionamiento cuando expire mi contrato de arrendamiento actual. También
+                entiendo que se requiere evidencia de registro del vehículo y prueba de seguro de vehículo válido antes
+                de emitir o renovar permisos.</li>
+            <li>Comprendo que los visitantes no pueden estacionarse dentro de las puertas de acceso en ningún momento.
+                El estacionamiento para visitantes está designado fuera de las puertas en todo momento. Entiendo que
+                cualquier vehículo estacionado en el área designada de Estacionamiento para Futuros Residentes fuera de
+                las puertas de acceso debe ser movido durante las horas de oficina todos los días.</li>
+            <li>Entiendo que no puedo estacionar barcos, remolques, vehículos recreativos o vehículos comerciales en la
+                propiedad, en ningún lugar o en ningún momento. Los vehículos deben ser utilizados de manera regular y
+                no pueden quedar abandonados o inoperables.</li>
+            <li>Entiendo que si se remolca un vehículo, puedo contactar a A. Martinez Towing Company LLC las 24 horas
+                del día al 832-374-7703.</li>
+            <li>Si un vehículo se estaciona dentro de las puertas sin permiso, puedo contactar directamente al servicio
+                de remolque para que retire el vehículo. Todos los gastos de remolque correrán por cuenta del
+                propietario u operador del vehículo.</li>
         </ul>
-        
+
     </div>
 
     <div style="padding-top: 0em">
@@ -217,7 +282,7 @@
                 </tr>
             </tbody>
         </table>
-        
+
     </div>
 
 
