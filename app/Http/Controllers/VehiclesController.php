@@ -313,8 +313,10 @@ class VehiclesController extends Controller
 
         // Verificar qué botón se presionó
         if ($request->has('savePrintButton')) {
+            $resident_name = $vehicle->user->name;  // Asumiendo que existe una relación user en el modelo Vehicle
+            $unit_number = $department->apart_unit;
             // Si se presionó el botón "Print", enviar los datos del vehículo, el nombre de la propiedad y el campo 'logo' a la vista
-            return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo'));
+            return view('vehicles/printable_document', compact('vehicle', 'property_name', 'logo','resident_name','unit_number'));
         }
         $property_code = $request->input('property_code');
 
@@ -366,12 +368,11 @@ class VehiclesController extends Controller
 
         $sheet = $spreadsheet->getActiveSheet();
 
-        $datos = Vehicle::join('properties', 'properties.property_code', '=', 'vehicles.property_code')
-
-            ->select('vehicles.id', 'vehicles.resident_name', 'vehicles.apart_unit', 'vehicles.preferred_language', 'vehicles.license_plate', 'vehicles.make', 'vehicles.reserved_space', 'vehicles.model', 'properties.address', 'vehicles.created_at', 'vehicles.permit_status', 'vehicles.email', 'vehicles.phone', 'vehicles.vehicle_type', 'vehicles.color', 'vehicles.vin', 'vehicles.start_date', 'vehicles.end_date')
-
+        $datos  = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
+            ->join('departments', 'departments.user_id', '=', 'users.id')
+            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.lease_expiration', 'departments.prefered_language', 'departments.lease_expiration')
             ->where('vehicles.property_code', $property_code)
-
+            ->groupBy('vehicles.id')
             ->get();
 
         $spreadsheet->setActiveSheetIndex(0)

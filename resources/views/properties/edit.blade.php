@@ -6,7 +6,7 @@
 
             <h2 class="text-xl font-medium text-slate-800 dark:text-navy-50 lg:text-2xl">
 
-                Add New Property
+              Edit Property
 
             </h2>
 
@@ -17,33 +17,16 @@
             </div>
 
         </div>
-
-
-
-        
-
-
         <div class="grid grid-cols-12 gap-4 sm:gap-5 lg:gap-6">
 
             <div class="col-span-12 sm:col-span-10">
 
                 <div class="card p-4 sm:p-5">
-
-                    <p class="text-base font-medium text-slate-700 dark:text-navy-100">
-
-                        edit Property
-
-                    </p>
-
-
-
                     <form action="{{ route('properties.update', $property->id) }}" method="POST"  enctype="multipart/form-data">
 
                         @csrf
 
                         @method('PUT')
-
-
 
                         <div class="mt-4 space-y-4">
 
@@ -96,6 +79,9 @@
                                     </span>
 
                                 </span>
+                                @error('name')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
                             <label class="block">
@@ -110,6 +96,9 @@
                                         <i class="far fa-user text-base"></i>
                                     </span>
                                 </span>
+                                @error('nickname')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
                             </label>
                             
 
@@ -136,7 +125,9 @@
                                     </span>
 
                                 </span>
-
+                                @error('address')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
                             </label>
 
                             <label class="block">
@@ -162,6 +153,9 @@
                                     </span>
 
                                 </span>
+                                @error('city')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
@@ -188,6 +182,9 @@
                                     </span>
 
                                 </span>
+                                @error('state')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
@@ -214,6 +211,9 @@
                                     </span>
 
                                 </span>
+                                @error('country')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
@@ -240,6 +240,9 @@
                                     </span>
 
                                 </span>
+                                @error('zip_code')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
@@ -304,6 +307,9 @@
                                     </span>
 
                                 </span>
+                                @error('location_type')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
@@ -330,11 +336,13 @@
                                     </span>
 
                                 </span>
+                                @error('places')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
                             <label class="block">
-
                                 <span>Logo</span>
 
                                 <span class="relative mt-1.5 flex">
@@ -345,41 +353,41 @@
 
                                         type="file" name="logo"
 
-                                        accept="image/jpeg,image/png,image/jpg,image/gif" />
+                                        accept="image/png" />
 
                                     <span
 
                                         class="pointer-events-none absolute flex h-full w-10 items-center justify-center text-slate-400 peer-focus:text-primary dark:text-navy-300 dark:peer-focus:text-accent">
-
                                         <i class="fa-solid fa-upload text-base"></i>
 
                                     </span>
 
                                 </span>
+                                @error('logo')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
 
                             </label>
 
-                            <div class="flex justify-end space-x-2">
+                            <div class="flex justify-start space-x-2">
 
                                 <button class="btn bg-warning font-medium text-white hover:bg-warning-focus focus:bg-warning-focus active:bg-warning-focus/90">
 
-                                    Submit
+                                    Save
 
                                   </button>
 
-                                <a href="{{ url('/properties') }}"  class="btn bg-primary font-medium text-white hover:bg-danger-focus focus:bg-danger-focus active:bg-danger-focus/90">
+                                <a href="{{ url('/properties') }}"  class="btn bg-error font-medium text-white hover:bg-danger-focus focus:bg-danger-focus active:bg-danger-focus/90">
 
                                   Cancel
 
-                                </a>                               
-
+                                </a> 
+                                
                               </div>                              
 
                         </div>
 
                     </form>
-
-
 
                 </div>
 

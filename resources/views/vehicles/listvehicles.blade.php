@@ -164,28 +164,6 @@
                                                 </button>
                                             </form>
 
-                                            @if ($vehicle->permit_status === 'suspended')
-                                                <form method="POST"
-                                                    action="{{ route('vehicles.suspend1', ['id' => $vehicle->id]) }}"
-                                                    class="inline">
-                                                    @csrf
-                                                    <button type="submit"
-                                                        class="btn h-8 p-0 text-error hover:bg-error/20 focus:bg-error/20 active:bg-error/25">
-                                                        <i class="fa fa-ban"></i>
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form method="POST"
-                                                    action="{{ route('vehicles.suspend1', ['id' => $vehicle->id]) }}"
-                                                    class="inline">
-                                                    @csrf
-                                                    <button type="submit"
-                                                        class="btn h-8 p-0 text-info hover:bg-info/20 focus:bg-info/20 active:bg-info/25">
-                                                        <i class="fa fa-ban"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-
 
 
                                             <a href="{{ route('edit.vehicle', ['id' => $vehicle->id, 'property_code' => $vehicle->property_code]) }}"

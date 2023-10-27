@@ -6,11 +6,18 @@
             </h2>
 
             <div class="flex">
-                <button onclick="window.print()" class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 sm:h-9 sm:w-9">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                </button>
+                <form action="{{ route('vehicles.printPDF') }}" method="POST" target="_blank">
+                    @csrf
+                    <input type="hidden" name="vehicle_id" value="{{ $vehicle->id }}">
+                    <button type="submit" id="print-pdf-button"
+                        class="btn h-8 w-8 rounded-full p-0 hover:bg-slate-300/20 focus:bg-slate-300/20 active:bg-slate-300/25 dark:hover:bg-navy-300/20 dark:focus:bg-navy-300/20 dark:active:bg-navy-300/25 sm:h-9 sm:w-9">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                    </button>
+                </form>
                 <a href="{{ route('properties.vehicles', ['property_code' => $vehicle->property_code]) }}"
                     class="btn ml-5 bg-error font-medium text-white hover:bg-error-focus focus:bg-error-focus active:bg-error-focus/90">
                     Cancel
@@ -32,13 +39,18 @@
                                 </div>
 
                                 <div class="flex items-center justify-center mb-2">
-                                    <img src="{{ $logo ? asset('storage/' . $logo) : asset('favicon.png') }}" alt="Logo Resident" class="w-12 h-12 mr-2">
+                                    <img src="{{ $logo ? asset($logo) : asset('favicon.png') }}" alt="Logo Resident" class="w-12 h-12 mr-2">
                                     <span>{{ $vehicle->license_plate }}</span>
+
                                 </div>
 
                                 <div class="text-center">
-                                    <p class="mb-2 text-xs font-semibold">From: {{$vehicle->start_date->format('Y-m-d')}} To: {{ $vehicle->end_date->format('Y-m-d') }}</p>
+                                    <p class="mb-2 text-xs font-semibold">
+                                        From: {{ \Carbon\Carbon::parse($vehicle->start_date)->format('Y-m-d') }} 
+                                        To: {{ \Carbon\Carbon::parse($vehicle->end_date)->format('Y-m-d') }}
+                                    </p>
                                 </div>
+                                
                             </div>
                         </div>
 
@@ -75,22 +87,34 @@
                     </ul>
 
 
-                    <footer>
-                        <div class="flex justify-between">
-                            <div>
-                                <p>Resident's Printed Name</p>
-                                <p>Unit #</p>
-                                <p>Signature</p>
-                                <p>Date</p>
-                            </div>
-                            <div>
-                                <p>Oscar De Los Santos</p>
-                                <p>102</p>
-                                <p></p>
-                                <p>07/06/2023</p>
-                            </div>
-                        </div>
-                    </footer>
+                    
+                    <div style="padding-top: 5em">
+                        <table width="99%" cellpadding="5" cellspacing="2">
+                            <tbody>
+                                <tr>
+                                    <td width="205"><span class="center_txt">{{ $resident_name }}</span></td>
+                                    <td width="60" class="center_txt">{{ $unit_number }}</td>
+                                    <td width="25">&nbsp;</td>
+                                    <td width="210"></td>
+                                    <td width="95">{{ now()->format('d/m/Y') }}</td>
+
+                                </tr>
+                                <tr>
+                                    <td width="205" class="border-t border-gray-800">
+                                        <span class="center_txt">Resident's Printed Name</span>
+                                    </td>
+                                    <td width="60" class="center_txt border-t border-gray-800">Unit #</td>
+                                    <td width="25">&nbsp;</td>
+                                    <td width="210" class="border-t border-gray-800">
+                                        <span class="center_txt">Signature</span>
+                                    </td>
+                                    <td width="95" class="border-t border-gray-800">
+                                        <span class="center_txt">Date</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

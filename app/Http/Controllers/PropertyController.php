@@ -1,61 +1,60 @@
 <?php
-
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use App\Models\Property;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Illuminate\Support\Facades\Auth;
 
 class PropertyController extends Controller
 {
-   
+
     public function index()
-{
-    $user = Auth::user(); // Obtén el usuario autenticado
+    {
+        $user = Auth::user(); // Obtén el usuario autenticado
 
-    if ($user->hasRole('Company administrator')) {
-        // Si el usuario tiene el rol 'Company Administrator', puede ver todas las propiedades
-        $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
-            ->distinct() // Agregar el método distinct() para eliminar duplicados
-            ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
-            ->selectSub(function ($query) {
-                $query->from('vehicles')
-                    ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
-                    ->selectRaw('count(*)');
-            }, 'total_cars')
-            ->get();
-    } elseif ($user->hasRole('Property manager')) {
-        // Si el usuario tiene el rol 'Property Manager', obtén su property_code
-        $propertyCode = $user->property_code;
+        if ($user->hasRole('Company administrator')) {
+            // Si el usuario tiene el rol 'Company Administrator', puede ver todas las propiedades
+            $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
+                ->distinct() // Agregar el método distinct() para eliminar duplicados
+                ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+                ->selectSub(function ($query) {
+                    $query->from('vehicles')
+                        ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
+                        ->selectRaw('count(*)');
+                }, 'total_cars')
+                ->get();
+        } elseif ($user->hasRole('Property manager')) {
+            // Si el usuario tiene el rol 'Property Manager', obtén su property_code
+            $propertyCode = $user->property_code;
 
-        // Luego, puedes usar este property_code para filtrar la consulta de las propiedades
-        $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
-            ->where('properties.property_code', $propertyCode)
-            ->distinct() // Agregar el método distinct() para eliminar duplicados
-            ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
-            ->selectSub(function ($query) {
-                $query->from('vehicles')
-                    ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
-                    ->selectRaw('count(*)');
-            }, 'total_cars')
-            ->get();
-    } else {
-        // Otros casos o roles desconocidos
-        abort(403, 'Acceso no autorizado');
+            // Luego, puedes usar este property_code para filtrar la consulta de las propiedades
+            $properties = Property::select('properties.id', 'properties.name', 'properties.nickname', 'properties.permit_status', 'properties.area', 'properties.address', 'properties.property_code')
+                ->where('properties.property_code', $propertyCode)
+                ->distinct() // Agregar el método distinct() para eliminar duplicados
+                ->leftJoin('vehicles', 'properties.property_code', '=', 'vehicles.property_code')
+                ->selectSub(function ($query) {
+                    $query->from('vehicles')
+                        ->whereColumn('properties.property_code', '=', 'vehicles.property_code')
+                        ->selectRaw('count(*)');
+                }, 'total_cars')
+                ->get();
+        } else {
+            // Otros casos o roles desconocidos
+            abort(403, 'Acceso no autorizado');
+        }
+
+        // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
+        return view('properties.index', compact('properties'));
     }
-
-    // Devuelve la vista 'properties.index' y pasa los datos de los registros como variable "properties"
-    return view('properties.index', compact('properties'));
-}
-
 
     public function create()
     {
@@ -63,9 +62,9 @@ class PropertyController extends Controller
         return view('properties/addproperty');
 
     }
-
     public function storeProperty(Request $request)
     {
+
         // Validar los datos del formulario
         $validatedData = $request->validate([
             'area' => 'required',
@@ -77,9 +76,10 @@ class PropertyController extends Controller
             'zip_code' => 'required',
             'location_type' => 'required',
             'places' => 'required',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the max file size as needed
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:100',
             'nickName' => 'required',
         ]);
+        //dd($validatedData);
 
         // Generate the property code
         $propertyCode = $this->generateUniquePropertyCode();
@@ -118,7 +118,8 @@ class PropertyController extends Controller
 
         // Redireccionar a una página de éxito o mostrar un mensaje de éxito
         // Redireccionar a los detalles de la propiedad actualizada
-        return redirect()->route('properties')->with('success_message', 'The data has been updated successfully');
+        return redirect()->route('properties')->with('success_message', 'The property has been added successfully');
+
     }
 
     private function generateUniquePropertyCode()
@@ -160,7 +161,7 @@ class PropertyController extends Controller
             'zip_code' => 'required',
             'location_type' => 'required',
             'places' => 'required',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Valida que el campo 'logo' sea una imagen válida (opcional)
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:100', // Valida que el campo 'logo' sea una imagen válida (opcional)
             'nickname' => 'required', // Agregar la regla de validación para el campo nickName
         ]);
 
@@ -187,7 +188,8 @@ class PropertyController extends Controller
         $property->save();
 
         // Redireccionar a los detalles de la propiedad actualizada
-        return redirect()->route('properties')->with('success_message', 'The data has been updated successfully');
+        return redirect()->route('properties')->with('success_message', 'The property has been updated successfully');
+
     }
 
     public function destroy($id)
@@ -270,10 +272,9 @@ class PropertyController extends Controller
 
                 ->setCellValue('H' . $i, $dato->places)
 
-                ->setCellValue('I' . $i, $dato->vehicle_countt)
+                ->setCellValue('I' . $i, $dato->vehicle_count)
 
                 ->setCellValue('J' . $i, $dato->user_count);
-
             $i++;
 
         }
@@ -302,11 +303,11 @@ class PropertyController extends Controller
     {
         $vehicles = Vehicle::join('users', 'users.id', '=', 'vehicles.user_id')
             ->join('departments', 'departments.user_id', '=', 'users.id')
-            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space' ,'departments.lease_expiration','departments.prefered_language','departments.lease_expiration')
+            ->select('vehicles.*', 'users.name as resident_name', 'users.email', 'users.phone', 'departments.apart_unit', 'departments.reserved_space', 'departments.lease_expiration', 'departments.prefered_language', 'departments.lease_expiration')
             ->where('vehicles.property_code', $property_code)
             ->groupBy('vehicles.id')
             ->get();
-       // dd($vehicles);
+        // dd($vehicles);
 
         // Obtener el atributo 'address' de la propiedad
         $property = Property::where('property_code', $property_code)->select('name as property_name', 'address')->first();
